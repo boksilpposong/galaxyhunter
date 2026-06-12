@@ -22,11 +22,11 @@
         .screen.active { opacity: 1; pointer-events: auto; }
 
         /* =========================================
-           [업데이트] 로그인 화면 UI (완전 블랙 배경)
+           로그인 화면 UI (완전 블랙 배경)
         ========================================= */
         #login-screen {
-            background-color: #000000; /* [요구사항] 완전 새까만 배경으로 뒤쪽 우주를 가림 */
-            z-index: 2000; /* 메인 화면 요소들보다 무조건 맨 위에 오도록 설정 */
+            background-color: #000000;
+            z-index: 2000;
         }
 
         .login-container {
@@ -47,7 +47,7 @@
             padding: 15px 20px; font-size: 1.2rem; border-radius: 5px; outline: none;
             width: 300px; text-align: center; margin-bottom: 30px; font-family: 'Malgun Gothic', sans-serif;
             box-shadow: inset 0 0 10px rgba(0,255,157,0.1); transition: all 0.3s;
-            caret-color: #00FF9D; /* [디테일] 입력할 때 깜빡이는 실제 커서도 민트색으로 변경! */
+            caret-color: #00FF9D;
         }
         .login-input:focus {
             background: rgba(0, 255, 157, 0.1); box-shadow: inset 0 0 15px rgba(0,255,157,0.4), 0 0 15px rgba(0,255,157,0.4);
@@ -241,16 +241,23 @@
 
     <script>
         // ==========================================
-        // [업데이트] 로그인 및 언더바 깜빡임 로직
+        // [업데이트] 로그인 언더바 깜빡임 개선
         // ==========================================
         const loginInput = document.getElementById('username-input');
         const basePlaceholder = "헌터명(ID)을 입력하세요";
         let blinkToggle = false;
+        let isFocused = false;
 
-        // [요구사항 3] 아무것도 입력하지 않았을 때 언더바 깜빡임 효과 (0.5초 간격)
+        // 클릭(포커스) 했을 때만 깜빡이도록 상태 감지
+        loginInput.addEventListener('focus', () => { isFocused = true; });
+        loginInput.addEventListener('blur', () => { 
+            isFocused = false; 
+            loginInput.setAttribute('placeholder', basePlaceholder); // 포커스 나가면 원래대로 복구
+        });
+
+        // 타이머: 클릭(포커스) 되어있고 입력칸이 비어있을 때만 깜빡임
         setInterval(() => {
-            if (loginInput.value === '') {
-                // blinkToggle 상태에 따라 끝에 '_'를 붙였다 뗐다 합니다.
+            if (isFocused && loginInput.value === '') {
                 loginInput.setAttribute('placeholder', basePlaceholder + (blinkToggle ? '_' : ''));
                 blinkToggle = !blinkToggle;
             }
@@ -262,11 +269,10 @@
                 username = '익명의 헌터';
             }
 
-            // [요구사항 1] 이브 인사말 쉼표 추가 및 맞춤형 문구
+            // 이브 인사말 쉼표 유지
             const eveMessage = document.getElementById('eve-message');
             eveMessage.innerHTML = `"${username}님, 어서오세요.<br>당신의 AI 비서 이브입니다. 무엇을 도와드릴까요?"`;
 
-            // 로그인 창을 끄고 우주 배경의 메인 화면 켜기
             openScreen('main-screen');
 
             setTimeout(() => {
@@ -274,7 +280,6 @@
             }, 500);
         }
 
-        // 엔터키 로그인 지원
         loginInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') processLogin();
         });
