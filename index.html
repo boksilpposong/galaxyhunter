@@ -93,8 +93,8 @@
         #btn-location { top: 20%; left: 15%; animation-delay: 0s; }
         #btn-world { top: 40%; right: 18%; animation-delay: 1s; }
         #btn-character { bottom: 25%; left: 28%; animation-delay: 2s; }
-        /* [신규] 규약 버튼 위치 (빨간 동그라미 쳐주신 우측 하단) */
-        #btn-rules { bottom: 18%; right: 28%; animation-delay: 3s; }
+        /* [수정됨] 규약 버튼 위치 조정 (살짝 왼쪽, 아래로) */
+        #btn-rules { bottom: 12%; right: 33%; animation-delay: 3s; }
 
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
@@ -105,7 +105,7 @@
         }
         .close-btn:hover { background: #00FF9D; color: #000; box-shadow: 0 0 15px #00FF9D; }
 
-        /* 4. 서브 패널 (장소, 역사, 규약용) */
+        /* 4. 서브 패널 */
         .content-panel {
             background: rgba(0, 20, 10, 0.7); backdrop-filter: blur(15px);
             border: 1px solid #00FF9D; box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
@@ -170,6 +170,7 @@
             z-index: 1000; transform: translateX(120%); pointer-events: none;
         }
         .ai-assistant.show { animation: slideIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        /* [수정됨] .ai-avatar 스타일은 유지하되 HTML에서 삭제하므로 화면엔 안 나옴 */
         .ai-avatar { background: #00FF9D; color: #000; font-weight: 900; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 5px; margin-right: 15px; box-shadow: 0 0 10px #00FF9D; }
         .ai-text strong { color: #00FF9D; font-size: 0.75rem; display: block; }
         .ai-text span { color: #E0FFF2; font-size: 0.95rem; line-height: 1.4; display: block; }
@@ -179,9 +180,8 @@
 <body>
 
     <div class="ai-assistant" id="eve-popup">
-        <div class="ai-avatar">EVE</div>
         <div class="ai-text">
-            <strong>SYSTEM MESSAGE</strong>
+            <strong>EVE</strong>
             <span id="eve-message"></span>
         </div>
     </div>
@@ -291,11 +291,13 @@
                 username = '익명의 헌터';
             }
 
+            // 이브 인사말 설정
             const eveMessage = document.getElementById('eve-message');
-            eveMessage.innerHTML = `"${username}님, 어서오세요.<br>당신의 AI 비서 이브입니다. 무엇을 도와드릴까요?"`;
+            eveMessage.innerHTML = `"${username}님 어서오세요.<br>당신의 AI 비서 이브입니다. 무엇을 도와드릴까요?"`;
 
             openScreen('main-screen');
 
+            // 로그인 후 이브 등장
             setTimeout(() => {
                 document.getElementById('eve-popup').classList.add('show');
             }, 500);
@@ -305,6 +307,18 @@
             if (e.key === 'Enter') processLogin();
         });
 
+        // 화면 전환 함수
+        function openScreen(targetId) {
+            let screens = document.querySelectorAll('.screen');
+            screens.forEach(function(screen) { screen.classList.remove('active'); });
+            document.getElementById(targetId).classList.add('active');
+            
+            // 수배자 명부 area 초기화
+            const drawnCardView = document.getElementById('drawn-card');
+            if(drawnCardView) drawnCardView.classList.remove('active');
+        }
+
+        // --- 명부 관련 데이터 및 로직 ---
         const bountyData = [
             { id: 1, name: '실버 팽', reward: '50,000,000 ₵', img: 'char1.png', bio: '은하 연방 은행 강탈 주범. 교활하고 속도가 매우 빠름. (1024x1024 지원)' },
             { id: 2, name: '네온 쉐도우', reward: '120,000,000 ₵', img: 'char2.png', bio: '네온 콜로니 암살 사건 용의자. 소리 없이 그림자 속을 이동함. (832x1216 지원)' },
@@ -317,39 +331,33 @@
         ];
 
         const hand = document.getElementById('card-hand');
-        const totalCards = bountyData.length;
-        
-        bountyData.forEach((data, index) => {
-            const card = document.createElement('div');
-            card.className = 'mini-card';
-            
-            const offset = index - (totalCards - 1) / 2; 
-            const rotate = offset * 6; 
-            const y = Math.abs(offset) * Math.abs(offset) * 3; 
-            const x = offset * 55; 
-            
-            card.style.setProperty('--tx', `${x}px`);
-            card.style.setProperty('--ty', `${y}px`);
-            card.style.setProperty('--rot', `${rotate}deg`);
-            card.style.zIndex = index;
+        if(hand) {
+            const totalCards = bountyData.length;
+            bountyData.forEach((data, index) => {
+                const card = document.createElement('div');
+                card.className = 'mini-card';
+                
+                const offset = index - (totalCards - 1) / 2; 
+                const rotate = offset * 6; 
+                const y = Math.abs(offset) * Math.abs(offset) * 3; 
+                const x = offset * 55; 
+                
+                card.style.setProperty('--tx', `${x}px`);
+                card.style.setProperty('--ty', `${y}px`);
+                card.style.setProperty('--rot', `${rotate}deg`);
+                card.style.zIndex = index;
 
-            card.innerHTML = `<img src="${data.img}" alt="${data.name}">`;
-            card.onclick = () => drawCard(data.id);
-            hand.appendChild(card);
-        });
-
-        const drawnCardView = document.getElementById('drawn-card');
-        
-        function openScreen(targetId) {
-            let screens = document.querySelectorAll('.screen');
-            screens.forEach(function(screen) { screen.classList.remove('active'); });
-            document.getElementById(targetId).classList.add('active');
-            drawnCardView.classList.remove('active');
+                card.innerHTML = `<img src="${data.img}" alt="${data.name}">`;
+                card.onclick = () => drawCard(data.id); hand.appendChild(card);
+            });
         }
 
         function drawCard(targetId) {
             const data = bountyData.find(item => item.id === targetId);
             if (!data) return;
+
+            const drawnCardView = document.getElementById('drawn-card');
+            if(!drawnCardView) return;
 
             document.getElementById('drawn-img').src = data.img;
             document.getElementById('drawn-name').textContent = data.name;
@@ -360,11 +368,14 @@
             setTimeout(() => { drawnCardView.classList.add('active'); }, 50);
         }
 
-        document.getElementById('character-screen').addEventListener('click', function(e) {
-            if (!e.target.closest('.mini-card') && !e.target.closest('.drawn-card-area')) {
-                openScreen('main-screen');
-            }
-        });
+        const charScreen = document.getElementById('character-screen');
+        if(charScreen) {
+            charScreen.addEventListener('click', function(e) {
+                if (!e.target.closest('.mini-card') && !e.target.closest('.drawn-card-area')) {
+                    openScreen('main-screen');
+                }
+            });
+        }
     </script>
 </body>
 </html>
