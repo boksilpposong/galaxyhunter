@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>초은하 현상금 사냥꾼 길드 터미널</title>
     <style>
-        /* 1. 전체 설정 - 사이버 민트 테마 */
+        /* 1. 전체 설정 */
         body {
             margin: 0; padding: 0;
             background-image: url('bg.png'); /* 배경 이미지 파일명 확인 필수! */
@@ -38,13 +38,12 @@
             width: 110px; height: 110px; display: flex; justify-content: center; align-items: center;
             box-shadow: 0 0 15px rgba(0, 255, 157, 0.3); margin-bottom: 15px; overflow: hidden;
         }
-        .btn-icon img { width: 75%; height: 75%; object-fit: contain; }
+        .btn-icon img { width: 75%; height: 75%; object-fit: contain; pointer-events: none; }
         .btn-text {
             background: rgba(0, 20, 10, 0.8); padding: 5px 15px; border-radius: 20px;
             border: 1px dashed #00FF9D; color: #00FF9D; font-weight: bold; font-size: 0.85rem;
         }
 
-        /* 버튼 불규칙 위치 */
         #btn-location { top: 20%; left: 15%; animation-delay: 0s; }
         #btn-world { top: 40%; right: 18%; animation-delay: 1s; }
         #btn-character { bottom: 25%; left: 28%; animation-delay: 2s; }
@@ -60,9 +59,7 @@
             display: flex; flex-direction: column;
         }
         
-        .content-header {
-            padding: 30px 40px 10px 40px; flex-shrink: 0;
-        }
+        .content-header { padding: 30px 40px 10px 40px; flex-shrink: 0; }
         .content-header h2 { color: #00FF9D; border-bottom: 2px solid #00FF9D; margin: 0; padding-bottom: 10px; }
         
         .close-btn {
@@ -71,48 +68,42 @@
         }
         .close-btn:hover { background: #00FF9D; color: #000; }
 
-        /* 완벽한 좌우 슬라이더 구조 */
-        .wanted-gallery-container {
-            flex-grow: 1;
-            overflow: hidden;
-            position: relative;
-        }
+        /* =========================================
+           [추가됨] 마우스 드래그를 위한 갤러리 설정
+        ========================================= */
+        .wanted-gallery-container { flex-grow: 1; overflow: hidden; position: relative; }
 
         .wanted-gallery {
             display: flex;
-            overflow-x: auto; /* 실제 좌우 스크롤 공간 */
-            scroll-snap-type: x mandatory; /* 넘길 때 자석처럼 딱딱 걸리게 설정 */
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
             gap: 50px;
             padding: 40px 100px;
             height: 100%;
             scrollbar-width: none;
             box-sizing: border-box;
+            cursor: grab; /* 평소엔 펼친 손 모양 */
         }
-        .wanted-gallery::-webkit-scrollbar { display: none; } /* 스크롤바 숨기기 */
+        /* 드래그 중일 때의 상태 */
+        .wanted-gallery.active-drag {
+            cursor: grabbing; /* 잡고 있는 주먹 모양 */
+            scroll-snap-type: none; /* 마우스로 끄는 동안은 자석 효과 끄기 (훨씬 부드러움) */
+        }
+        .wanted-gallery::-webkit-scrollbar { display: none; }
 
-        /* 첫 번째와 마지막 수배지가 항상 중앙에 오게 도와주는 여백 */
         .wanted-gallery::before,
-        .wanted-gallery::after {
-            content: '';
-            flex: 0 0 calc(50% - 200px);
-        }
+        .wanted-gallery::after { content: ''; flex: 0 0 calc(50% - 200px); }
 
         .wanted-poster {
-            flex: 0 0 320px;
-            height: fit-content;
-            scroll-snap-align: center; /* 카드가 항상 화면 중앙에 달라붙음 */
-            background: #0a0a0a;
-            border: 3px solid #00FF9D;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 255, 157, 0.4);
-            display: flex;
-            flex-direction: column;
-            padding: 15px;
+            flex: 0 0 320px; height: fit-content; scroll-snap-align: center;
+            background: #0a0a0a; border: 3px solid #00FF9D; border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.4); display: flex; flex-direction: column; padding: 15px;
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none; /* 텍스트 드래그 방지 */
         }
-        .wanted-poster:hover { transform: translateY(-10px) scale(1.05); box-shadow: 0 0 40px rgba(0, 255, 157, 0.6); }
+        /* 마우스를 올릴 때 애니메이션 유지, 단 드래그 중에는 애니메이션 끄기 */
+        .wanted-gallery:not(.active-drag) .wanted-poster:hover { transform: translateY(-10px) scale(1.05); box-shadow: 0 0 40px rgba(0, 255, 157, 0.6); }
 
-        /* 수배지 내부 텍스트 및 프레임 */
         .wanted-header { text-align: center; font-weight: 900; font-size: 1.8rem; color: #00FF9D; letter-spacing: 3px; margin-bottom: 10px; border-bottom: 2px double #00FF9D; }
         .wanted-status { text-align: center; font-size: 0.8rem; color: #FF3B3B; font-weight: bold; margin-bottom: 10px; letter-spacing: 1px; }
         
@@ -120,7 +111,8 @@
             width: 100%; height: 280px; background: #111; border: 1px solid rgba(0, 255, 157, 0.3);
             margin-bottom: 15px; overflow: hidden; position: relative;
         }
-        .wanted-image-frame img { width: 100%; height: 100%; object-fit: cover; filter: sepia(0.5) hue-rotate(100deg) contrast(1.2) brightness(0.9); }
+        /* [중요] 이미지를 마우스로 끌어버리는 기본 브라우저 기능 차단 */
+        .wanted-image-frame img { width: 100%; height: 100%; object-fit: cover; filter: sepia(0.5) hue-rotate(100deg) contrast(1.2) brightness(0.9); pointer-events: none; }
         .wanted-image-frame::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,255,157,0.1), transparent); pointer-events: none; }
 
         .wanted-info { border-top: 1px solid rgba(0, 255, 157, 0.5); padding-top: 15px; }
@@ -128,7 +120,7 @@
         .wanted-reward { font-size: 1.2rem; color: #00FF9D; text-align: center; font-family: 'Courier New', monospace; font-weight: bold; }
         .wanted-reward span { font-size: 0.8rem; color: #8A9BB4; margin-right: 5px; }
 
-        /* 5. AI 비서 이브 (최상단 고정) */
+        /* 5. AI 비서 이브 */
         .ai-assistant {
             position: fixed; top: 20px; right: 20px; display: flex; align-items: center;
             background: rgba(0, 15, 10, 0.9); backdrop-filter: blur(8px); border: 1px solid #00FF9D;
@@ -172,87 +164,16 @@
             </div>
             
             <div class="wanted-gallery-container">
-                <div class="wanted-gallery">
+                <div class="wanted-gallery" id="drag-gallery">
                     
-                    <div class="wanted-poster">
-                        <div class="wanted-header">WANTED</div>
-                        <div class="wanted-status">DEAD OR ALIVE</div>
-                        <div class="wanted-image-frame"><img src="char1.png" alt="Target 1"></div>
-                        <div class="wanted-info">
-                            <div class="wanted-name">실버 팽</div>
-                            <div class="wanted-reward"><span>REWARD:</span> 50,000,000 ₵</div>
-                        </div>
-                    </div>
-
-                    <div class="wanted-poster">
-                        <div class="wanted-header">WANTED</div>
-                        <div class="wanted-status">DEAD OR ALIVE</div>
-                        <div class="wanted-image-frame"><img src="char2.png" alt="Target 2"></div>
-                        <div class="wanted-info">
-                            <div class="wanted-name">네온 쉐도우</div>
-                            <div class="wanted-reward"><span>REWARD:</span> 120,000,000 ₵</div>
-                        </div>
-                    </div>
-
-                    <div class="wanted-poster">
-                        <div class="wanted-header">WANTED</div>
-                        <div class="wanted-status">DEAD OR ALIVE</div>
-                        <div class="wanted-image-frame"><img src="char3.png" alt="Target 3"></div>
-                        <div class="wanted-info">
-                            <div class="wanted-name">크림슨 해커</div>
-                            <div class="wanted-reward"><span>REWARD:</span> 85,000,000 ₵</div>
-                        </div>
-                    </div>
-
-                    <div class="wanted-poster">
-                        <div class="wanted-header">WANTED</div>
-                        <div class="wanted-status">DEAD OR ALIVE</div>
-                        <div class="wanted-image-frame"><img src="char4.png" alt="Target 4"></div>
-                        <div class="wanted-info">
-                            <div class="wanted-name">보이드 워커</div>
-                            <div class="wanted-reward"><span>REWARD:</span> 200,000,000 ₵</div>
-                        </div>
-                    </div>
-
-                    <div class="wanted-poster">
-                        <div class="wanted-header">WANTED</div>
-                        <div class="wanted-status">DEAD OR ALIVE</div>
-                        <div class="wanted-image-frame"><img src="char5.png" alt="Target 5"></div>
-                        <div class="wanted-info">
-                            <div class="wanted-name">네뷸라 팬텀</div>
-                            <div class="wanted-reward"><span>REWARD:</span> 75,000,000 ₵</div>
-                        </div>
-                    </div>
-
-                    <div class="wanted-poster">
-                        <div class="wanted-header">WANTED</div>
-                        <div class="wanted-status">DEAD OR ALIVE</div>
-                        <div class="wanted-image-frame"><img src="char6.png" alt="Target 6"></div>
-                        <div class="wanted-info">
-                            <div class="wanted-name">스타 이터</div>
-                            <div class="wanted-reward"><span>REWARD:</span> 500,000,000 ₵</div>
-                        </div>
-                    </div>
-
-                    <div class="wanted-poster">
-                        <div class="wanted-header">WANTED</div>
-                        <div class="wanted-status">DEAD OR ALIVE</div>
-                        <div class="wanted-image-frame"><img src="char7.png" alt="Target 7"></div>
-                        <div class="wanted-info">
-                            <div class="wanted-name">크로노스 씨프</div>
-                            <div class="wanted-reward"><span>REWARD:</span> 150,000,000 ₵</div>
-                        </div>
-                    </div>
-
-                    <div class="wanted-poster">
-                        <div class="wanted-header">WANTED</div>
-                        <div class="wanted-status">DEAD OR ALIVE</div>
-                        <div class="wanted-image-frame"><img src="char8.png" alt="Target 8"></div>
-                        <div class="wanted-info">
-                            <div class="wanted-name">글리치 위버</div>
-                            <div class="wanted-reward"><span>REWARD:</span> 90,000,000 ₵</div>
-                        </div>
-                    </div>
+                    <div class="wanted-poster"><div class="wanted-header">WANTED</div><div class="wanted-status">DEAD OR ALIVE</div><div class="wanted-image-frame"><img src="char1.png" alt="Target 1"></div><div class="wanted-info"><div class="wanted-name">실버 팽</div><div class="wanted-reward"><span>REWARD:</span> 50,000,000 ₵</div></div></div>
+                    <div class="wanted-poster"><div class="wanted-header">WANTED</div><div class="wanted-status">DEAD OR ALIVE</div><div class="wanted-image-frame"><img src="char2.png" alt="Target 2"></div><div class="wanted-info"><div class="wanted-name">네온 쉐도우</div><div class="wanted-reward"><span>REWARD:</span> 120,000,000 ₵</div></div></div>
+                    <div class="wanted-poster"><div class="wanted-header">WANTED</div><div class="wanted-status">DEAD OR ALIVE</div><div class="wanted-image-frame"><img src="char3.png" alt="Target 3"></div><div class="wanted-info"><div class="wanted-name">크림슨 해커</div><div class="wanted-reward"><span>REWARD:</span> 85,000,000 ₵</div></div></div>
+                    <div class="wanted-poster"><div class="wanted-header">WANTED</div><div class="wanted-status">DEAD OR ALIVE</div><div class="wanted-image-frame"><img src="char4.png" alt="Target 4"></div><div class="wanted-info"><div class="wanted-name">보이드 워커</div><div class="wanted-reward"><span>REWARD:</span> 200,000,000 ₵</div></div></div>
+                    <div class="wanted-poster"><div class="wanted-header">WANTED</div><div class="wanted-status">DEAD OR ALIVE</div><div class="wanted-image-frame"><img src="char5.png" alt="Target 5"></div><div class="wanted-info"><div class="wanted-name">네뷸라 팬텀</div><div class="wanted-reward"><span>REWARD:</span> 75,000,000 ₵</div></div></div>
+                    <div class="wanted-poster"><div class="wanted-header">WANTED</div><div class="wanted-status">DEAD OR ALIVE</div><div class="wanted-image-frame"><img src="char6.png" alt="Target 6"></div><div class="wanted-info"><div class="wanted-name">스타 이터</div><div class="wanted-reward"><span>REWARD:</span> 500,000,000 ₵</div></div></div>
+                    <div class="wanted-poster"><div class="wanted-header">WANTED</div><div class="wanted-status">DEAD OR ALIVE</div><div class="wanted-image-frame"><img src="char7.png" alt="Target 7"></div><div class="wanted-info"><div class="wanted-name">크로노스 씨프</div><div class="wanted-reward"><span>REWARD:</span> 150,000,000 ₵</div></div></div>
+                    <div class="wanted-poster"><div class="wanted-header">WANTED</div><div class="wanted-status">DEAD OR ALIVE</div><div class="wanted-image-frame"><img src="char8.png" alt="Target 8"></div><div class="wanted-info"><div class="wanted-name">글리치 위버</div><div class="wanted-reward"><span>REWARD:</span> 90,000,000 ₵</div></div></div>
 
                 </div>
             </div>
@@ -263,15 +184,30 @@
     <div id="location-screen" class="screen"><div class="content-panel"><div class="content-header"><button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button><h2>🪐 장소 소개</h2></div><p style="padding:40px;">항성 좌표 데이터 수신 중...</p></div></div>
 
     <script>
+        // 1. 화면 전환 매직
         function openScreen(targetId) {
             let screens = document.querySelectorAll('.screen');
             screens.forEach(function(screen) { screen.classList.remove('active'); });
             document.getElementById(targetId).classList.add('active');
             
             if(targetId === 'character-screen') {
-                document.querySelector('.wanted-gallery').scrollLeft = 0;
+                document.getElementById('drag-gallery').scrollLeft = 0;
             }
         }
-    </script>
-</body>
-</html>
+
+        // 2. 마우스 드래그(잡고 끄기) 매직
+        const slider = document.getElementById('drag-gallery');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        // 마우스를 클릭했을 때 (잡기)
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.classList.add('active-drag');
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+
+        // 마우스가 영역을 벗어났을 때 (놓치기)
+        slider.addEventListener('mouseleave', () =>
