@@ -40,14 +40,16 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
 /* 1. 장소 (행성) */
 .icon-planet { background: rgba(0,255,157,0.3); border-radius: 50%; box-shadow: 0 0 15px rgba(0,255,157,0.5); }
 .icon-planet::after { content: ''; position: absolute; top: 50%; left: -10px; right: -10px; height: 8px; background: rgba(0,255,157,0.4); border-radius: 50%; transform: translateY(-50%) rotate(25deg); box-shadow: 0 0 10px rgba(0,255,157,0.5); }
-/* 2. 역사 (책 중심 위치 완벽 보정) */
+/* 2. 역사 (입체적인 책 형태) - 중심 위치 완벽 보정 */
 .icon-book { background: rgba(0,255,157,0.2); width: 40px; height: 55px; border-radius: 2px 8px 8px 2px; box-shadow: -4px 0 0 rgba(0,255,157,0.6), inset 5px 0 10px rgba(0,255,157,0.3); position: relative; margin-left: 4px; /* 왼쪽 책기둥 공간 확보로 정중앙 정렬 */ }
 .icon-book::before { content: ''; position: absolute; right: 5px; top: 5px; bottom: 5px; width: 25px; border-left: 2px solid rgba(0,255,157,0.5); }
 .icon-book::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 25px; background: rgba(0,255,157,0.8); border-radius: 5px; box-shadow: 0 0 10px #00FF9D; }
-/* 3. 명부 (타겟/레이더) */
-.icon-target { border-radius: 50%; background: radial-gradient(circle, transparent 40%, rgba(0,255,157,0.4) 45%, rgba(0,255,157,0.4) 60%, transparent 65%); filter: drop-shadow(0 0 5px rgba(0,255,157,0.8)); }
-.icon-target::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 12px; height: 12px; background: rgba(0,255,157,0.6); border-radius: 50%; }
-.icon-target::after { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background: rgba(0,255,157,0.3); }
+/* 3. 명부 (요청하신 미니 현상수배서 WANTED 디자인) */
+.icon-wanted { width: 35px; height: 50px; background: rgba(0,255,157,0.1); border: 2px solid rgba(0,255,157,0.6); border-radius: 2px; box-shadow: 0 0 10px rgba(0,255,157,0.3); margin-top: -2px; /* 시각적 중심 조정 */ }
+/* 얼굴 들어가는 네모칸 */
+.icon-wanted::before { content: ''; position: absolute; top: 6px; left: 5px; width: 25px; height: 25px; background: rgba(0,255,157,0.4); }
+/* 하단 WANTED 굵은 글씨 표현 및 세부 정보 줄 */
+.icon-wanted::after { content: ''; position: absolute; bottom: 7px; left: 5px; width: 25px; height: 3px; background: rgba(0,255,157,0.7); box-shadow: 0 4px 0 rgba(0,255,157,0.4), 0 8px 0 rgba(0,255,157,0.4); }
 /* 4. 규약 (방패) */
 .icon-rules { background: rgba(0,255,157,0.3); border-radius: 5px 5px 25px 25px; box-shadow: 0 0 15px rgba(0,255,157,0.5); }
 .icon-rules::before { content: ''; position: absolute; top: 15px; left: 10px; right: 10px; height: 4px; background: rgba(0,255,157,0.6); box-shadow: 0 10px 0 rgba(0,255,157,0.6), 0 20px 0 rgba(0,255,157,0.6); }
@@ -120,7 +122,7 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
         <div class="btn-text">역사</div>
     </div>
     <div id="btn-character" class="scattered-btn" onclick="openScreen('character-screen')">
-        <div class="btn-icon"><div class="css-icon icon-target"></div></div>
+        <div class="btn-icon"><div class="css-icon icon-wanted"></div></div>
         <div class="btn-text">수배자 명부</div>
     </div>
     <div id="btn-rules" class="scattered-btn" onclick="openScreen('rules-screen')">
@@ -145,7 +147,7 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
         <div class="vertical-drag-container" id="history-timeline">
             <div class="timeline-item"><div class="timeline-year">SC 2045</div><div class="timeline-event">제1차 은하 개척 시대 도래. 웜홀 기술의 상용화로 인류의 활동 영역이 태양계를 넘어섬.</div></div>
             <div class="timeline-item"><div class="timeline-year">SC 2077</div><div class="timeline-event">네온 콜로니 폭동 사태 발생. 최초의 대규모 범죄 조직 '블랙 네뷸라' 등장.</div></div>
-            <div class="timeline-item"><div class="timeline-year">SC 2084</div><div class="timeline-event">은하 연방 한계 돌파. 민간 무력 단체 합법화, 초은하 현상금 사냥꾼 길드 창설.</div></div>
+            <div class="timeline-item"><div class="timeline-year">SC 2084</div><div class="timeline-event">銀河 연방 한계 돌파. 민간 무력 단체 합법화, 초은하 현상금 사냥꾼 길드 창설.</div></div>
             <div class="timeline-item"><div class="timeline-year">SC 2102</div><div class="timeline-event">'스타 이터' 최초 관측. 행성을 집어삼키는 미지의 괴생명체 등장으로 길드 최고액 현상금 등록.</div></div>
             <div class="timeline-item"><div class="timeline-year">SC 2115</div><div class="timeline-event">AI 시스템 'EVE' 도입. 길드의 모든 데이터베이스 통합 터미널화.</div></div>
             <div class="timeline-item"><div class="timeline-year">SC 2126 (현재)</div><div class="timeline-event">차원 이동 기술 무단 유출 사태 발생. 전례 없는 위협을 가진 1급 수배자들이 흩어짐.</div></div>
