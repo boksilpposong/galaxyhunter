@@ -89,7 +89,6 @@
             border: 1px dashed #00FF9D; color: #00FF9D; font-weight: bold; font-size: 0.85rem;
         }
 
-        /* 버튼 불규칙 위치 */
         #btn-location { top: 20%; left: 15%; animation-delay: 0s; }
         #btn-world { top: 40%; right: 18%; animation-delay: 1s; }
         #btn-character { bottom: 25%; left: 28%; animation-delay: 2s; }
@@ -171,10 +170,9 @@
         .ai-assistant.show { animation: slideIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         .ai-text strong { color: #00FF9D; font-size: 0.75rem; display: block; }
         
-        /* [추가] 이브 텍스트 변경 시 페이드 효과용 CSS */
         #eve-message {
             color: #E0FFF2; font-size: 0.95rem; line-height: 1.4; display: block;
-            transition: opacity 0.2s ease-in-out; /* 부드럽게 글씨가 스르륵 바뀌게 */
+            transition: opacity 0.2s ease-in-out;
         }
         
         @keyframes slideIn { 0% { transform: translateX(120%); } 100% { transform: translateX(0); } }
@@ -267,12 +265,8 @@
     </div>
 
     <script>
-        // ==========================================
-        // 글로벌 변수로 헌터 이름 기억하기
-        // ==========================================
         let currentHunterName = '익명의 헌터';
 
-        // 입력창 언더바 깜빡임 효과
         const loginInput = document.getElementById('username-input');
         const basePlaceholder = "헌터명(ID)을 입력하세요";
         let blinkToggle = false;
@@ -291,19 +285,17 @@
             }
         }, 500);
 
-        // 로그인 처리
         function processLogin() {
             let inputName = loginInput.value.trim();
             if (inputName !== '') {
-                currentHunterName = inputName; // 입력한 이름을 시스템이 기억함!
+                currentHunterName = inputName;
             }
 
             openScreen('main-screen');
 
-            // 0.5초 뒤 이브 팝업 등장 및 첫 인사 업데이트
             setTimeout(() => {
                 document.getElementById('eve-popup').classList.add('show');
-                updateEveMessage('login'); // 로그인 초기 메시지
+                updateEveMessage('login'); // 처음 접속 시 인사말 지정!
             }, 500);
         }
 
@@ -311,20 +303,19 @@
             if (e.key === 'Enter') processLogin();
         });
 
-        // ==========================================
-        // [신규] 화면별로 이브 대사 업데이트 해주는 함수
-        // ==========================================
+        // [수정됨] 화면별 이브 대사 업데이트 함수 (메인 로비 복귀 대사 분리)
         function updateEveMessage(screenId) {
             const eveMessage = document.getElementById('eve-message');
             if (!eveMessage) return;
 
             let text = "";
             
-            // 화면 ID에 따라 이브의 대사가 달라집니다!
             switch(screenId) {
-                case 'login':
-                case 'main-screen':
+                case 'login': // 처음 로그인 했을 때
                     text = `"${currentHunterName}님, 어서오세요.<br>당신의 AI 비서 이브입니다. 무엇을 도와드릴까요?"`;
+                    break;
+                case 'main-screen': // 다른 탭을 보다가 메인 로비로 돌아왔을 때
+                    text = `"메인 터미널로 복귀했습니다.<br>다음 명령을 대기합니다."`;
                     break;
                 case 'location-screen':
                     text = `"장소 데이터베이스에 접속합니다.<br>목표의 도주 및 은신 확률이 높은 구역을 분석 중입니다."`;
@@ -342,17 +333,13 @@
                     text = `"시스템 대기 중..."`;
             }
 
-            // 글씨가 부드럽게 스르륵 바뀌도록 투명도를 조절하는 마법
             eveMessage.style.opacity = 0;
             setTimeout(() => {
                 eveMessage.innerHTML = text;
                 eveMessage.style.opacity = 1;
-            }, 200); // 0.2초 뒤에 글씨를 바꾸고 다시 나타나게 함
+            }, 200);
         }
 
-        // ==========================================
-        // 화면 전환 함수 (이브 대사 변경 로직 추가됨)
-        // ==========================================
         function openScreen(targetId) {
             let screens = document.querySelectorAll('.screen');
             screens.forEach(function(screen) { screen.classList.remove('active'); });
@@ -361,17 +348,13 @@
             const drawnCardView = document.getElementById('drawn-card');
             if(drawnCardView) drawnCardView.classList.remove('active');
 
-            // 화면이 바뀔 때마다 이브가 떠있다면 대사 업데이트 실행!
             const evePopup = document.getElementById('eve-popup');
             if (evePopup.classList.contains('show')) {
                 updateEveMessage(targetId);
             }
         }
 
-
-        // ==========================================
-        // 기존 카드 게임 로직 유지
-        // ==========================================
+        // --- 명부 관련 데이터 및 로직 ---
         const bountyData = [
             { id: 1, name: '실버 팽', reward: '50,000,000 ₵', img: 'char1.png', bio: '은하 연방 은행 강탈 주범. 교활하고 속도가 매우 빠름. (1024x1024 지원)' },
             { id: 2, name: '네온 쉐도우', reward: '120,000,000 ₵', img: 'char2.png', bio: '네온 콜로니 암살 사건 용의자. 소리 없이 그림자 속을 이동함. (832x1216 지원)' },
