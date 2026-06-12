@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>초은하 현상금 사냥꾼 길드 터미널</title>
     <style>
-        /* 1. 전체 설정 */
+        /* 1. 전체 설정 ( fixed 배경 & 테마색 통일 ) */
         body {
             margin: 0; padding: 0;
             background-image: url('bg.png'); /* 배경 이미지 파일명 확인 필수! */
@@ -21,7 +21,7 @@
         }
         .screen.active { opacity: 1; pointer-events: auto; }
 
-        /* 3. 메인 로비 화면 */
+        /* 3. 메인 로비 화면 (흩뿌려진 UI) */
         .main-title {
             position: absolute; top: 5%; width: 100%; text-align: center;
             font-size: 2.5rem; color: #00FF9D; text-shadow: 0 0 15px rgba(0, 255, 157, 0.8);
@@ -50,77 +50,94 @@
 
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        /* 4. 서브 패널 (공통) */
+        /* 4. [중요] 디테일 크게 보기 & 부채꼴 슬라이더 구조 */
         .content-panel {
-            background: rgba(0, 20, 10, 0.85); backdrop-filter: blur(15px);
-            border: 1px solid #00FF9D; box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 255, 157, 0.4); box-shadow: 0 0 30px rgba(0, 255, 157, 0.1);
             width: 95%; max-width: 1200px; height: 85vh; margin: 6vh auto 0;
             border-radius: 15px; position: relative; overflow: hidden;
             display: flex; flex-direction: column;
         }
         
-        .content-header { padding: 30px 40px 10px 40px; flex-shrink: 0; }
-        .content-header h2 { color: #00FF9D; border-bottom: 2px solid #00FF9D; margin: 0; padding-bottom: 10px; }
+        .content-header { padding: 30px 40px 10px 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
+        .content-header h2 { color: #00FF9D; margin: 0; padding-bottom: 10px; text-shadow: 0 0 10px rgba(0,255,157,0.5); }
         
         .close-btn {
-            position: absolute; top: 30px; right: 40px; background: transparent;
-            color: #00FF9D; border: 1px solid #00FF9D; padding: 5px 15px; cursor: pointer; z-index: 10;
+            background: transparent; color: #00FF9D; border: 1px solid #00FF9D; padding: 5px 15px; cursor: pointer;
+            transition: all 0.2s;
         }
-        .close-btn:hover { background: #00FF9D; color: #000; }
+        .close-btn:hover { background: #00FF9D; color: #000; box-shadow: 0 0 15px #00FF9D; }
 
-        /* =========================================
-           [업데이트] 스무스 드래그 & 스냅 갤러리
-        ========================================= */
-        .wanted-gallery-container { flex-grow: 1; overflow: hidden; position: relative; }
+        /* == 중앙 상단 대형 디테일 팝업 == */
+        .large-wanted-view {
+            width: 90%; max-width: 900px; height: 50vh; margin: 2vh auto; 
+            background: rgba(0,10,5,0.7); border: 2px solid #00FF9D; border-radius: 10px;
+            box-shadow: 0 0 50px rgba(0, 255, 157, 0.3);
+            display: none; /* 평소엔 숨김 */
+            position: absolute; top: 10%; left: 50%; transform: translateX(-50%) translateY(-20px);
+            z-index: 50; padding: 20px;
+            color: white; backdrop-filter: blur(20px);
+            opacity: 0; transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .large-wanted-view.open-detail { display: flex; opacity: 1; transform: translateX(-50%) translateY(0px); }
+
+        .large-wanted-view .view-close-btn { position: absolute; top: 15px; right: 20px; font-weight: bold; color: #00FF9D; cursor: pointer; }
+        .large-wanted-view .large-info-text { margin-top: 20px; color: #FFFFFF; font-size: 1.1rem; }
+        .large-wanted-view .large-wanted-image { width: 300px; height: 100%; background: #111; margin-right: 30px; }
+
+        /* == [핵심] 부채꼴 드래그 슬라이더 == */
+        .wanted-gallery-container { flex-grow: 1; overflow: hidden; position: relative; margin-top: auto; }
 
         .wanted-gallery {
             display: flex;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
-            gap: 50px;
+            gap: 20px; /* 카드가 겹치도록 좁게 설정 */
             padding: 40px 100px;
             height: 100%;
             scrollbar-width: none;
             box-sizing: border-box;
             cursor: grab;
-            scroll-behavior: smooth; /* 마우스를 놨을 때 스르륵 이동하게 하는 치트키 */
+            scroll-behavior: smooth;
         }
-        /* 마우스로 잡고 끌 때의 상태 */
-        .wanted-gallery.active-drag {
-            cursor: grabbing;
-            scroll-snap-type: none; /* 끌 때는 강제 스냅을 풀어 즉각 반응하게 함 */
-            scroll-behavior: auto; /* 끌 때는 스무스 효과를 잠시 끎 */
-        }
+        .wanted-gallery.active-drag { cursor: grabbing; scroll-snap-type: none; scroll-behavior: auto; }
         .wanted-gallery::-webkit-scrollbar { display: none; }
 
+        /* 부채꼴 곡선을 만들기 위한 가상의 곡선형 바닥 (치트키) */
+        .wanted-gallery::after { content: ''; display: block; position: absolute; bottom: 0; left: 0; width: 100%; height: 15vh; border-radius: 50% 50% 0 0; background: rgba(0,20,10,0.3); border-top: 2px solid rgba(0,255,157,0.3); box-shadow: 0 -10px 20px rgba(0,255,157,0.1); pointer-events: none; }
+
         .wanted-gallery::before,
-        .wanted-gallery::after { content: ''; flex: 0 0 calc(50% - 200px); }
+        .wanted-gallery::after { content: ''; flex: 0 0 calc(50% - 150px); } /* 첫/마지막 카드 중앙 정렬 */
 
         .wanted-poster {
-            flex: 0 0 320px; height: fit-content; scroll-snap-align: center;
+            flex: 0 0 250px; height: fit-content; scroll-snap-align: center;
             background: #0a0a0a; border: 3px solid #00FF9D; border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 255, 157, 0.4); display: flex; flex-direction: column; padding: 15px;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.4); display: flex; flex-direction: column; padding: 10px;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s, filter 0.3s;
             user-select: none;
+            
+            /* [마법의 공식 뼈대] 각 카드의 개별 부채꼴 각도 설정 */
+            transform-origin: bottom center; /* 아래쪽을 기준으로 회전 */
         }
-        .wanted-gallery:not(.active-drag) .wanted-poster:hover { transform: translateY(-10px) scale(1.05); box-shadow: 0 0 40px rgba(0, 255, 157, 0.6); }
+        /* 드래그 중이 아닐 때만 Hover 효과 */
+        .wanted-gallery:not(.active-drag) .wanted-poster:hover { transform: translateY(-20px) scale(1.1) !important; box-shadow: 0 0 50px rgba(0, 255, 157, 0.6); z-index: 10; filter: brightness(1.2); }
 
-        .wanted-header { text-align: center; font-weight: 900; font-size: 1.8rem; color: #00FF9D; letter-spacing: 3px; margin-bottom: 10px; border-bottom: 2px double #00FF9D; }
-        .wanted-status { text-align: center; font-size: 0.8rem; color: #FF3B3B; font-weight: bold; margin-bottom: 10px; letter-spacing: 1px; }
+        .wanted-header { text-align: center; font-weight: 900; font-size: 1.5rem; color: #00FF9D; letter-spacing: 2px; margin-bottom: 5px; border-bottom: 1px dashed #00FF9D; }
+        .wanted-status { text-align: center; font-size: 0.7rem; color: #FF3B3B; font-weight: bold; margin-bottom: 5px; }
         
         .wanted-image-frame {
-            width: 100%; height: 280px; background: #111; border: 1px solid rgba(0, 255, 157, 0.3);
-            margin-bottom: 15px; overflow: hidden; position: relative;
+            width: 100%; height: 220px; background: #111; border: 1px solid rgba(0, 255, 157, 0.2);
+            margin-bottom: 10px; overflow: hidden; position: relative;
         }
         .wanted-image-frame img { width: 100%; height: 100%; object-fit: cover; filter: sepia(0.5) hue-rotate(100deg) contrast(1.2) brightness(0.9); pointer-events: none; }
-        .wanted-image-frame::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,255,157,0.1), transparent); pointer-events: none; }
+        
+        .wanted-info { border-top: 1px solid rgba(0, 255, 157, 0.4); padding-top: 10px; }
+        .wanted-name { font-size: 1.2rem; font-weight: bold; text-align: center; color: #FFFFFF; margin-bottom: 5px; text-shadow: 0 0 5px white; }
+        .wanted-reward { font-size: 1.1rem; color: #00FF9D; text-align: center; font-family: 'Courier New', monospace; font-weight: bold; }
+        .wanted-reward span { font-size: 0.7rem; color: #8A9BB4; margin-right: 3px; }
 
-        .wanted-info { border-top: 1px solid rgba(0, 255, 157, 0.5); padding-top: 15px; }
-        .wanted-name { font-size: 1.4rem; font-weight: bold; text-align: center; color: #FFFFFF; margin-bottom: 10px; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
-        .wanted-reward { font-size: 1.2rem; color: #00FF9D; text-align: center; font-family: 'Courier New', monospace; font-weight: bold; }
-        .wanted-reward span { font-size: 0.8rem; color: #8A9BB4; margin-right: 5px; }
-
-        /* 5. AI 비서 이브 */
+        /* 5. AI 비서 이브 (최상단 고정) */
         .ai-assistant {
             position: fixed; top: 20px; right: 20px; display: flex; align-items: center;
             background: rgba(0, 15, 10, 0.9); backdrop-filter: blur(8px); border: 1px solid #00FF9D;
@@ -137,7 +154,7 @@
 
     <div class="ai-assistant">
         <div class="ai-avatar">EVE</div>
-        <div class="ai-text"><strong>SYSTEM MESSAGE</strong><span>"8명의 고위험 수배자 데이터를 로딩했습니다."</span></div>
+        <div class="ai-text"><strong>SYSTEM MESSAGE</strong><span>"8명의 고위험 수배자 데이터를 복원했습니다."</span></div>
     </div>
 
     <div id="main-screen" class="screen active">
@@ -159,99 +176,130 @@
     <div id="character-screen" class="screen">
         <div class="content-panel">
             <div class="content-header">
-                <button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button>
                 <h2>📜 초은하 현상수배지 데이터베이스</h2>
+                <button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button>
+            </div>
+
+            <div class="large-wanted-view" id="large-view">
+                <span class="view-close-btn" onclick="closeLargeView()">[X CLOSE]</span>
+                <div class="large-wanted-image">
+                    <img id="large-image" src="" alt="Target Detail" style="width:100%;height:100%;object-fit:cover; filter:sepia(0.3) hue-rotate(100deg);">
+                </div>
+                <div class="large-info-text">
+                    <h1 id="large-name" style="color:#00FF9D;margin-top:0;"></h1>
+                    <p id="large-bio"></p>
+                    <p style="color:#8A9BB4; font-size:0.9rem; font-family:monospace">보상금: <span id="large-reward" style="color:white;"></span></p>
+                </div>
             </div>
             
             <div class="wanted-gallery-container">
                 <div class="wanted-gallery" id="drag-gallery">
                     
-                    <div class="wanted-poster"><div class="wanted-header">WANTED</div><div class="wanted-status">DEAD OR ALIVE</div><div class="wanted-image-frame"><img src="char1.png" alt="Target 1"></div><div class="wanted-info"><div class="wanted-name">실버 팽</div><div class="wanted-reward"><span>REWARD:</span> 50,000,000 ₵</div></div></div>
-                    <div class="wanted-poster"><div class="wanted-header">WANTED</div><div class="wanted-status">DEAD OR ALIVE</div><div class="wanted-image-frame"><img src="char2.png" alt="Target 2"></div><div class="wanted-info"><div class="wanted-name">네온 쉐도우</div><div class="wanted-reward"><span>REWARD:</span> 120,000,000 ₵</div></div></div>
-                    <div class="wanted-poster"><div class="wanted-header">WANTED</div><div class="wanted-status">DEAD OR ALIVE</div><div class="wanted-image-frame"><img src="char3.png" alt="Target 3"></div><div class="wanted-info"><div class="wanted-name">크림슨 해커</div><div class="wanted-reward"><span>REWARD:</span> 85,000,000 ₵</div></div></div>
-                    <div class="wanted-poster"><div class="wanted-header">WANTED</div><div class="wanted-status">DEAD OR ALIVE</div><div class="wanted-image-frame"><img src="char4.png" alt="Target 4"></div><div class="wanted-info"><div class="wanted-name">보이드 워커</div><div class="wanted-reward"><span>REWARD:</span> 200,000,000 ₵</div></div></div>
-                    <div class="wanted-poster"><div class="wanted-header">WANTED</div><div class="wanted-status">DEAD OR ALIVE</div><div class="wanted-image-frame"><img src="char5.png" alt="Target 5"></div><div class="wanted-info"><div class="wanted-name">네뷸라 팬텀</div><div class="wanted-reward"><span>REWARD:</span> 75,000,000 ₵</div></div></div>
-                    <div class="wanted-poster"><div class="wanted-header">WANTED</div><div class="wanted-status">DEAD OR ALIVE</div><div class="wanted-image-frame"><img src="char6.png" alt="Target 6"></div><div class="wanted-info"><div class="wanted-name">스타 이터</div><div class="wanted-reward"><span>REWARD:</span> 500,000,000 ₵</div></div></div>
-                    <div class="wanted-poster"><div class="wanted-header">WANTED</div><div class="wanted-status">DEAD OR ALIVE</div><div class="wanted-image-frame"><img src="char7.png" alt="Target 7"></div><div class="wanted-info"><div class="wanted-name">크로노스 씨프</div><div class="wanted-reward"><span>REWARD:</span> 150,000,000 ₵</div></div></div>
-                    <div class="wanted-poster"><div class="wanted-header">WANTED</div><div class="wanted-status">DEAD OR ALIVE</div><div class="wanted-image-frame"><img src="char8.png" alt="Target 8"></div><div class="wanted-info"><div class="wanted-name">글리치 위버</div><div class="wanted-reward"><span>REWARD:</span> 90,000,000 ₵</div></div></div>
-
-                </div>
+                    </div>
             </div>
         </div>
     </div>
 
-    <div id="world-screen" class="screen"><div class="content-panel"><div class="content-header"><button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button><h2>📖 세계관 및 역사</h2></div><p style="padding:40px;">은하계 연대기 복원 중...</p></div></div>
-    <div id="location-screen" class="screen"><div class="content-panel"><div class="content-header"><button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button><h2>🪐 장소 소개</h2></div><p style="padding:40px;">항성 좌표 데이터 수신 중...</p></div></div>
+    <div id="world-screen" class="screen"><div class="content-panel"><div class="content-header"><h2>📖 세계관 및 역사</h2><button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button></div><p style="padding:40px;">연대기 복원 중...</p></div></div>
+    <div id="location-screen" class="screen"><div class="content-panel"><div class="content-header"><h2>🪐 장소 소개</h2><button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button></div><p style="padding:40px;">항성 좌표 데이터 수신 중...</p></div></div>
 
     <script>
-        // 1. 화면 전환 매직
+        // 1. 수배자 데이터 (원하시는 대로 수정하세요)
+        const bountyData = [
+            { id: 1, name: '실버 팽', reward: '50,000,000', img: 'char1.png', bio: '은하 연방 은행 강탈 주범. 교활하고 속도가 매우 빠름.' },
+            { id: 2, name: '네온 쉐도우', reward: '120,000,000', img: 'char2.png', bio: '네온 콜로니 암살 사건 용의자. 소리 없이 그림자 속을 이동함.' },
+            { id: 3, name: '크림슨 해커', reward: '85,000,000', img: 'char3.png', bio: '기간 시설 양자 서버 불법 침입. 전산망 폭주를 유도함.' },
+            { id: 4, name: '보이드 워커', reward: '200,000,000', img: 'char4.png', bio: '블랙홀 코어 불법 밀매. 은하계 전체를 위협하는 무법자.' },
+            { id: 5, name: '네뷸라 팬텀', reward: '75,000,000', img: 'char5.png', bio: '성운 구역 불법 도박장 운영 및 마약 밀반입. 신원 미상.' },
+            { id: 6, name: '스타 이터', reward: '500,000,000', img: 'char6.png', bio: '멸망한 행성의 코어를 삼키는 미지의 거대 괴생명체.' },
+            { id: 7, name: '크로노스 씨프', reward: '150,000,000', img: 'char7.png', bio: '차원 이동 기술 무단 유출. 길드의 시간을 훔치는 범죄자.' },
+            { id: 8, name: '글리치 위버', reward: '90,000,000', img: 'char8.png', bio: '현실 조작 시스템 글리치 유발. 대상의 인지 능력을 폭파함.' }
+        ];
+
+        // 2. [핵심] 자바스크립트로 부채꼴 명부 촤르르 생성
+        const gallery = document.getElementById('drag-gallery');
+        
+        bountyData.forEach((data, index) => {
+            const poster = document.createElement('div');
+            poster.className = 'wanted-poster';
+            poster.id = `target-${data.id}`;
+            // 클릭하면 중앙 디테일 창을 띄웁니다
+            poster.setAttribute('onclick', `openLargeView(${data.id})`);
+
+            // [마법의 공식 2] 카드마다 고유한 부채꼴 각도를 줍니다. (예: -20도에서 20도로 펼침)
+            // 8개이므로 중앙에서 멀어질수록 각도를 크게 줍니다
+            const rotation = (index - 3.5) * 6; // 중앙을 기준으로 각도를 넓게 펼침
+            poster.style.transform = `rotate(${rotation}deg) translateY(${Math.abs(rotation) * -0.2}px)`;
+
+            poster.innerHTML = `
+                <div class="wanted-header">WANTED</div>
+                <div class="wanted-status">DEAD OR ALIVE</div>
+                <div class="wanted-image-frame"><img src="${data.img}" alt="${data.name}"></div>
+                <div class="wanted-info">
+                    <div class="wanted-name">${data.name}</div>
+                    <div class="wanted-reward"><span>REWARD:</span> ${data.reward} ₵</div>
+                </div>
+            `;
+            gallery.appendChild(poster);
+        });
+
+        // 3. 화면 전환
         function openScreen(targetId) {
             let screens = document.querySelectorAll('.screen');
             screens.forEach(function(screen) { screen.classList.remove('active'); });
             document.getElementById(targetId).classList.add('active');
-            
-            if(targetId === 'character-screen') {
-                document.getElementById('drag-gallery').scrollLeft = 0;
-            }
+            closeLargeView(); // 다른 화면으로 갈 땐 디테일 창을 닫음
+            if(targetId === 'character-screen') { gallery.scrollLeft = 0; snapToCenter(); }
         }
 
-        // 2. 마우스 드래그 & 스무스 스냅 매직
+        // 4. [요구사항] 중앙 상단 디테일 크게 보기
+        const largeView = document.getElementById('large-view');
+        function openLargeView(targetId) {
+            const data = bountyData.find(item => item.id === targetId);
+            if (!data) return;
+
+            document.getElementById('large-image').src = data.img;
+            document.getElementById('large-name').textContent = data.name;
+            document.getElementById('large-bio').textContent = data.bio;
+            document.getElementById('large-reward').textContent = `${data.reward} ₵`;
+
+            largeView.classList.add('open-detail'); // 짠! 하고 나타남
+        }
+        function closeLargeView() { largeView.classList.remove('open-detail'); }
+
+        // 5. 마우스 드래그 & 스무스 스냅 (손맛) 매직 (이전 단계 유지)
         const slider = document.getElementById('drag-gallery');
         let isDown = false;
         let startX;
         let scrollLeft;
 
-        // 마우스를 클릭했을 때
         slider.addEventListener('mousedown', (e) => {
             isDown = true;
             slider.classList.add('active-drag');
             startX = e.pageX - slider.offsetLeft;
             scrollLeft = slider.scrollLeft;
+            closeLargeView(); // 드래그 시작할 땐 디테일 창을 닫아 집중하게 함
         });
 
-        // 가장 가까운 카드를 찾아서 스르륵 이동시키는 함수
         function snapToCenter() {
             const cards = slider.querySelectorAll('.wanted-poster');
             let minDistance = Infinity;
             let closestScrollX = 0;
-            
-            // 화면(컨테이너)의 정중앙 좌표
             const containerCenter = slider.getBoundingClientRect().left + (slider.offsetWidth / 2);
 
             cards.forEach(card => {
-                // 각 카드의 정중앙 좌표
                 const cardCenter = card.getBoundingClientRect().left + (card.offsetWidth / 2);
                 const distance = Math.abs(containerCenter - cardCenter);
-
-                // 화면 중앙과 가장 가까운 카드 찾기
                 if (distance < minDistance) {
                     minDistance = distance;
-                    // 해당 카드를 완벽하게 중앙에 배치하기 위한 스크롤 목표값 계산
                     closestScrollX = card.offsetLeft - (slider.offsetWidth / 2) + (card.offsetWidth / 2);
                 }
             });
-
-            // 스무스하게 목표 위치로 이동
             slider.scrollTo({ left: closestScrollX, behavior: 'smooth' });
         }
 
-        // 마우스가 영역을 벗어났을 때
-        slider.addEventListener('mouseleave', () => {
-            if (!isDown) return;
-            isDown = false;
-            slider.classList.remove('active-drag');
-            snapToCenter(); // 놓는 순간 중앙으로 스냅!
-        });
-
-        // 마우스 클릭을 해제했을 때
-        slider.addEventListener('mouseup', () => {
-            if (!isDown) return;
-            isDown = false;
-            slider.classList.remove('active-drag');
-            snapToCenter(); // 놓는 순간 중앙으로 스냅!
-        });
-
-        // 마우스를 움직일 때
+        slider.addEventListener('mouseleave', () => { if (!isDown) return; isDown = false; slider.classList.remove('active-drag'); snapToCenter(); });
+        slider.addEventListener('mouseup', () => { if (!isDown) return; isDown = false; slider.classList.remove('active-drag'); snapToCenter(); });
         slider.addEventListener('mousemove', (e) => {
             if (!isDown) return;
             e.preventDefault();
