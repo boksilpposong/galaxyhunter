@@ -5,26 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>초은하 현상금 사냥꾼 길드</title>
     <style>
-        /* 우주/홀로그램 컨셉의 기본 디자인 설정 */
+        /* 1. 배경 이미지 & 전체 폰트/색상 설정 */
         body {
             margin: 0;
             padding: 0;
-            background-color: #05050A; /* 아주 깊고 어두운 우주색 */
-            background-image: radial-gradient(circle at 50% 50%, #111324 0%, #05050A 100%);
-            color: #E0E5FF; /* 홀로그램 느낌의 텍스트 색상 */
+            
+            /* ★ 중요: 바로 아래 'bg.png' 부분을 실제 올리신 이미지 파일 이름으로 똑같이 바꿔주세요! */
+            background-image: url('bg.png'); 
+            
+            background-size: cover; /* 화면 꽉 차게 */
+            background-position: center; /* 가운데 정렬 */
+            background-attachment: fixed; /* 스크롤 내려도 배경 고정 (입체감 상승) */
+            background-color: #05050A; /* 이미지 로딩 전 기본 배경색 */
+            
+            color: #E0E5FF;
             font-family: 'Malgun Gothic', sans-serif;
         }
 
-        /* 상단 네비게이션 탭 (메뉴바) */
+        /* 2. 상단 네비게이션 탭 (메뉴바) */
         nav {
             display: flex;
             justify-content: center;
             background: rgba(10, 15, 30, 0.8);
-            border-bottom: 2px solid #00F0FF; /* 네온 블루 포인트 */
+            border-bottom: 2px solid #00F0FF;
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
             padding: 15px 0;
             position: sticky;
             top: 0;
+            z-index: 100; /* 메뉴바가 항상 맨 위에 오도록 설정 */
         }
 
         nav a {
@@ -42,14 +50,14 @@
             text-shadow: 0 0 10px #00F0FF, 0 0 20px #00F0FF;
         }
 
-        /* 메인 콘텐츠 영역 */
+        /* 3. 메인 콘텐츠 영역 넓이 설정 */
         .container {
             max-width: 1000px;
             margin: 40px auto;
             padding: 20px;
         }
 
-        /* 대문 타이틀 */
+        /* 4. 대문 타이틀 */
         .title-box {
             text-align: center;
             margin-bottom: 50px;
@@ -57,7 +65,7 @@
 
         .title-box h1 {
             font-size: 3rem;
-            color: #FF0055; /* 네온 핑크/레드 포인트 */
+            color: #FF0055;
             text-shadow: 0 0 10px rgba(255, 0, 85, 0.7);
             margin: 0;
             letter-spacing: 5px;
@@ -67,24 +75,31 @@
             color: #8A9BB4;
             font-size: 1.2rem;
             margin-top: 10px;
+            text-shadow: 1px 1px 2px black; /* 글씨가 배경에 묻히지 않게 테두리 효과 */
         }
 
-        /* 정보 패널 (세계관, 장소, 캐릭터가 들어갈 상자) */
+        /* 5. 정보 패널 (대망의 반투명 유리 효과!) */
         .panel {
-            background: rgba(20, 25, 45, 0.6);
-            border: 1px solid #3A4B7C;
-            border-left: 5px solid #00F0FF;
+            background: rgba(20, 25, 45, 0.4); /* 배경 40% 투명도 */
+            backdrop-filter: blur(12px); /* 배경 뿌옇게 블러 처리 (치트키) */
+            -webkit-backdrop-filter: blur(12px); /* 모바일 호환용 */
+            border: 1px solid rgba(58, 75, 124, 0.5); /* 반투명 테두리 */
+            border-left: 5px solid #00F0FF; /* 왼쪽 네온 포인트 */
             padding: 30px;
             margin-bottom: 30px;
             border-radius: 0 15px 15px 0;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); /* 패널 입체감 그림자 */
         }
 
         .panel h2 {
             margin-top: 0;
             color: #FFFFFF;
-            border-bottom: 1px dashed #3A4B7C;
+            border-bottom: 1px dashed rgba(58, 75, 124, 0.8);
             padding-bottom: 10px;
+        }
+        
+        .panel p {
+            line-height: 1.6;
         }
     </style>
 </head>
