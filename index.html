@@ -22,8 +22,13 @@
         .screen.active { opacity: 1; pointer-events: auto; }
 
         /* =========================================
-           [신규] 로그인 화면 UI
+           [업데이트] 로그인 화면 UI (완전 블랙 배경)
         ========================================= */
+        #login-screen {
+            background-color: #000000; /* [요구사항] 완전 새까만 배경으로 뒤쪽 우주를 가림 */
+            z-index: 2000; /* 메인 화면 요소들보다 무조건 맨 위에 오도록 설정 */
+        }
+
         .login-container {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: rgba(0, 15, 10, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -42,12 +47,13 @@
             padding: 15px 20px; font-size: 1.2rem; border-radius: 5px; outline: none;
             width: 300px; text-align: center; margin-bottom: 30px; font-family: 'Malgun Gothic', sans-serif;
             box-shadow: inset 0 0 10px rgba(0,255,157,0.1); transition: all 0.3s;
+            caret-color: #00FF9D; /* [디테일] 입력할 때 깜빡이는 실제 커서도 민트색으로 변경! */
         }
         .login-input:focus {
             background: rgba(0, 255, 157, 0.1); box-shadow: inset 0 0 15px rgba(0,255,157,0.4), 0 0 15px rgba(0,255,157,0.4);
             border-color: #FFFFFF;
         }
-        .login-input::placeholder { color: rgba(0, 255, 157, 0.3); }
+        .login-input::placeholder { color: rgba(0, 255, 157, 0.6); }
 
         .login-btn {
             background: transparent; color: #00FF9D; border: 2px solid #00FF9D;
@@ -149,17 +155,14 @@
         .drawn-reward { font-size: 1.3rem; color: #00FF9D; font-family: 'Courier New', monospace; font-weight: bold; margin-bottom: 10px; text-shadow: 0 0 10px #00FF9D; }
         .drawn-bio { font-size: 0.95rem; color: #FFFFFF; line-height: 1.6; background: rgba(0,255,157,0.08); padding: 12px; border-radius: 5px; pointer-events: none; text-shadow: 0 1px 2px black; }
 
-        /* 5. [개편] AI 비서 이브 - 접속 시 나타나도록 수정 */
+        /* 5. AI 비서 이브 */
         .ai-assistant {
             position: fixed; top: 20px; right: 20px; display: flex; align-items: center;
             background: rgba(0, 15, 10, 0.9); backdrop-filter: blur(8px); border: 1px solid #00FF9D;
             border-right: 4px solid #00FF9D; padding: 15px 20px; border-radius: 10px 0 0 10px;
             z-index: 1000; transform: translateX(120%); pointer-events: none;
         }
-        /* JS에서 이 클래스를 붙여줄 때만 슬라이드 애니메이션 작동 */
-        .ai-assistant.show {
-            animation: slideIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
+        .ai-assistant.show { animation: slideIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         .ai-avatar { background: #00FF9D; color: #000; font-weight: 900; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 5px; margin-right: 15px; box-shadow: 0 0 10px #00FF9D; }
         .ai-text strong { color: #00FF9D; font-size: 0.75rem; display: block; }
         .ai-text span { color: #E0FFF2; font-size: 0.95rem; line-height: 1.4; display: block; }
@@ -238,35 +241,42 @@
 
     <script>
         // ==========================================
-        // [신규] 로그인 시스템 및 이브 인사 로직
+        // [업데이트] 로그인 및 언더바 깜빡임 로직
         // ==========================================
+        const loginInput = document.getElementById('username-input');
+        const basePlaceholder = "헌터명(ID)을 입력하세요";
+        let blinkToggle = false;
+
+        // [요구사항 3] 아무것도 입력하지 않았을 때 언더바 깜빡임 효과 (0.5초 간격)
+        setInterval(() => {
+            if (loginInput.value === '') {
+                // blinkToggle 상태에 따라 끝에 '_'를 붙였다 뗐다 합니다.
+                loginInput.setAttribute('placeholder', basePlaceholder + (blinkToggle ? '_' : ''));
+                blinkToggle = !blinkToggle;
+            }
+        }, 500);
+
         function processLogin() {
-            const inputField = document.getElementById('username-input');
-            let username = inputField.value.trim();
-            
-            // 이름을 입력하지 않았을 경우 기본값 부여
+            let username = loginInput.value.trim();
             if (username === '') {
                 username = '익명의 헌터';
             }
 
-            // 1. 이브의 메시지 업데이트 (요청하신 문구 그대로 적용)
+            // [요구사항 1] 이브 인사말 쉼표 추가 및 맞춤형 문구
             const eveMessage = document.getElementById('eve-message');
-            eveMessage.innerHTML = `"${username}님 어서오세요.<br>당신의 AI 비서 이브입니다. 무엇을 도와드릴까요?"`;
+            eveMessage.innerHTML = `"${username}님, 어서오세요.<br>당신의 AI 비서 이브입니다. 무엇을 도와드릴까요?"`;
 
-            // 2. 로그인 창 숨기고 메인 로비 띄우기
+            // 로그인 창을 끄고 우주 배경의 메인 화면 켜기
             openScreen('main-screen');
 
-            // 3. 화면이 전환된 후 0.5초 뒤에 이브가 스르륵 등장 (극적 효과)
             setTimeout(() => {
                 document.getElementById('eve-popup').classList.add('show');
             }, 500);
         }
 
-        // 엔터키를 눌러도 로그인이 되도록 편의성 추가
-        document.getElementById('username-input').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                processLogin();
-            }
+        // 엔터키 로그인 지원
+        loginInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') processLogin();
         });
 
 
