@@ -47,16 +47,13 @@
             padding: 15px 20px; font-size: 1.2rem; border-radius: 5px; outline: none;
             width: 300px; text-align: center; margin-bottom: 30px; font-family: 'Malgun Gothic', sans-serif;
             box-shadow: inset 0 0 10px rgba(0,255,157,0.1); transition: all 0.3s;
-            
-            /* [핵심 수정] 얄팍한 기본 | 커서를 완전히 투명하게 지워버림 */
             caret-color: transparent; 
-            font-weight: bold; /* 내가 입력하는 글씨도 헌터답게 약간 두껍게 */
+            font-weight: bold; 
         }
         .login-input:focus {
             background: rgba(0, 255, 157, 0.1); box-shadow: inset 0 0 15px rgba(0,255,157,0.4), 0 0 15px rgba(0,255,157,0.4);
             border-color: #FFFFFF;
         }
-        /* [핵심 수정] 언더바를 가장 굵고 쨍하게 만듦 */
         .login-input::placeholder { 
             color: rgba(0, 255, 157, 0.8); 
             font-weight: 900; 
@@ -92,9 +89,12 @@
             border: 1px dashed #00FF9D; color: #00FF9D; font-weight: bold; font-size: 0.85rem;
         }
 
+        /* 버튼 불규칙 위치 */
         #btn-location { top: 20%; left: 15%; animation-delay: 0s; }
         #btn-world { top: 40%; right: 18%; animation-delay: 1s; }
         #btn-character { bottom: 25%; left: 28%; animation-delay: 2s; }
+        /* [신규] 규약 버튼 위치 (빨간 동그라미 쳐주신 우측 하단) */
+        #btn-rules { bottom: 18%; right: 28%; animation-delay: 3s; }
 
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
@@ -105,7 +105,7 @@
         }
         .close-btn:hover { background: #00FF9D; color: #000; box-shadow: 0 0 15px #00FF9D; }
 
-        /* 4. 서브 패널 */
+        /* 4. 서브 패널 (장소, 역사, 규약용) */
         .content-panel {
             background: rgba(0, 20, 10, 0.7); backdrop-filter: blur(15px);
             border: 1px solid #00FF9D; box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
@@ -198,17 +198,27 @@
 
     <div id="main-screen" class="screen">
         <h1 class="main-title">BOUNTY HUNTER TERMINAL</h1>
+        
         <div id="btn-location" class="scattered-btn" onclick="openScreen('location-screen')">
             <div class="btn-icon"><img src="icon_planet.png" alt="Planet"></div>
             <div class="btn-text">장소 데이터베이스</div>
         </div>
+        
         <div id="btn-world" class="scattered-btn" onclick="openScreen('world-screen')">
             <div class="btn-icon"><img src="icon_book.png" alt="Book"></div>
-            <div class="btn-text">세계관 및 역사</div>
+            <div class="btn-text">역사</div>
         </div>
+        
         <div id="btn-character" class="scattered-btn" onclick="openScreen('character-screen')">
             <div class="btn-icon"><img src="icon_wanted.png" alt="Wanted"></div>
             <div class="btn-text">수배자 명부</div>
+        </div>
+
+        <div id="btn-rules" class="scattered-btn" onclick="openScreen('rules-screen')">
+            <div class="btn-icon">
+                <img src="icon_rules.png" alt="Rules">
+            </div>
+            <div class="btn-text">길드 규약</div>
         </div>
     </div>
 
@@ -234,8 +244,8 @@
 
     <div id="world-screen" class="screen" onclick="if(event.target===this) openScreen('main-screen')">
         <div class="content-panel">
-            <div class="content-header"><h2>📖 세계관 및 역사</h2></div>
-            <p style="padding:40px;">은하 연대기 복원 중... 시스템이 세계관 및 역사 기록을 재구성하고 있습니다.</p>
+            <div class="content-header"><h2>📖 역사</h2></div>
+            <p style="padding:40px;">은하 연대기 복원 중... 시스템이 역사 기록을 재구성하고 있습니다.</p>
         </div>
     </div>
     
@@ -243,6 +253,13 @@
         <div class="content-panel">
             <div class="content-header"><h2>🪐 장소 소개</h2></div>
             <p style="padding:40px;">항성 좌표 데이터 수신 중... 시스템이 은하계의 주요 장소 데이터를 검색하고 있습니다.</p>
+        </div>
+    </div>
+
+    <div id="rules-screen" class="screen" onclick="if(event.target===this) openScreen('main-screen')">
+        <div class="content-panel">
+            <div class="content-header"><h2>⚖️ 길드 규약</h2></div>
+            <p style="padding:40px;">초은하 현상금 사냥꾼 길드의 핵심 규약 및 행동 강령을 불러옵니다...<br><br>제1조: 길드의 의뢰는 절대적이며, 타겟 생포 시 보상금은 100% 지급된다.<br>제2조: 헌터 간의 불필요한 교전은 엄격히 금지된다.</p>
         </div>
     </div>
 
