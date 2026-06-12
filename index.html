@@ -24,7 +24,7 @@
         /* 3. 메인 로비 화면 */
         .main-title {
             position: absolute; top: 5%; width: 100%; text-align: center;
-            font-size: 2.5rem; color: #00FF9D; text-shadow: 0 0 15px rgba(0,255,157,0.8);
+            font-size: 2.5rem; color: #00FF9D; text-shadow: 0 0 15px rgba(0, 255, 157, 0.8);
             letter-spacing: 5px; pointer-events: none;
         }
 
@@ -51,13 +51,13 @@
 
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        /* 4. 서브 패널 (공통) - 레이아웃 구조 개선 */
+        /* 4. 서브 패널 (공통) */
         .content-panel {
             background: rgba(0, 20, 10, 0.85); backdrop-filter: blur(15px);
             border: 1px solid #00FF9D; box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
             width: 95%; max-width: 1200px; height: 85vh; margin: 6vh auto 0;
             border-radius: 15px; position: relative; overflow: hidden;
-            display: flex; flex-direction: column; /* 제목과 갤러리를 위아래로 배치 */
+            display: flex; flex-direction: column;
         }
         
         .content-header {
@@ -71,38 +71,36 @@
         }
         .close-btn:hover { background: #00FF9D; color: #000; }
 
-        /* =========================================
-           [수정됨] 완벽한 좌우 슬라이더 구조
-        ========================================= */
+        /* 완벽한 좌우 슬라이더 구조 */
         .wanted-gallery-container {
-            flex-grow: 1; /* 남은 높이를 모두 차지 */
-            overflow: hidden; /* 컨테이너 바깥으로 튀어나간 스크롤바 숨김 */
+            flex-grow: 1;
+            overflow: hidden;
             position: relative;
         }
 
         .wanted-gallery {
             display: flex;
-            overflow-x: auto; /* ★핵심: 실제 좌우 스크롤이 일어나는 곳 */
-            scroll-snap-type: x mandatory; /* ★핵심: 넘길 때 딱딱 걸리게 설정 */
+            overflow-x: auto; /* 실제 좌우 스크롤 공간 */
+            scroll-snap-type: x mandatory; /* 넘길 때 자석처럼 딱딱 걸리게 설정 */
             gap: 50px;
-            padding: 40px 100px; /* 양옆에 여백을 줘서 스냅이 잘 걸리게 함 */
+            padding: 40px 100px;
             height: 100%;
-            scrollbar-width: none; /* 파이어폭스 스크롤바 숨기기 */
+            scrollbar-width: none;
             box-sizing: border-box;
         }
-        .wanted-gallery::-webkit-scrollbar { display: none; } /* 크롬/사파리 스크롤바 숨기기 */
+        .wanted-gallery::-webkit-scrollbar { display: none; } /* 스크롤바 숨기기 */
 
         /* 첫 번째와 마지막 수배지가 항상 중앙에 오게 도와주는 여백 */
         .wanted-gallery::before,
         .wanted-gallery::after {
             content: '';
-            flex: 0 0 calc(50% - 200px); /* 슬라이더 너비의 절반에서 수배지 너비의 절반을 뺌 */
+            flex: 0 0 calc(50% - 200px);
         }
 
         .wanted-poster {
-            flex: 0 0 320px; /* 수배지 너비 고정 */
+            flex: 0 0 320px;
             height: fit-content;
-            scroll-snap-align: center; /* ★핵심: 수배지가 항상 화면 중앙에 달라붙음 */
+            scroll-snap-align: center; /* 카드가 항상 화면 중앙에 달라붙음 */
             background: #0a0a0a;
             border: 3px solid #00FF9D;
             border-radius: 10px;
@@ -110,11 +108,11 @@
             display: flex;
             flex-direction: column;
             padding: 15px;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* 더 쫄깃한 Hover 애니메이션 */
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .wanted-poster:hover { transform: translateY(-10px) scale(1.05); box-shadow: 0 0 40px rgba(0, 255, 157, 0.6); }
 
-        /* 수배지 내부 네온 텍스트 및 프레임 */
+        /* 수배지 내부 텍스트 및 프레임 */
         .wanted-header { text-align: center; font-weight: 900; font-size: 1.8rem; color: #00FF9D; letter-spacing: 3px; margin-bottom: 10px; border-bottom: 2px double #00FF9D; }
         .wanted-status { text-align: center; font-size: 0.8rem; color: #FF3B3B; font-weight: bold; margin-bottom: 10px; letter-spacing: 1px; }
         
@@ -122,7 +120,7 @@
             width: 100%; height: 280px; background: #111; border: 1px solid rgba(0, 255, 157, 0.3);
             margin-bottom: 15px; overflow: hidden; position: relative;
         }
-        .wanted-image-frame img { width: 100%; height: 100%; object-fit: cover; filter: sepia(0.5) hue-rotate(100deg) contrast(1.2) brightness(0.9); } /* 네온 느낌 필터 */
+        .wanted-image-frame img { width: 100%; height: 100%; object-fit: cover; filter: sepia(0.5) hue-rotate(100deg) contrast(1.2) brightness(0.9); }
         .wanted-image-frame::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,255,157,0.1), transparent); pointer-events: none; }
 
         .wanted-info { border-top: 1px solid rgba(0, 255, 157, 0.5); padding-top: 15px; }
@@ -261,8 +259,8 @@
         </div>
     </div>
 
-    <div id="world-screen" class="screen"><div class="content-panel"><div class="content-header"><button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button><h2>📖 세계관 및 역사</h2></div><p style="padding:40px;">연대기 복원 중...</p></div></div>
-    <div id="location-screen" class="screen"><div class="content-panel"><div class="content-header"><button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button><h2>🪐 장소 소개</h2></div><p style="padding:40px;">좌표 데이터 수신 중...</p></div></div>
+    <div id="world-screen" class="screen"><div class="content-panel"><div class="content-header"><button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button><h2>📖 세계관 및 역사</h2></div><p style="padding:40px;">은하계 연대기 복원 중...</p></div></div>
+    <div id="location-screen" class="screen"><div class="content-panel"><div class="content-header"><button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button><h2>🪐 장소 소개</h2></div><p style="padding:40px;">항성 좌표 데이터 수신 중...</p></div></div>
 
     <script>
         function openScreen(targetId) {
@@ -270,12 +268,10 @@
             screens.forEach(function(screen) { screen.classList.remove('active'); });
             document.getElementById(targetId).classList.add('active');
             
-            // 수배자 명부 화면을 열 때 스크롤을 맨 앞으로 초기화 (ZZZ 게임 로직처럼)
             if(targetId === 'character-screen') {
                 document.querySelector('.wanted-gallery').scrollLeft = 0;
             }
         }
-    }
     </script>
 </body>
 </html>
