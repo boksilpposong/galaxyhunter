@@ -5,245 +5,194 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>초은하 현상금 사냥꾼 길드</title>
     <style>
-        /* 1. 전체 테마 및 배경 이미지 설정 */
+        /* 1. 전체 설정 */
         body {
-            margin: 0;
-            padding: 0;
-            
-            /* ★ 중요: 바로 아래 'bg.png' 부분을 실제 배경 이미지 파일명으로 똑같이 바꿔주세요! */
-            background-image: url('bg.png'); 
-            
-            background-size: cover; /* 이미지가 화면 비율에 맞춰 꽉 차게 덮어줍니다 */
-            background-position: center; /* 이미지가 항상 가운데 정렬됩니다 */
-            background-repeat: no-repeat; /* ★치트키 1: 배경 이미지를 절대 타일처럼 복사하지 않습니다 */
-            
-            background-color: #05120E; /* 아주 어두운 딥 민트/블랙 */
-            color: #E0FFF2; /* 텍스트도 연한 민트빛 */
-            font-family: 'Malgun Gothic', sans-serif;
-            
-            overflow: hidden; /* ★치트키 2: 화면 바깥으로 튀어나간 내용은 숨기고, 스크롤을 완전히 금지합니다! (게임 화면처럼) */
-            user-select: none; /* 드래그 방지 */
-            width: 100vw; /* 화면 너비 100% 사용 */
-            height: 100vh; /* 화면 높이 100% 사용 */
+            margin: 0; padding: 0;
+            background-image: url('bg.png'); /* 배경 이미지 파일명 확인 */
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+            background-color: #05120E; color: #E0FFF2; font-family: 'Malgun Gothic', sans-serif;
+            overflow: hidden; user-select: none; width: 100vw; height: 100vh;
         }
 
-        /* 2. 화면 공통 속성 (전환 효과) */
+        /* 2. 화면 전환 레이아웃 */
         .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease-in-out; /* 부드러운 화면 전환(페이드인) */
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
         }
+        .screen.active { opacity: 1; pointer-events: auto; }
 
-        .screen.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        /* 3. 메인 화면: 흩뿌려진 UI 요소들 */
+        /* 3. 메인 로비 화면 */
         .main-title {
-            position: absolute;
-            top: 5%;
-            width: 100%;
-            text-align: center;
-            font-size: 2.5rem;
-            color: #00FF9D;
-            text-shadow: 0 0 15px rgba(0, 255, 157, 0.8);
-            letter-spacing: 5px;
-            pointer-events: none;
+            position: absolute; top: 5%; width: 100%; text-align: center;
+            font-size: 2.5rem; color: #00FF9D; text-shadow: 0 0 15px rgba(0,255,157,0.8);
+            letter-spacing: 5px; pointer-events: none;
         }
 
-        /* 흩뿌려진 버튼들의 공통 디자인 */
         .scattered-btn {
-            position: absolute;
+            position: absolute; display: flex; flex-direction: column; align-items: center;
+            cursor: pointer; transition: transform 0.3s; animation: float 4s infinite ease-in-out;
+        }
+        .scattered-btn:hover { transform: scale(1.1); filter: drop-shadow(0 0 20px #00FF9D); }
+        .btn-icon {
+            background: rgba(0, 40, 20, 0.4); border: 2px solid #00FF9D; border-radius: 50%;
+            width: 110px; height: 110px; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.3); margin-bottom: 15px; overflow: hidden;
+        }
+        .btn-icon img { width: 75%; height: 75%; object-fit: contain; }
+        .btn-text {
+            background: rgba(0, 20, 10, 0.8); padding: 5px 15px; border-radius: 20px;
+            border: 1px dashed #00FF9D; color: #00FF9D; font-weight: bold; font-size: 0.85rem;
+        }
+
+        /* 버튼 위치 */
+        #btn-location { top: 20%; left: 15%; }
+        #btn-world { top: 40%; right: 18%; animation-delay: 1s; }
+        #btn-character { bottom: 25%; left: 28%; animation-delay: 2s; }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        /* 4. 서브 패널 (공통) */
+        .content-panel {
+            background: rgba(0, 20, 10, 0.85); backdrop-filter: blur(15px);
+            border: 1px solid #00FF9D; box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
+            width: 90%; max-width: 1100px; height: 80vh; margin: 8vh auto 0;
+            padding: 40px; border-radius: 15px; position: relative; overflow: hidden;
+        }
+        .content-panel h2 { color: #00FF9D; border-bottom: 2px solid #00FF9D; margin-top: 0; padding-bottom: 10px; }
+        .close-btn {
+            position: absolute; top: 30px; right: 30px; background: transparent;
+            color: #00FF9D; border: 1px solid #00FF9D; padding: 5px 15px; cursor: pointer; z-index: 10;
+        }
+        .close-btn:hover { background: #00FF9D; color: #000; }
+
+        /* =========================================
+           [추가됨] HTML 수배자 명부 슬라이더
+        ========================================= */
+        .wanted-gallery {
+            display: flex;
+            overflow-x: auto; /* 좌우 스크롤 허용 */
+            scroll-snap-type: x mandatory; /* 넘길 때 딱딱 걸리게 설정 */
+            gap: 40px;
+            padding: 20px 50px 50px 50px;
+            height: calc(100% - 100px);
+            scrollbar-width: none; /* 파이어폭스 스크롤바 숨기기 */
+        }
+        .wanted-gallery::-webkit-scrollbar { display: none; } /* 크롬 스크롤바 숨기기 */
+
+        .wanted-poster {
+            flex: 0 0 320px; /* 수배지 너비 고정 */
+            scroll-snap-align: center; /* 중앙에 정렬 */
+            background: #0a0a0a;
+            border: 3px solid #00FF9D;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.4);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.3s, filter 0.3s;
-            animation: float 4s infinite ease-in-out; /* 둥둥 떠다니는 애니메이션 */
-        }
-
-        .scattered-btn:hover {
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 20px #00FF9D); /* 마우스 올리면 민트색으로 강하게 빛남 */
-        }
-
-        .btn-icon {
-            background: rgba(0, 40, 20, 0.4); /* 이미지가 돋보이게 배경을 좀 더 투명하게 */
-            border: 2px solid #00FF9D;
-            border-radius: 50%;
-            width: 120px; /* 이미지를 위해 조금 더 키웠습니다 */
-            height: 120px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
-            margin-bottom: 15px;
-            overflow: hidden; /* 동그라미 밖으로 이미지가 안 튀어나가게 설정 */
-        }
-        
-        /* 아이콘 이미지 스타일 */
-        .btn-icon img {
-            width: 80%; /* 동그라미 안에 적당한 크기로 들어가게 설정 */
-            height: 80%;
-            object-fit: contain; /* 이미지가 찌그러지지 않고 비율을 유지하게 설정 */
-        }
-
-        .btn-text {
-            background: rgba(0, 20, 10, 0.8);
-            padding: 5px 15px;
-            border-radius: 20px;
-            border: 1px dashed #00FF9D;
-            color: #00FF9D;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-
-        /* 각 버튼의 불규칙한 위치 설정 (원하시는 위치로 미세 조정하세요!) */
-        #btn-location { top: 25%; left: 18%; animation-delay: 0s; }
-        #btn-world { top: 45%; right: 22%; animation-delay: 1s; }
-        #btn-character { bottom: 20%; left: 32%; animation-delay: 2s; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-        }
-
-        /* 4. 서브 화면 (상세 정보 창) */
-        .content-panel {
-            background: rgba(0, 20, 10, 0.85); /* 진한 반투명 민트 블랙 */
-            backdrop-filter: blur(15px);
-            border: 1px solid #00FF9D;
-            box-shadow: 0 0 30px rgba(0, 255, 157, 0.3);
-            width: 80%;
-            max-width: 900px;
-            height: 70vh;
-            margin: 10vh auto 0;
-            padding: 40px;
-            border-radius: 10px;
+            padding: 15px;
             position: relative;
+            transition: transform 0.3s;
         }
+        .wanted-poster:hover { transform: scale(1.03); box-shadow: 0 0 40px rgba(0, 255, 157, 0.6); }
 
-        .content-panel h2 {
-            color: #00FF9D;
-            border-bottom: 2px solid #00FF9D;
-            padding-bottom: 10px;
-            margin-top: 0;
+        /* 수배지 내부 텍스트 및 프레임 */
+        .wanted-header { text-align: center; font-weight: 900; font-size: 1.8rem; color: #00FF9D; letter-spacing: 3px; margin-bottom: 10px; border-bottom: 2px double #00FF9D; }
+        .wanted-status { text-align: center; font-size: 0.8rem; color: #FF0055; font-weight: bold; margin-bottom: 10px; }
+        
+        .wanted-image-frame {
+            width: 100%; height: 280px; background: #111; border: 1px solid rgba(0, 255, 157, 0.3);
+            margin-bottom: 15px; overflow: hidden; position: relative;
         }
+        .wanted-image-frame img { width: 100%; height: 100%; object-fit: cover; filter: sepia(0.5) hue-rotate(100deg) contrast(1.2); } /* 네온 느낌 필터 */
+        .wanted-image-frame::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,255,157,0.1), transparent); pointer-events: none; }
 
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: transparent;
-            color: #00FF9D;
-            border: 1px solid #00FF9D;
-            padding: 5px 15px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.2s;
-        }
+        .wanted-info { border-top: 1px solid rgba(0, 255, 157, 0.5); padding-top: 15px; }
+        .wanted-name { font-size: 1.4rem; font-weight: bold; text-align: center; color: #FFFFFF; margin-bottom: 10px; }
+        .wanted-reward { font-size: 1.2rem; color: #00FF9D; text-align: center; font-family: 'Courier New', monospace; font-weight: bold; }
+        .wanted-reward span { font-size: 0.8rem; color: #8A9BB4; }
 
-        .close-btn:hover {
-            background: #00FF9D;
-            color: #000;
-        }
-
-        /* 5. AI 비서 이브 (최상단 고정) */
+        /* 5. AI 비서 이브 */
         .ai-assistant {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            background: rgba(0, 15, 10, 0.85);
-            backdrop-filter: blur(8px);
-            border: 1px solid #00FF9D;
-            border-right: 4px solid #00FF9D;
-            padding: 15px 20px;
-            border-radius: 10px 0 0 10px;
-            z-index: 1000;
-            transform: translateX(120%);
-            animation: slideIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-            animation-delay: 1s;
+            position: fixed; top: 20px; right: 20px; display: flex; align-items: center;
+            background: rgba(0, 15, 10, 0.85); backdrop-filter: blur(8px); border: 1px solid #00FF9D;
+            border-right: 4px solid #00FF9D; padding: 15px 20px; border-radius: 10px 0 0 10px;
+            z-index: 1000; transform: translateX(120%); animation: slideIn 0.8s ease forwards; animation-delay: 1s;
         }
-
-        .ai-avatar {
-            background: #00FF9D;
-            color: #000;
-            font-size: 0.9rem;
-            font-weight: 900;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 5px;
-            margin-right: 15px;
-            box-shadow: 0 0 10px #00FF9D;
-        }
-
-        .ai-text strong {
-            color: #00FF9D;
-            font-size: 0.75rem;
-            display: block;
-            margin-bottom: 3px;
-        }
-
-        .ai-text span {
-            color: #E0FFF2;
-            font-size: 0.95rem;
-        }
-
-        @keyframes slideIn {
-            0% { transform: translateX(120%); }
-            100% { transform: translateX(0); }
-        }
+        .ai-avatar { background: #00FF9D; color: #000; font-weight: 900; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 5px; margin-right: 15px; box-shadow: 0 0 10px #00FF9D; }
+        .ai-text strong { color: #00FF9D; font-size: 0.75rem; display: block; }
+        .ai-text span { color: #E0FFF2; font-size: 0.95rem; }
+        @keyframes slideIn { 0% { transform: translateX(120%); } 100% { transform: translateX(0); } }
     </style>
 </head>
 <body>
 
     <div class="ai-assistant">
         <div class="ai-avatar">EVE</div>
-        <div class="ai-text">
-            <strong>SYSTEM MESSAGE</strong>
-            <span>"안녕하세요. 터미널 접속을 환영합니다."</span>
-        </div>
+        <div class="ai-text"><strong>SYSTEM MESSAGE</strong><span>"수배자 데이터베이스를 동기화했습니다."</span></div>
     </div>
 
     <div id="main-screen" class="screen active">
         <h1 class="main-title">BOUNTY HUNTER TERMINAL</h1>
-
         <div id="btn-location" class="scattered-btn" onclick="openScreen('location-screen')">
-            <div class="btn-icon">
-                <img src="icon_planet.png" alt="장소 데이터베이스 아이콘">
-            </div>
+            <div class="btn-icon"><img src="icon_planet.png" alt="Planet"></div>
             <div class="btn-text">장소 데이터베이스</div>
         </div>
-
         <div id="btn-world" class="scattered-btn" onclick="openScreen('world-screen')">
-            <div class="btn-icon">
-                <img src="icon_book.png" alt="세계관 데이터베이스 아이콘">
-            </div>
+            <div class="btn-icon"><img src="icon_book.png" alt="Book"></div>
             <div class="btn-text">세계관 및 역사</div>
         </div>
-
         <div id="btn-character" class="scattered-btn" onclick="openScreen('character-screen')">
-            <div class="btn-icon">
-                <img src="icon_wanted.png" alt="수배자/헌터 명부 아이콘">
-            </div>
+            <div class="btn-icon"><img src="icon_wanted.png" alt="Wanted"></div>
             <div class="btn-text">수배자/헌터 명부</div>
         </div>
     </div>
 
-    <div id="world-screen" class="screen"><div class="content-panel"><button class="close-btn" onclick="openScreen('main-screen')">X 돌아가기</button><h2>📖 세계관 및 역사</h2><p>기록 복원 중...</p></div></div>
-    <div id="location-screen" class="screen"><div class="content-panel"><button class="close-btn" onclick="openScreen('main-screen')">X 돌아가기</button><h2>🪐 장소 소개</h2><p>좌표 추적 중...</p></div></div>
-    <div id="character-screen" class="screen"><div class="content-panel"><button class="close-btn" onclick="openScreen('main-screen')">X 돌아가기</button><h2>📜 수배자/헌터 명부</h2><p>신원 분석 중...</p></div></div>
+    <div id="character-screen" class="screen">
+        <div class="content-panel">
+            <button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button>
+            <h2>📜 수배자/헌터 명부</h2>
+            
+            <div class="wanted-gallery">
+                <div class="wanted-poster">
+                    <div class="wanted-header">WANTED</div>
+                    <div class="wanted-status">DEAD OR ALIVE</div>
+                    <div class="wanted-image-frame">
+                        <img src="char1.png" alt="Target 1"> </div>
+                    <div class="wanted-info">
+                        <div class="wanted-name">실버 팽</div>
+                        <div class="wanted-reward"><span>REWARD:</span> 50,000,000 ₵</div>
+                    </div>
+                </div>
+
+                <div class="wanted-poster">
+                    <div class="wanted-header">WANTED</div>
+                    <div class="wanted-status">DEAD OR ALIVE</div>
+                    <div class="wanted-image-frame">
+                        <img src="char2.png" alt="Target 2">
+                    </div>
+                    <div class="wanted-info">
+                        <div class="wanted-name">네온 쉐도우</div>
+                        <div class="wanted-reward"><span>REWARD:</span> 120,000,000 ₵</div>
+                    </div>
+                </div>
+
+                <div class="wanted-poster">
+                    <div class="wanted-header">WANTED</div>
+                    <div class="wanted-status">DEAD OR ALIVE</div>
+                    <div class="wanted-image-frame">
+                        <img src="char3.png" alt="Target 3">
+                    </div>
+                    <div class="wanted-info">
+                        <div class="wanted-name">크림슨 해커</div>
+                        <div class="wanted-reward"><span>REWARD:</span> 85,000,000 ₵</div>
+                    </div>
+                </div>
+
+                </div>
+        </div>
+    </div>
+
+    <div id="world-screen" class="screen"><div class="content-panel"><button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button><h2>📖 세계관 및 역사</h2><p>은하계 연대기 복원 중...</p></div></div>
+    <div id="location-screen" class="screen"><div class="content-panel"><button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button><h2>🪐 장소 소개</h2><p>항성 좌표 데이터 수신 중...</p></div></div>
 
     <script>
         function openScreen(targetId) {
@@ -252,6 +201,5 @@
             document.getElementById(targetId).classList.add('active');
         }
     </script>
-
 </body>
 </html>
