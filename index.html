@@ -5,18 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>초은하 현상금 사냥꾼 길드</title>
     <style>
-        /* 1. 전체 민트 테마 및 스크롤 금지 설정 */
+        /* 1. 전체 테마 및 배경 이미지 설정 */
         body {
             margin: 0;
             padding: 0;
-            background-image: url('bg.png'); /* 배경 이미지 잊지 마세요! */
-            background-size: cover; 
-            background-position: center; 
+            
+            /* ★ 중요: 바로 아래 'bg.png' 부분을 실제 배경 이미지 파일명으로 똑같이 바꿔주세요! */
+            background-image: url('bg.png'); 
+            
+            background-size: cover; /* 이미지가 화면 비율에 맞춰 꽉 차게 덮어줍니다 */
+            background-position: center; /* 이미지가 항상 가운데 정렬됩니다 */
+            background-repeat: no-repeat; /* ★치트키 1: 배경 이미지를 절대 타일처럼 복사하지 않습니다 */
+            
             background-color: #05120E; /* 아주 어두운 딥 민트/블랙 */
             color: #E0FFF2; /* 텍스트도 연한 민트빛 */
             font-family: 'Malgun Gothic', sans-serif;
-            overflow: hidden; /* ★치트키: 스크롤을 완전히 없애버림 */
-            user-select: none; /* 드래그 방지 (게임 화면처럼) */
+            
+            overflow: hidden; /* ★치트키 2: 화면 바깥으로 튀어나간 내용은 숨기고, 스크롤을 완전히 금지합니다! (게임 화면처럼) */
+            user-select: none; /* 드래그 방지 */
+            width: 100vw; /* 화면 너비 100% 사용 */
+            height: 100vh; /* 화면 높이 100% 사용 */
         }
 
         /* 2. 화면 공통 속성 (전환 효과) */
@@ -66,17 +74,24 @@
         }
 
         .btn-icon {
-            font-size: 4rem; /* 나중에 이 자리에 이미지 태그(<img>)를 넣으셔도 됩니다! */
-            background: rgba(0, 40, 20, 0.6);
+            background: rgba(0, 40, 20, 0.4); /* 이미지가 돋보이게 배경을 좀 더 투명하게 */
             border: 2px solid #00FF9D;
             border-radius: 50%;
-            width: 100px;
-            height: 100px;
+            width: 120px; /* 이미지를 위해 조금 더 키웠습니다 */
+            height: 120px;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: inset 0 0 15px rgba(0, 255, 157, 0.5);
-            margin-bottom: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
+            margin-bottom: 15px;
+            overflow: hidden; /* 동그라미 밖으로 이미지가 안 튀어나가게 설정 */
+        }
+        
+        /* 아이콘 이미지 스타일 */
+        .btn-icon img {
+            width: 80%; /* 동그라미 안에 적당한 크기로 들어가게 설정 */
+            height: 80%;
+            object-fit: contain; /* 이미지가 찌그러지지 않고 비율을 유지하게 설정 */
         }
 
         .btn-text {
@@ -89,24 +104,10 @@
             font-size: 0.9rem;
         }
 
-        /* 각 버튼의 불규칙한 위치 설정 */
-        #btn-location {
-            top: 20%;
-            left: 15%;
-            animation-delay: 0s;
-        }
-
-        #btn-world {
-            top: 40%;
-            right: 18%;
-            animation-delay: 1s; /* 떠다니는 타이밍을 엇갈리게 설정 */
-        }
-
-        #btn-character {
-            bottom: 25%;
-            left: 28%;
-            animation-delay: 2s;
-        }
+        /* 각 버튼의 불규칙한 위치 설정 (원하시는 위치로 미세 조정하세요!) */
+        #btn-location { top: 25%; left: 18%; animation-delay: 0s; }
+        #btn-world { top: 45%; right: 22%; animation-delay: 1s; }
+        #btn-character { bottom: 20%; left: 32%; animation-delay: 2s; }
 
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
@@ -153,7 +154,7 @@
             color: #000;
         }
 
-        /* 5. AI 비서 이브 (민트 테마로 변경) */
+        /* 5. AI 비서 이브 (최상단 고정) */
         .ai-assistant {
             position: fixed;
             top: 20px;
@@ -219,54 +220,35 @@
         <h1 class="main-title">BOUNTY HUNTER TERMINAL</h1>
 
         <div id="btn-location" class="scattered-btn" onclick="openScreen('location-screen')">
-            <div class="btn-icon">🪐</div>
+            <div class="btn-icon">
+                <img src="icon_planet.png" alt="장소 데이터베이스 아이콘">
+            </div>
             <div class="btn-text">장소 데이터베이스</div>
         </div>
 
         <div id="btn-world" class="scattered-btn" onclick="openScreen('world-screen')">
-            <div class="btn-icon">📖</div>
+            <div class="btn-icon">
+                <img src="icon_book.png" alt="세계관 데이터베이스 아이콘">
+            </div>
             <div class="btn-text">세계관 및 역사</div>
         </div>
 
         <div id="btn-character" class="scattered-btn" onclick="openScreen('character-screen')">
-            <div class="btn-icon">📜</div>
+            <div class="btn-icon">
+                <img src="icon_wanted.png" alt="수배자/헌터 명부 아이콘">
+            </div>
             <div class="btn-text">수배자/헌터 명부</div>
         </div>
     </div>
 
-    <div id="world-screen" class="screen">
-        <div class="content-panel">
-            <button class="close-btn" onclick="openScreen('main-screen')">X 돌아가기</button>
-            <h2>📖 세계관 및 역사</h2>
-            <p>우주의 패권 다툼과 초은하 길드가 탄생하게 된 배경 기록입니다...</p>
-        </div>
-    </div>
-
-    <div id="location-screen" class="screen">
-        <div class="content-panel">
-            <button class="close-btn" onclick="openScreen('main-screen')">X 돌아가기</button>
-            <h2>🪐 장소 소개</h2>
-            <p>항성계 구역 데이터 및 버려진 콜로니에 대한 접근 정보입니다...</p>
-        </div>
-    </div>
-
-    <div id="character-screen" class="screen">
-        <div class="content-panel">
-            <button class="close-btn" onclick="openScreen('main-screen')">X 돌아가기</button>
-            <h2>📜 수배자/헌터 명부</h2>
-            <p>이곳에 세부적인 캐릭터 초상화와 스테이터스가 나열됩니다...</p>
-        </div>
-    </div>
+    <div id="world-screen" class="screen"><div class="content-panel"><button class="close-btn" onclick="openScreen('main-screen')">X 돌아가기</button><h2>📖 세계관 및 역사</h2><p>기록 복원 중...</p></div></div>
+    <div id="location-screen" class="screen"><div class="content-panel"><button class="close-btn" onclick="openScreen('main-screen')">X 돌아가기</button><h2>🪐 장소 소개</h2><p>좌표 추적 중...</p></div></div>
+    <div id="character-screen" class="screen"><div class="content-panel"><button class="close-btn" onclick="openScreen('main-screen')">X 돌아가기</button><h2>📜 수배자/헌터 명부</h2><p>신원 분석 중...</p></div></div>
 
     <script>
         function openScreen(targetId) {
-            // 1. 모든 화면에서 'active' 클래스를 빼서 투명하게 숨김
             let screens = document.querySelectorAll('.screen');
-            screens.forEach(function(screen) {
-                screen.classList.remove('active');
-            });
-
-            // 2. 클릭한 타겟 화면에만 'active' 클래스를 넣어서 짠! 하고 나타나게 함
+            screens.forEach(function(screen) { screen.classList.remove('active'); });
             document.getElementById(targetId).classList.add('active');
         }
     </script>
