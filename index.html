@@ -210,4 +210,25 @@
         });
 
         // 마우스가 영역을 벗어났을 때 (놓치기)
-        slider.addEventListener('mouseleave', () =>
+        slider.addEventListener('mouseleave', () => {
+            isDown = false;
+            slider.classList.remove('active-drag');
+        });
+
+        // 마우스 클릭을 해제했을 때 (놓기)
+        slider.addEventListener('mouseup', () => {
+            isDown = false;
+            slider.classList.remove('active-drag');
+        });
+
+        // 마우스를 움직일 때 (끌기)
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return; // 클릭하지 않은 상태면 무시
+            e.preventDefault(); // 글자나 이미지가 선택되는 것 방지
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 1.5; // 끌어당기는 속도 (1.5배속)
+            slider.scrollLeft = scrollLeft - walk;
+        });
+    </script>
+</body>
+</html>
