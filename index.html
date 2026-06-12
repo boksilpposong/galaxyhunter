@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>초은하 현상금 사냥꾼 길드 터미널</title>
     <style>
-        /* 1. 전체 설정 ( fixed 배경 & 테마색 통일 ) */
+        /* 1. 전체 설정 */
         body {
             margin: 0; padding: 0;
             background-image: url('bg.png'); /* 배경 이미지 파일명 확인 필수! */
@@ -21,7 +21,7 @@
         }
         .screen.active { opacity: 1; pointer-events: auto; }
 
-        /* 3. 메인 로비 화면 (흩뿌려진 UI) */
+        /* 3. 메인 로비 화면 */
         .main-title {
             position: absolute; top: 5%; width: 100%; text-align: center;
             font-size: 2.5rem; color: #00FF9D; text-shadow: 0 0 15px rgba(0, 255, 157, 0.8);
@@ -50,92 +50,126 @@
 
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        /* 4. [중요] 디테일 크게 보기 & 부채꼴 슬라이더 구조 */
-        .content-panel {
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(0, 255, 157, 0.4); box-shadow: 0 0 30px rgba(0, 255, 157, 0.1);
-            width: 95%; max-width: 1200px; height: 85vh; margin: 6vh auto 0;
-            border-radius: 15px; position: relative; overflow: hidden;
-            display: flex; flex-direction: column;
-        }
-        
-        .content-header { padding: 30px 40px 10px 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
-        .content-header h2 { color: #00FF9D; margin: 0; padding-bottom: 10px; text-shadow: 0 0 10px rgba(0,255,157,0.5); }
-        
+        /* 공통 닫기 버튼 */
         .close-btn {
             background: transparent; color: #00FF9D; border: 1px solid #00FF9D; padding: 5px 15px; cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s; font-weight: bold; z-index: 100;
         }
         .close-btn:hover { background: #00FF9D; color: #000; box-shadow: 0 0 15px #00FF9D; }
 
-        /* == 중앙 상단 대형 디테일 팝업 == */
-        .large-wanted-view {
-            width: 90%; max-width: 900px; height: 50vh; margin: 2vh auto; 
-            background: rgba(0,10,5,0.7); border: 2px solid #00FF9D; border-radius: 10px;
-            box-shadow: 0 0 50px rgba(0, 255, 157, 0.3);
-            display: none; /* 평소엔 숨김 */
-            position: absolute; top: 10%; left: 50%; transform: translateX(-50%) translateY(-20px);
-            z-index: 50; padding: 20px;
-            color: white; backdrop-filter: blur(20px);
-            opacity: 0; transition: opacity 0.5s ease, transform 0.5s ease;
+        /* 4. 서브 패널 (장소, 세계관용 기존 박스) */
+        .content-panel {
+            background: rgba(0, 20, 10, 0.85); backdrop-filter: blur(15px);
+            border: 1px solid #00FF9D; box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
+            width: 95%; max-width: 1200px; height: 85vh; margin: 6vh auto 0;
+            border-radius: 15px; position: relative; overflow: hidden;
         }
-        .large-wanted-view.open-detail { display: flex; opacity: 1; transform: translateX(-50%) translateY(0px); }
+        .content-header { padding: 30px 40px 10px 40px; display: flex; align-items: center; justify-content: space-between; }
+        .content-header h2 { color: #00FF9D; margin: 0; padding-bottom: 10px; border-bottom: 2px solid #00FF9D; }
 
-        .large-wanted-view .view-close-btn { position: absolute; top: 15px; right: 20px; font-weight: bold; color: #00FF9D; cursor: pointer; }
-        .large-wanted-view .large-info-text { margin-top: 20px; color: #FFFFFF; font-size: 1.1rem; }
-        .large-wanted-view .large-wanted-image { width: 300px; height: 100%; background: #111; margin-right: 30px; }
 
-        /* == [핵심] 부채꼴 드래그 슬라이더 == */
-        .wanted-gallery-container { flex-grow: 1; overflow: hidden; position: relative; margin-top: auto; }
+        /* =========================================
+           [완전 개편] 카드 게임 보드 UI
+        ========================================= */
+        
+        /* 캐릭터 스크린 상단 헤더 (배경 박스 없음) */
+        .board-header {
+            position: absolute; top: 30px; left: 50px; right: 50px;
+            display: flex; justify-content: space-between; align-items: center; z-index: 10;
+        }
+        .board-header h2 { color: #00FF9D; margin: 0; text-shadow: 0 0 10px rgba(0,255,157,0.5); border-bottom: 2px solid #00FF9D; padding-bottom: 10px; }
 
-        .wanted-gallery {
+        /* == [핵심] 하단에 모여있는 손패 (Hand) == */
+        .card-hand {
+            position: absolute;
+            bottom: -30px; /* 화면 아래로 살짝 숨김 */
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            gap: 20px; /* 카드가 겹치도록 좁게 설정 */
-            padding: 40px 100px;
-            height: 100%;
-            scrollbar-width: none;
-            box-sizing: border-box;
-            cursor: grab;
-            scroll-behavior: smooth;
+            justify-content: center;
+            align-items: flex-end;
+            width: 800px; /* 패가 펼쳐질 공간 */
+            height: 250px;
+            perspective: 1000px;
+            z-index: 20;
         }
-        .wanted-gallery.active-drag { cursor: grabbing; scroll-snap-type: none; scroll-behavior: auto; }
-        .wanted-gallery::-webkit-scrollbar { display: none; }
 
-        /* 부채꼴 곡선을 만들기 위한 가상의 곡선형 바닥 (치트키) */
-        .wanted-gallery::after { content: ''; display: block; position: absolute; bottom: 0; left: 0; width: 100%; height: 15vh; border-radius: 50% 50% 0 0; background: rgba(0,20,10,0.3); border-top: 2px solid rgba(0,255,157,0.3); box-shadow: 0 -10px 20px rgba(0,255,157,0.1); pointer-events: none; }
-
-        .wanted-gallery::before,
-        .wanted-gallery::after { content: ''; flex: 0 0 calc(50% - 150px); } /* 첫/마지막 카드 중앙 정렬 */
-
-        .wanted-poster {
-            flex: 0 0 250px; height: fit-content; scroll-snap-align: center;
-            background: #0a0a0a; border: 3px solid #00FF9D; border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 255, 157, 0.4); display: flex; flex-direction: column; padding: 10px;
+        /* 내 손에 들린 작은 카드들 */
+        .mini-card {
+            position: absolute;
+            width: 130px;
+            height: 190px;
+            background: #0a0a0a;
+            border: 2px solid #00FF9D;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.2);
             cursor: pointer;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s, filter 0.3s;
-            user-select: none;
-            
-            /* [마법의 공식 뼈대] 각 카드의 개별 부채꼴 각도 설정 */
-            transform-origin: bottom center; /* 아래쪽을 기준으로 회전 */
+            /* CSS 변수를 활용한 마법의 애니메이션 뼈대 */
+            transform-origin: bottom center;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s, z-index 0s;
+            overflow: hidden;
+            bottom: 0;
+            /* 자바스크립트가 계산해 준 각도와 위치를 적용 */
+            transform: translateX(var(--tx)) translateY(var(--ty)) rotate(var(--rot));
         }
-        /* 드래그 중이 아닐 때만 Hover 효과 */
-        .wanted-gallery:not(.active-drag) .wanted-poster:hover { transform: translateY(-20px) scale(1.1) !important; box-shadow: 0 0 50px rgba(0, 255, 157, 0.6); z-index: 10; filter: brightness(1.2); }
 
-        .wanted-header { text-align: center; font-weight: 900; font-size: 1.5rem; color: #00FF9D; letter-spacing: 2px; margin-bottom: 5px; border-bottom: 1px dashed #00FF9D; }
-        .wanted-status { text-align: center; font-size: 0.7rem; color: #FF3B3B; font-weight: bold; margin-bottom: 5px; }
-        
-        .wanted-image-frame {
-            width: 100%; height: 220px; background: #111; border: 1px solid rgba(0, 255, 157, 0.2);
-            margin-bottom: 10px; overflow: hidden; position: relative;
+        .mini-card img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: brightness(0.6) sepia(0.5) hue-rotate(100deg); /* 기본적으로 살짝 어둡게 */
+            pointer-events: none;
+            transition: filter 0.3s;
         }
-        .wanted-image-frame img { width: 100%; height: 100%; object-fit: cover; filter: sepia(0.5) hue-rotate(100deg) contrast(1.2) brightness(0.9); pointer-events: none; }
-        
-        .wanted-info { border-top: 1px solid rgba(0, 255, 157, 0.4); padding-top: 10px; }
-        .wanted-name { font-size: 1.2rem; font-weight: bold; text-align: center; color: #FFFFFF; margin-bottom: 5px; text-shadow: 0 0 5px white; }
-        .wanted-reward { font-size: 1.1rem; color: #00FF9D; text-align: center; font-family: 'Courier New', monospace; font-weight: bold; }
-        .wanted-reward span { font-size: 0.7rem; color: #8A9BB4; margin-right: 3px; }
+
+        /* 카드에 마우스를 올렸을 때 (쏙 튀어나옴!) */
+        .mini-card:hover {
+            /* 각도는 0도로 세우고, 위로 튀어나오며 커짐 */
+            transform: translateX(var(--tx)) translateY(calc(var(--ty) - 50px)) rotate(0deg) scale(1.2);
+            z-index: 100 !important; /* 무조건 맨 앞으로 오게 함 */
+            box-shadow: 0 0 30px #00FF9D;
+        }
+        .mini-card:hover img {
+            filter: brightness(1.2) sepia(0.2) hue-rotate(100deg); /* 밝아짐 */
+        }
+
+        /* == 뽑힌 카드 (보드 중앙에 스폰) == */
+        .drawn-card-area {
+            position: absolute;
+            top: 45%; /* 중앙보다 살짝 위 (아래 패를 가리지 않게) */
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5); /* 처음엔 작게 숨어있음 */
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 통통 튀는 등장 효과 */
+            
+            width: 380px;
+            background: rgba(0, 10, 5, 0.95);
+            border: 3px solid #00FF9D;
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(0, 255, 157, 0.5);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        /* 카드가 드로우되어 나타날 때의 효과 */
+        .drawn-card-area.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1); /* 원래 크기로 짠! */
+        }
+
+        /* 대형 카드 내부 디자인 */
+        .drawn-header { text-align: center; font-weight: 900; font-size: 2rem; color: #00FF9D; letter-spacing: 3px; border-bottom: 2px double #00FF9D; margin-bottom: 10px; }
+        .drawn-status { text-align: center; font-size: 0.9rem; color: #FF3B3B; font-weight: bold; margin-bottom: 15px; letter-spacing: 2px; }
+        .drawn-img-frame { width: 100%; height: 280px; background: #111; border: 1px solid rgba(0, 255, 157, 0.3); margin-bottom: 15px; overflow: hidden; }
+        .drawn-img-frame img { width: 100%; height: 100%; object-fit: cover; filter: sepia(0.3) hue-rotate(100deg) contrast(1.1); }
+        .drawn-info { border-top: 1px solid rgba(0, 255, 157, 0.4); padding-top: 15px; text-align: center; }
+        .drawn-name { font-size: 1.6rem; font-weight: bold; color: #FFFFFF; margin-bottom: 5px; text-shadow: 0 0 5px white; }
+        .drawn-reward { font-size: 1.3rem; color: #00FF9D; font-family: 'Courier New', monospace; font-weight: bold; margin-bottom: 10px; }
+        .drawn-bio { font-size: 0.9rem; color: #8A9BB4; line-height: 1.5; background: rgba(0,255,157,0.05); padding: 10px; border-radius: 5px; }
+
 
         /* 5. AI 비서 이브 (최상단 고정) */
         .ai-assistant {
@@ -154,7 +188,7 @@
 
     <div class="ai-assistant">
         <div class="ai-avatar">EVE</div>
-        <div class="ai-text"><strong>SYSTEM MESSAGE</strong><span>"8명의 고위험 수배자 데이터를 복원했습니다."</span></div>
+        <div class="ai-text"><strong>SYSTEM MESSAGE</strong><span>"터미널 접속 완료. 데이터를 동기화합니다."</span></div>
     </div>
 
     <div id="main-screen" class="screen active">
@@ -174,139 +208,104 @@
     </div>
 
     <div id="character-screen" class="screen">
-        <div class="content-panel">
-            <div class="content-header">
-                <h2>📜 초은하 현상수배지 데이터베이스</h2>
-                <button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button>
-            </div>
+        
+        <div class="board-header">
+            <h2>📜 초은하 현상수배지 데이터베이스</h2>
+            <button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button>
+        </div>
 
-            <div class="large-wanted-view" id="large-view">
-                <span class="view-close-btn" onclick="closeLargeView()">[X CLOSE]</span>
-                <div class="large-wanted-image">
-                    <img id="large-image" src="" alt="Target Detail" style="width:100%;height:100%;object-fit:cover; filter:sepia(0.3) hue-rotate(100deg);">
-                </div>
-                <div class="large-info-text">
-                    <h1 id="large-name" style="color:#00FF9D;margin-top:0;"></h1>
-                    <p id="large-bio"></p>
-                    <p style="color:#8A9BB4; font-size:0.9rem; font-family:monospace">보상금: <span id="large-reward" style="color:white;"></span></p>
-                </div>
+        <div class="drawn-card-area" id="drawn-card">
+            <div class="drawn-header">WANTED</div>
+            <div class="drawn-status">DEAD OR ALIVE</div>
+            <div class="drawn-img-frame">
+                <img id="drawn-img" src="" alt="Target Detail">
             </div>
-            
-            <div class="wanted-gallery-container">
-                <div class="wanted-gallery" id="drag-gallery">
-                    
-                    </div>
+            <div class="drawn-info">
+                <div class="drawn-name" id="drawn-name"></div>
+                <div class="drawn-reward">REWARD: <span id="drawn-reward" style="color:white;"></span></div>
+                <div class="drawn-bio" id="drawn-bio"></div>
             </div>
         </div>
+        
+        <div class="card-hand" id="card-hand">
+            </div>
     </div>
 
     <div id="world-screen" class="screen"><div class="content-panel"><div class="content-header"><h2>📖 세계관 및 역사</h2><button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button></div><p style="padding:40px;">연대기 복원 중...</p></div></div>
     <div id="location-screen" class="screen"><div class="content-panel"><div class="content-header"><h2>🪐 장소 소개</h2><button class="close-btn" onclick="openScreen('main-screen')">X RETURN</button></div><p style="padding:40px;">항성 좌표 데이터 수신 중...</p></div></div>
 
     <script>
-        // 1. 수배자 데이터 (원하시는 대로 수정하세요)
+        // 1. 수배자 데이터
         const bountyData = [
-            { id: 1, name: '실버 팽', reward: '50,000,000', img: 'char1.png', bio: '은하 연방 은행 강탈 주범. 교활하고 속도가 매우 빠름.' },
-            { id: 2, name: '네온 쉐도우', reward: '120,000,000', img: 'char2.png', bio: '네온 콜로니 암살 사건 용의자. 소리 없이 그림자 속을 이동함.' },
-            { id: 3, name: '크림슨 해커', reward: '85,000,000', img: 'char3.png', bio: '기간 시설 양자 서버 불법 침입. 전산망 폭주를 유도함.' },
-            { id: 4, name: '보이드 워커', reward: '200,000,000', img: 'char4.png', bio: '블랙홀 코어 불법 밀매. 은하계 전체를 위협하는 무법자.' },
-            { id: 5, name: '네뷸라 팬텀', reward: '75,000,000', img: 'char5.png', bio: '성운 구역 불법 도박장 운영 및 마약 밀반입. 신원 미상.' },
-            { id: 6, name: '스타 이터', reward: '500,000,000', img: 'char6.png', bio: '멸망한 행성의 코어를 삼키는 미지의 거대 괴생명체.' },
-            { id: 7, name: '크로노스 씨프', reward: '150,000,000', img: 'char7.png', bio: '차원 이동 기술 무단 유출. 길드의 시간을 훔치는 범죄자.' },
-            { id: 8, name: '글리치 위버', reward: '90,000,000', img: 'char8.png', bio: '현실 조작 시스템 글리치 유발. 대상의 인지 능력을 폭파함.' }
+            { id: 1, name: '실버 팽', reward: '50,000,000 ₵', img: 'char1.png', bio: '은하 연방 은행 강탈 주범. 교활하고 속도가 매우 빠름.' },
+            { id: 2, name: '네온 쉐도우', reward: '120,000,000 ₵', img: 'char2.png', bio: '네온 콜로니 암살 사건 용의자. 소리 없이 그림자 속을 이동함.' },
+            { id: 3, name: '크림슨 해커', reward: '85,000,000 ₵', img: 'char3.png', bio: '기간 시설 양자 서버 불법 침입. 전산망 폭주를 유도함.' },
+            { id: 4, name: '보이드 워커', reward: '200,000,000 ₵', img: 'char4.png', bio: '블랙홀 코어 불법 밀매. 은하계 전체를 위협하는 무법자.' },
+            { id: 5, name: '네뷸라 팬텀', reward: '75,000,000 ₵', img: 'char5.png', bio: '성운 구역 불법 도박장 운영 및 마약 밀반입. 신원 미상.' },
+            { id: 6, name: '스타 이터', reward: '500,000,000 ₵', img: 'char6.png', bio: '멸망한 행성의 코어를 삼키는 미지의 거대 괴생명체.' },
+            { id: 7, name: '크로노스 씨프', reward: '150,000,000 ₵', img: 'char7.png', bio: '차원 이동 기술 무단 유출. 길드의 시간을 훔치는 범죄자.' },
+            { id: 8, name: '글리치 위버', reward: '90,000,000 ₵', img: 'char8.png', bio: '현실 조작 시스템 글리치 유발. 대상의 인지 능력을 폭파함.' }
         ];
 
-        // 2. [핵심] 자바스크립트로 부채꼴 명부 촤르르 생성
-        const gallery = document.getElementById('drag-gallery');
+        // 2. 패(Hand)에 카드 생성 및 부채꼴 정렬
+        const hand = document.getElementById('card-hand');
+        const totalCards = bountyData.length;
         
         bountyData.forEach((data, index) => {
-            const poster = document.createElement('div');
-            poster.className = 'wanted-poster';
-            poster.id = `target-${data.id}`;
-            // 클릭하면 중앙 디테일 창을 띄웁니다
-            poster.setAttribute('onclick', `openLargeView(${data.id})`);
+            const card = document.createElement('div');
+            card.className = 'mini-card';
+            
+            // 중앙(3.5)을 기준으로 좌우로 얼마나 떨어져 있는지 계산
+            const offset = index - (totalCards - 1) / 2; 
+            
+            // 각도(회전), 높이(포물선), 좌우 간격 계산 (마법의 공식)
+            const rotate = offset * 6; // 한 장당 6도씩 틀어짐
+            const y = Math.abs(offset) * Math.abs(offset) * 3; // 양옆으로 갈수록 아래로 처짐
+            const x = offset * 55; // 카드들이 겹치도록 좁은 간격으로 배치
+            
+            // CSS 변수로 위치값을 넘겨줌 (Hover 시 원래 위치를 기억하게 하기 위함)
+            card.style.setProperty('--tx', `${x}px`);
+            card.style.setProperty('--ty', `${y}px`);
+            card.style.setProperty('--rot', `${rotate}deg`);
+            card.style.zIndex = index; // 오른쪽 카드가 위로 오게 겹침
 
-            // [마법의 공식 2] 카드마다 고유한 부채꼴 각도를 줍니다. (예: -20도에서 20도로 펼침)
-            // 8개이므로 중앙에서 멀어질수록 각도를 크게 줍니다
-            const rotation = (index - 3.5) * 6; // 중앙을 기준으로 각도를 넓게 펼침
-            poster.style.transform = `rotate(${rotation}deg) translateY(${Math.abs(rotation) * -0.2}px)`;
-
-            poster.innerHTML = `
-                <div class="wanted-header">WANTED</div>
-                <div class="wanted-status">DEAD OR ALIVE</div>
-                <div class="wanted-image-frame"><img src="${data.img}" alt="${data.name}"></div>
-                <div class="wanted-info">
-                    <div class="wanted-name">${data.name}</div>
-                    <div class="wanted-reward"><span>REWARD:</span> ${data.reward} ₵</div>
-                </div>
-            `;
-            gallery.appendChild(poster);
+            card.innerHTML = `<img src="${data.img}" alt="${data.name}">`;
+            
+            // 카드를 클릭하면 드로우 함수 실행
+            card.onclick = () => drawCard(data.id);
+            
+            hand.appendChild(card);
         });
 
         // 3. 화면 전환
+        const drawnCardView = document.getElementById('drawn-card');
+        
         function openScreen(targetId) {
             let screens = document.querySelectorAll('.screen');
             screens.forEach(function(screen) { screen.classList.remove('active'); });
             document.getElementById(targetId).classList.add('active');
-            closeLargeView(); // 다른 화면으로 갈 땐 디테일 창을 닫음
-            if(targetId === 'character-screen') { gallery.scrollLeft = 0; snapToCenter(); }
+            
+            // 딴 화면으로 가면 뽑아둔 카드 숨기기
+            drawnCardView.classList.remove('active');
         }
 
-        // 4. [요구사항] 중앙 상단 디테일 크게 보기
-        const largeView = document.getElementById('large-view');
-        function openLargeView(targetId) {
+        // 4. [요구사항] 카드 드로우 효과 (중앙에 크게 띄우기)
+        function drawCard(targetId) {
             const data = bountyData.find(item => item.id === targetId);
             if (!data) return;
 
-            document.getElementById('large-image').src = data.img;
-            document.getElementById('large-name').textContent = data.name;
-            document.getElementById('large-bio').textContent = data.bio;
-            document.getElementById('large-reward').textContent = `${data.reward} ₵`;
+            // 중앙 카드에 데이터 채워넣기
+            document.getElementById('drawn-img').src = data.img;
+            document.getElementById('drawn-name').textContent = data.name;
+            document.getElementById('drawn-bio').textContent = data.bio;
+            document.getElementById('drawn-reward').textContent = data.reward;
 
-            largeView.classList.add('open-detail'); // 짠! 하고 나타남
+            // 이전에 열려있던 카드가 있다면 살짝 숨겼다가 다시 짠! 하고 나오게 하는 애니메이션 리셋
+            drawnCardView.classList.remove('active');
+            setTimeout(() => {
+                drawnCardView.classList.add('active');
+            }, 50);
         }
-        function closeLargeView() { largeView.classList.remove('open-detail'); }
-
-        // 5. 마우스 드래그 & 스무스 스냅 (손맛) 매직 (이전 단계 유지)
-        const slider = document.getElementById('drag-gallery');
-        let isDown = false;
-        let startX;
-        let scrollLeft;
-
-        slider.addEventListener('mousedown', (e) => {
-            isDown = true;
-            slider.classList.add('active-drag');
-            startX = e.pageX - slider.offsetLeft;
-            scrollLeft = slider.scrollLeft;
-            closeLargeView(); // 드래그 시작할 땐 디테일 창을 닫아 집중하게 함
-        });
-
-        function snapToCenter() {
-            const cards = slider.querySelectorAll('.wanted-poster');
-            let minDistance = Infinity;
-            let closestScrollX = 0;
-            const containerCenter = slider.getBoundingClientRect().left + (slider.offsetWidth / 2);
-
-            cards.forEach(card => {
-                const cardCenter = card.getBoundingClientRect().left + (card.offsetWidth / 2);
-                const distance = Math.abs(containerCenter - cardCenter);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closestScrollX = card.offsetLeft - (slider.offsetWidth / 2) + (card.offsetWidth / 2);
-                }
-            });
-            slider.scrollTo({ left: closestScrollX, behavior: 'smooth' });
-        }
-
-        slider.addEventListener('mouseleave', () => { if (!isDown) return; isDown = false; slider.classList.remove('active-drag'); snapToCenter(); });
-        slider.addEventListener('mouseup', () => { if (!isDown) return; isDown = false; slider.classList.remove('active-drag'); snapToCenter(); });
-        slider.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - slider.offsetLeft;
-            const walk = (x - startX) * 1.5; // 끌어당기는 속도
-            slider.scrollLeft = scrollLeft - walk;
-        });
     </script>
 </body>
 </html>
