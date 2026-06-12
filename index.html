@@ -125,3 +125,151 @@
             margin: 10vh auto 0;
             padding: 40px;
             border-radius: 10px;
+            position: relative;
+        }
+
+        .content-panel h2 {
+            color: #00FF9D;
+            border-bottom: 2px solid #00FF9D;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            color: #00FF9D;
+            border: 1px solid #00FF9D;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #00FF9D;
+            color: #000;
+        }
+
+        /* 5. AI 비서 이브 (민트 테마로 변경) */
+        .ai-assistant {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 15, 10, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid #00FF9D;
+            border-right: 4px solid #00FF9D;
+            padding: 15px 20px;
+            border-radius: 10px 0 0 10px;
+            z-index: 1000;
+            transform: translateX(120%);
+            animation: slideIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation-delay: 1s;
+        }
+
+        .ai-avatar {
+            background: #00FF9D;
+            color: #000;
+            font-size: 0.9rem;
+            font-weight: 900;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            margin-right: 15px;
+            box-shadow: 0 0 10px #00FF9D;
+        }
+
+        .ai-text strong {
+            color: #00FF9D;
+            font-size: 0.75rem;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .ai-text span {
+            color: #E0FFF2;
+            font-size: 0.95rem;
+        }
+
+        @keyframes slideIn {
+            0% { transform: translateX(120%); }
+            100% { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ai-assistant">
+        <div class="ai-avatar">EVE</div>
+        <div class="ai-text">
+            <strong>SYSTEM MESSAGE</strong>
+            <span>"안녕하세요. 터미널 접속을 환영합니다."</span>
+        </div>
+    </div>
+
+    <div id="main-screen" class="screen active">
+        <h1 class="main-title">BOUNTY HUNTER TERMINAL</h1>
+
+        <div id="btn-location" class="scattered-btn" onclick="openScreen('location-screen')">
+            <div class="btn-icon">🪐</div>
+            <div class="btn-text">장소 데이터베이스</div>
+        </div>
+
+        <div id="btn-world" class="scattered-btn" onclick="openScreen('world-screen')">
+            <div class="btn-icon">📖</div>
+            <div class="btn-text">세계관 및 역사</div>
+        </div>
+
+        <div id="btn-character" class="scattered-btn" onclick="openScreen('character-screen')">
+            <div class="btn-icon">📜</div>
+            <div class="btn-text">수배자/헌터 명부</div>
+        </div>
+    </div>
+
+    <div id="world-screen" class="screen">
+        <div class="content-panel">
+            <button class="close-btn" onclick="openScreen('main-screen')">X 돌아가기</button>
+            <h2>📖 세계관 및 역사</h2>
+            <p>우주의 패권 다툼과 초은하 길드가 탄생하게 된 배경 기록입니다...</p>
+        </div>
+    </div>
+
+    <div id="location-screen" class="screen">
+        <div class="content-panel">
+            <button class="close-btn" onclick="openScreen('main-screen')">X 돌아가기</button>
+            <h2>🪐 장소 소개</h2>
+            <p>항성계 구역 데이터 및 버려진 콜로니에 대한 접근 정보입니다...</p>
+        </div>
+    </div>
+
+    <div id="character-screen" class="screen">
+        <div class="content-panel">
+            <button class="close-btn" onclick="openScreen('main-screen')">X 돌아가기</button>
+            <h2>📜 수배자/헌터 명부</h2>
+            <p>이곳에 세부적인 캐릭터 초상화와 스테이터스가 나열됩니다...</p>
+        </div>
+    </div>
+
+    <script>
+        function openScreen(targetId) {
+            // 1. 모든 화면에서 'active' 클래스를 빼서 투명하게 숨김
+            let screens = document.querySelectorAll('.screen');
+            screens.forEach(function(screen) {
+                screen.classList.remove('active');
+            });
+
+            // 2. 클릭한 타겟 화면에만 'active' 클래스를 넣어서 짠! 하고 나타나게 함
+            document.getElementById(targetId).classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
