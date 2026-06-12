@@ -1,471 +1,270 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>초은하 현상금 사냥꾼 길드 터미널</title>
-    <style>
-        /* 1. 전체 설정 */
-        body {
-            margin: 0; padding: 0;
-            background-image: url('bg.png'); /* 배경 이미지 파일명 확인 필수! */
-            background-size: cover; background-position: center; background-repeat: no-repeat;
-            background-color: #05120E; color: #E0FFF2; font-family: 'Malgun Gothic', sans-serif;
-            overflow: hidden; user-select: none; width: 100vw; height: 100vh;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>초은하 현상금 사냥꾼 길드 터미널</title>
+<style>
+/* 1. Reset & Body */
+body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #05120E; color: #E0FFF2; font-family: 'Malgun Gothic', sans-serif; overflow: hidden; user-select: none; width: 100vw; height: 100vh; }
+.screen { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+.screen.active { opacity: 1; pointer-events: auto; }
 
-        /* 2. 화면 전환 레이아웃 */
-        .screen {
-            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-            opacity: 0; pointer-events: none; transition: opacity 0.5s ease-in-out;
-        }
-        .screen.active { opacity: 1; pointer-events: auto; }
+/* 2. Login Screen (블랙 배경 & 깜빡이는 언더바) */
+#login-screen { background: #000; z-index: 2000; }
+.login-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,15,10,0.8); backdrop-filter: blur(20px); border: 2px solid rgba(0,255,157,0.5); box-shadow: 0 0 50px rgba(0,255,157,0.2); padding: 60px 80px; border-radius: 15px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.login-title { font-size: 2.5rem; color: #00FF9D; text-shadow: 0 0 15px rgba(0,255,157,0.8); letter-spacing: 5px; margin: 0 0 10px; }
+.login-subtitle { color: #8A9BB4; letter-spacing: 2px; margin-bottom: 40px; }
+.login-input { background: rgba(0,0,0,0.6); border: 1px solid #00FF9D; color: #FFF; padding: 15px 20px; font-size: 1.2rem; border-radius: 5px; outline: none; width: 300px; text-align: center; margin-bottom: 30px; font-weight: bold; caret-color: transparent; }
+.login-input:focus { background: rgba(0,255,157,0.1); border-color: #FFF; box-shadow: 0 0 15px rgba(0,255,157,0.4); }
+.login-input::placeholder { color: rgba(0,255,157,0.8); font-weight: 900; }
+.login-btn { background: transparent; color: #00FF9D; border: 2px solid #00FF9D; padding: 12px 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer; border-radius: 5px; letter-spacing: 3px; transition: 0.3s; }
+.login-btn:hover { background: #00FF9D; color: #000; box-shadow: 0 0 20px #00FF9D; }
 
-        /* =========================================
-           로그인 화면 UI
-        ========================================= */
-        #login-screen { background-color: #000000; z-index: 2000; }
-        .login-container {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0, 15, 10, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 2px solid rgba(0, 255, 157, 0.5); box-shadow: 0 0 50px rgba(0, 255, 157, 0.2);
-            padding: 60px 80px; border-radius: 15px; text-align: center;
-            display: flex; flex-direction: column; align-items: center;
-        }
-        .login-title { font-size: 2.5rem; color: #00FF9D; text-shadow: 0 0 15px rgba(0, 255, 157, 0.8); letter-spacing: 5px; margin-top: 0; margin-bottom: 10px; }
-        .login-subtitle { color: #8A9BB4; font-size: 1rem; letter-spacing: 2px; margin-bottom: 40px; }
-        
-        .login-input {
-            background: rgba(0, 0, 0, 0.6); border: 1px solid #00FF9D; color: #FFFFFF;
-            padding: 15px 20px; font-size: 1.2rem; border-radius: 5px; outline: none;
-            width: 300px; text-align: center; margin-bottom: 30px; font-family: 'Malgun Gothic', sans-serif;
-            box-shadow: inset 0 0 10px rgba(0,255,157,0.1); transition: all 0.3s;
-            caret-color: transparent; font-weight: bold; 
-        }
-        .login-input:focus { background: rgba(0, 255, 157, 0.1); box-shadow: inset 0 0 15px rgba(0,255,157,0.4), 0 0 15px rgba(0,255,157,0.4); border-color: #FFFFFF; }
-        .login-input::placeholder { color: rgba(0, 255, 157, 0.8); font-weight: 900; }
+/* 3. Main Screen & Buttons */
+.main-title { position: absolute; top: 5%; width: 100%; text-align: center; font-size: 2.5rem; color: #00FF9D; text-shadow: 0 0 15px rgba(0,255,157,0.8); letter-spacing: 5px; }
+.scattered-btn { position: absolute; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.3s; animation: float 4s infinite ease-in-out; }
+.scattered-btn:hover { transform: scale(1.1); filter: drop-shadow(0 0 20px #00FF9D); }
+.btn-icon { background: rgba(0,40,20,0.4); border: 2px solid #00FF9D; border-radius: 50%; width: 110px; height: 110px; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 15px rgba(0,255,157,0.3); margin-bottom: 15px; position: relative; }
+.btn-text { background: rgba(0,20,10,0.8); padding: 5px 15px; border-radius: 20px; border: 1px dashed #00FF9D; color: #00FF9D; font-weight: bold; font-size: 0.85rem; }
+#btn-location { top: 20%; left: 15%; animation-delay: 0s; }
+#btn-world { top: 40%; right: 18%; animation-delay: 1s; }
+#btn-character { bottom: 25%; left: 28%; animation-delay: 2s; }
+#btn-rules { bottom: 12%; right: 33%; animation-delay: 3s; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        .login-btn {
-            background: transparent; color: #00FF9D; border: 2px solid #00FF9D;
-            padding: 12px 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer;
-            transition: all 0.3s; border-radius: 5px; letter-spacing: 3px;
-        }
-        .login-btn:hover { background: #00FF9D; color: #000; box-shadow: 0 0 20px #00FF9D; }
+/* =========================================
+   [NEW] 순수 CSS로 그린 홀로그램 아이콘 
+========================================= */
+.css-icon { width: 50px; height: 50px; position: relative; pointer-events: none; }
+/* 1. 장소 (행성) */
+.icon-planet { background: rgba(0,255,157,0.3); border-radius: 50%; box-shadow: 0 0 15px rgba(0,255,157,0.5); }
+.icon-planet::after { content: ''; position: absolute; top: 50%; left: -10px; right: -10px; height: 8px; background: rgba(0,255,157,0.4); border-radius: 50%; transform: translateY(-50%) rotate(25deg); box-shadow: 0 0 10px rgba(0,255,157,0.5); }
+/* 2. 역사 (요청하신 입체적인 책 형태) */
+.icon-book { background: rgba(0,255,157,0.2); width: 40px; height: 55px; border-radius: 2px 8px 8px 2px; box-shadow: -4px 0 0 rgba(0,255,157,0.6), inset 5px 0 10px rgba(0,255,157,0.3); position: relative; top: -5px; }
+.icon-book::before { content: ''; position: absolute; right: 5px; top: 5px; bottom: 5px; width: 25px; border-left: 2px solid rgba(0,255,157,0.5); }
+.icon-book::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 25px; background: rgba(0,255,157,0.8); border-radius: 5px; box-shadow: 0 0 10px #00FF9D; }
+/* 3. 명부 (타겟/레이더) */
+.icon-target { border-radius: 50%; background: radial-gradient(circle, transparent 40%, rgba(0,255,157,0.4) 45%, rgba(0,255,157,0.4) 60%, transparent 65%); filter: drop-shadow(0 0 5px rgba(0,255,157,0.8)); }
+.icon-target::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 12px; height: 12px; background: rgba(0,255,157,0.6); border-radius: 50%; }
+.icon-target::after { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background: rgba(0,255,157,0.3); }
+/* 4. 규약 (방패) */
+.icon-rules { background: rgba(0,255,157,0.3); border-radius: 5px 5px 25px 25px; box-shadow: 0 0 15px rgba(0,255,157,0.5); }
+.icon-rules::before { content: ''; position: absolute; top: 15px; left: 10px; right: 10px; height: 4px; background: rgba(0,255,157,0.6); box-shadow: 0 10px 0 rgba(0,255,157,0.6), 0 20px 0 rgba(0,255,157,0.6); }
 
-        /* 3. 메인 로비 화면 */
-        .main-title {
-            position: absolute; top: 5%; width: 100%; text-align: center;
-            font-size: 2.5rem; color: #00FF9D; text-shadow: 0 0 15px rgba(0, 255, 157, 0.8);
-            letter-spacing: 5px; pointer-events: none;
-        }
+/* 4. Common Sub Panels */
+.content-panel { background: rgba(0,20,10,0.7); backdrop-filter: blur(15px); border: 1px solid #00FF9D; box-shadow: 0 0 30px rgba(0,255,157,0.2); width: 95%; max-width: 1200px; height: 85vh; margin: 6vh auto 0; border-radius: 15px; position: relative; display: flex; flex-direction: column; }
+.content-header { padding: 30px 40px 10px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.content-header h2 { color: #00FF9D; margin: 0; padding-bottom: 10px; border-bottom: 2px solid #00FF9D; }
+.click-to-return-hint { color: rgba(0,255,157,0.5); font-size: 0.9rem; letter-spacing: 1px; animation: pulse 2s infinite; pointer-events: none; }
+@keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 
-        .scattered-btn {
-            position: absolute; display: flex; flex-direction: column; align-items: center;
-            cursor: pointer; transition: transform 0.3s; animation: float 4s infinite ease-in-out;
-        }
-        .scattered-btn:hover { transform: scale(1.1); filter: drop-shadow(0 0 20px #00FF9D); }
-        .btn-icon {
-            background: rgba(0, 40, 20, 0.4); border: 2px solid #00FF9D; border-radius: 50%;
-            width: 110px; height: 110px; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 0 15px rgba(0, 255, 157, 0.3); margin-bottom: 15px; overflow: hidden;
-            position: relative;
-        }
-        .btn-text {
-            background: rgba(0, 20, 10, 0.8); padding: 5px 15px; border-radius: 20px;
-            border: 1px dashed #00FF9D; color: #00FF9D; font-weight: bold; font-size: 0.85rem;
-        }
+/* EVE Assistant */
+.ai-assistant { position: fixed; top: 20px; right: 20px; display: flex; align-items: center; background: rgba(0,15,10,0.9); backdrop-filter: blur(8px); border: 1px solid #00FF9D; border-right: 4px solid #00FF9D; padding: 15px 20px; border-radius: 10px 0 0 10px; z-index: 1000; transform: translateX(120%); pointer-events: none; transition: 0.8s cubic-bezier(0.25, 1, 0.5, 1); }
+.ai-assistant.show { transform: translateX(0); }
+.ai-text strong { color: #00FF9D; font-size: 0.75rem; display: block; }
+#eve-message { color: #E0FFF2; font-size: 0.95rem; line-height: 1.4; display: block; transition: opacity 0.2s; }
 
-        /* 불규칙 위치 */
-        #btn-location { top: 20%; left: 15%; animation-delay: 0s; }
-        #btn-world { top: 40%; right: 18%; animation-delay: 1s; }
-        #btn-character { bottom: 25%; left: 28%; animation-delay: 2s; }
-        #btn-rules { bottom: 12%; right: 33%; animation-delay: 3s; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+/* =========================================
+   [NEW] 역사 탭 - 세로 연혁 타임라인 드래그
+========================================= */
+.vertical-drag-container { flex-grow: 1; overflow-y: auto; padding: 20px 60px 60px; cursor: grab; scrollbar-width: none; box-shadow: inset 0 20px 20px -20px rgba(0,255,157,0.2), inset 0 -20px 20px -20px rgba(0,255,157,0.2); }
+.vertical-drag-container::-webkit-scrollbar { display: none; }
+.vertical-drag-container.active-drag { cursor: grabbing; scroll-behavior: auto; }
+.timeline-item { position: relative; padding-left: 40px; margin-bottom: 40px; border-left: 2px solid rgba(0,255,157,0.3); user-select: none; transition: 0.3s; padding-bottom: 10px; }
+.vertical-drag-container:not(.active-drag) .timeline-item:hover { transform: translateX(10px); border-left-color: #00FF9D; }
+.timeline-item::before { content: ''; position: absolute; left: -8px; top: 0; width: 14px; height: 14px; border-radius: 50%; background: #05120E; border: 2px solid #00FF9D; box-shadow: 0 0 10px #00FF9D; transition: 0.3s; }
+.vertical-drag-container:not(.active-drag) .timeline-item:hover::before { background: #00FF9D; }
+.timeline-year { font-size: 1.8rem; color: #00FF9D; font-weight: bold; text-shadow: 0 0 10px rgba(0,255,157,0.5); margin-bottom: 10px; }
+.timeline-event { color: #E0FFF2; font-size: 1.1rem; line-height: 1.6; background: rgba(0,255,157,0.05); padding: 20px; border-radius: 0 10px 10px 10px; border: 1px solid rgba(0,255,157,0.1); pointer-events: none; }
 
-        /* =========================================
-           [업데이트] HTML/CSS 테두리 없는 반투명 홀로그램 아이콘
-        ========================================= */
-        .css-icon {
-            width: 50px; height: 50px; position: relative;
-            /* 테두리 없이 형광펜으로 칠한 듯한 반투명 색상 */
-            background-color: rgba(0, 255, 157, 0.3);
-            box-shadow: 0 0 15px rgba(0, 255, 157, 0.5);
-            pointer-events: none;
-        }
-
-        /* 1. 장소 (행성 모양) */
-        .icon-planet { border-radius: 50%; }
-        .icon-planet::after {
-            content: ''; position: absolute; top: 50%; left: -10px; right: -10px; height: 8px;
-            background-color: rgba(0, 255, 157, 0.4); border-radius: 50%;
-            transform: translateY(-50%) rotate(25deg); box-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
-        }
-
-        /* 2. 역사 (모래시계/데이터노드 모양) */
-        .icon-history {
-            background-color: transparent; box-shadow: none; width: 0; height: 0;
-            /* 테두리를 이용해 위아래로 마주보는 삼각형 두 개 생성 */
-            border-left: 25px solid transparent; border-right: 25px solid transparent;
-            border-top: 25px solid rgba(0, 255, 157, 0.4); border-bottom: 25px solid rgba(0, 255, 157, 0.4);
-            filter: drop-shadow(0 0 10px rgba(0,255,157,0.5));
-        }
-
-        /* 3. 명부 (타겟/레이더 모양) */
-        .icon-target {
-            background-color: transparent; border-radius: 50%; box-shadow: none;
-            /* 중앙이 뚫린 두꺼운 도넛 형태 */
-            background: radial-gradient(circle, transparent 40%, rgba(0, 255, 157, 0.4) 45%, rgba(0, 255, 157, 0.4) 60%, transparent 65%);
-            filter: drop-shadow(0 0 5px rgba(0,255,157,0.8));
-        }
-        .icon-target::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 12px; height: 12px; background-color: rgba(0, 255, 157, 0.6); border-radius: 50%; }
-
-        /* 4. 규약 (방패/보안 마크) */
-        .icon-rules {
-            background-color: rgba(0, 255, 157, 0.3); border-radius: 5px 5px 25px 25px; /* 아래가 둥근 방패 모양 */
-        }
-        .icon-rules::before {
-            content: ''; position: absolute; top: 15px; left: 15px; right: 15px; height: 4px; background-color: rgba(0, 255, 157, 0.6); box-shadow: 0 10px 0 rgba(0, 255, 157, 0.6);
-        }
-
-        /* 서브 패널 공통 */
-        .content-panel {
-            background: rgba(0, 20, 10, 0.7); backdrop-filter: blur(15px);
-            border: 1px solid #00FF9D; box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
-            width: 95%; max-width: 1200px; height: 85vh; margin: 6vh auto 0;
-            border-radius: 15px; position: relative; overflow: hidden;
-            display: flex; flex-direction: column;
-        }
-        .content-header { padding: 30px 40px 10px 40px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-        .content-header h2 { color: #00FF9D; margin: 0; padding-bottom: 10px; border-bottom: 2px solid #00FF9D; }
-
-        /* =========================================
-           [신규] 위아래 세로 드래그 타임라인 (역사 탭)
-        ========================================= */
-        .vertical-drag-container {
-            flex-grow: 1; overflow-y: auto; overflow-x: hidden;
-            padding: 20px 60px 60px 60px; cursor: grab; scrollbar-width: none;
-            /* 터미널 느낌을 살리기 위한 내부 그림자 */
-            box-shadow: inset 0 20px 20px -20px rgba(0, 255, 157, 0.2), inset 0 -20px 20px -20px rgba(0, 255, 157, 0.2);
-        }
-        .vertical-drag-container.active-drag { cursor: grabbing; scroll-behavior: auto; }
-        .vertical-drag-container::-webkit-scrollbar { display: none; }
-
-        .timeline-item {
-            position: relative; padding-left: 40px; margin-bottom: 40px;
-            /* 왼쪽에 세로로 이어지는 선 */
-            border-left: 2px solid rgba(0, 255, 157, 0.3);
-            user-select: none; /* 글씨 드래그 방지 */
-            transition: transform 0.3s, background 0.3s;
-            padding-bottom: 10px;
-        }
-        /* 드래그 안 할 때 마우스 올리면 하이라이트 */
-        .vertical-drag-container:not(.active-drag) .timeline-item:hover {
-            transform: translateX(10px);
-            border-left-color: #00FF9D;
-        }
-        .timeline-item::before {
-            /* 타임라인 노드 (동그라미 점) */
-            content: ''; position: absolute; left: -8px; top: 0;
-            width: 14px; height: 14px; border-radius: 50%;
-            background: #05120E; border: 2px solid #00FF9D; box-shadow: 0 0 10px #00FF9D;
-            transition: background 0.3s;
-        }
-        .vertical-drag-container:not(.active-drag) .timeline-item:hover::before { background: #00FF9D; }
-        
-        .timeline-year { font-size: 1.8rem; color: #00FF9D; font-weight: bold; text-shadow: 0 0 10px rgba(0,255,157,0.5); margin-bottom: 10px; letter-spacing: 2px; }
-        .timeline-event { color: #E0FFF2; font-size: 1.1rem; line-height: 1.6; background: rgba(0, 255, 157, 0.05); padding: 20px; border-radius: 0 10px 10px 10px; border: 1px solid rgba(0, 255, 157, 0.1); }
-
-
-        /* =========================================
-           카드 게임 보드 UI (명부 화면)
-        ========================================= */
-        .board-header { position: absolute; top: 30px; left: 50px; right: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
-        .board-header h2 { color: #00FF9D; margin: 0; text-shadow: 0 0 10px rgba(0,255,157,0.5); border-bottom: 2px solid #00FF9D; padding-bottom: 10px; }
-        .click-to-return-hint { color: rgba(0, 255, 157, 0.5); font-size: 0.9rem; letter-spacing: 1px; animation: pulse 2s infinite; pointer-events: none; }
-        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
-
-        .card-hand { position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); display: flex; justify-content: center; align-items: flex-end; width: 800px; height: 250px; perspective: 1000px; z-index: 20; pointer-events: none; }
-        .mini-card { position: absolute; width: 130px; height: 190px; background: rgba(10, 10, 10, 0.5); backdrop-filter: blur(5px); border: 2px solid #00FF9D; border-radius: 8px; box-shadow: 0 0 15px rgba(0, 255, 157, 0.2); cursor: pointer; transform-origin: bottom center; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s, z-index 0s; overflow: hidden; bottom: 0; transform: translateX(var(--tx)) translateY(var(--ty)) rotate(var(--rot)); pointer-events: auto; }
-        .mini-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6) sepia(0.5) hue-rotate(100deg); pointer-events: none; transition: filter 0.3s; }
-        .mini-card:hover { transform: translateX(var(--tx)) translateY(calc(var(--ty) - 50px)) rotate(0deg) scale(1.2); z-index: 100 !important; box-shadow: 0 0 30px #00FF9D; }
-        .mini-card:hover img { filter: brightness(1.2) sepia(0.2) hue-rotate(100deg); }
-
-        .drawn-card-area { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%) scale(0.5); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 450px; background: rgba(0, 10, 5, 0.2); backdrop-filter: blur(20px) brightness(1.2); -webkit-backdrop-filter: blur(20px) brightness(1.2); border: 2px solid rgba(0, 255, 157, 0.7); border-radius: 15px; box-shadow: 0 0 50px rgba(0, 255, 157, 0.3); padding: 20px; display: flex; flex-direction: column; z-index: 10; }
-        .drawn-card-area.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
-        .drawn-header { text-align: center; font-weight: 900; font-size: 2rem; color: #00FF9D; letter-spacing: 3px; border-bottom: 2px double #00FF9D; margin-bottom: 10px; text-shadow: 0 0 10px #00FF9D; }
-        .drawn-status { text-align: center; font-size: 0.9rem; color: #FF3B3B; font-weight: bold; margin-bottom: 15px; letter-spacing: 2px; }
-        .drawn-img-frame { width: 100%; height: auto; max-height: 400px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(0, 255, 157, 0.3); margin-bottom: 15px; overflow: hidden; display: flex; justify-content: center; align-items: center; border-radius: 5px; }
-        .drawn-img-frame img { max-width: 100%; max-height: 400px; object-fit: contain; filter: sepia(0.3) hue-rotate(100deg) contrast(1.1); pointer-events: none; }
-        .drawn-info { border-top: 1px solid rgba(0, 255, 157, 0.4); padding-top: 15px; text-align: center; }
-        .drawn-name { font-size: 1.6rem; font-weight: bold; color: #FFFFFF; margin-bottom: 5px; text-shadow: 0 0 10px white; }
-        .drawn-reward { font-size: 1.3rem; color: #00FF9D; font-family: 'Courier New', monospace; font-weight: bold; margin-bottom: 10px; text-shadow: 0 0 10px #00FF9D; }
-        .drawn-bio { font-size: 0.95rem; color: #FFFFFF; line-height: 1.6; background: rgba(0,255,157,0.08); padding: 12px; border-radius: 5px; pointer-events: none; text-shadow: 0 1px 2px black; }
-
-        /* AI 비서 이브 */
-        .ai-assistant { position: fixed; top: 20px; right: 20px; display: flex; align-items: center; background: rgba(0, 15, 10, 0.9); backdrop-filter: blur(8px); border: 1px solid #00FF9D; border-right: 4px solid #00FF9D; padding: 15px 20px; border-radius: 10px 0 0 10px; z-index: 1000; transform: translateX(120%); pointer-events: none; }
-        .ai-assistant.show { animation: slideIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-        .ai-text strong { color: #00FF9D; font-size: 0.75rem; display: block; }
-        #eve-message { color: #E0FFF2; font-size: 0.95rem; line-height: 1.4; display: block; transition: opacity 0.2s ease-in-out; }
-        @keyframes slideIn { 0% { transform: translateX(120%); } 100% { transform: translateX(0); } }
-    </style>
+/* 5. Cards UI (명부) */
+.board-header { position: absolute; top: 30px; left: 50px; right: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
+.board-header h2 { color: #00FF9D; margin: 0; text-shadow: 0 0 10px rgba(0,255,157,0.5); border-bottom: 2px solid #00FF9D; padding-bottom: 10px; }
+.card-hand { position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); display: flex; justify-content: center; align-items: flex-end; width: 800px; height: 250px; perspective: 1000px; z-index: 20; pointer-events: none; }
+.mini-card { position: absolute; width: 130px; height: 190px; background: rgba(10,10,10,0.5); backdrop-filter: blur(5px); border: 2px solid #00FF9D; border-radius: 8px; box-shadow: 0 0 15px rgba(0,255,157,0.2); cursor: pointer; transform-origin: bottom center; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s; bottom: 0; transform: translateX(var(--tx)) translateY(var(--ty)) rotate(var(--rot)); pointer-events: auto; }
+.mini-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6) sepia(0.5) hue-rotate(100deg); pointer-events: none; transition: 0.3s; }
+.mini-card:hover { transform: translateX(var(--tx)) translateY(calc(var(--ty) - 50px)) rotate(0deg) scale(1.2); z-index: 100 !important; box-shadow: 0 0 30px #00FF9D; }
+.mini-card:hover img { filter: brightness(1.2) sepia(0.2) hue-rotate(100deg); }
+.drawn-card-area { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%) scale(0.5); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 450px; background: rgba(0,10,5,0.2); backdrop-filter: blur(20px) brightness(1.2); border: 2px solid rgba(0,255,157,0.7); border-radius: 15px; box-shadow: 0 0 50px rgba(0,255,157,0.3); padding: 20px; display: flex; flex-direction: column; z-index: 10; }
+.drawn-card-area.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+.drawn-header { text-align: center; font-weight: 900; font-size: 2rem; color: #00FF9D; letter-spacing: 3px; border-bottom: 2px double #00FF9D; margin-bottom: 10px; text-shadow: 0 0 10px #00FF9D; }
+.drawn-status { text-align: center; font-size: 0.9rem; color: #FF3B3B; font-weight: bold; margin-bottom: 15px; letter-spacing: 2px; }
+.drawn-img-frame { width: 100%; height: auto; max-height: 400px; background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,157,0.3); margin-bottom: 15px; overflow: hidden; display: flex; justify-content: center; align-items: center; border-radius: 5px; }
+.drawn-img-frame img { max-width: 100%; max-height: 400px; object-fit: contain; filter: sepia(0.3) hue-rotate(100deg) contrast(1.1); pointer-events: none; }
+.drawn-info { border-top: 1px solid rgba(0,255,157,0.4); padding-top: 15px; text-align: center; }
+.drawn-name { font-size: 1.6rem; font-weight: bold; color: #FFF; margin-bottom: 5px; text-shadow: 0 0 10px #FFF; }
+.drawn-reward { font-size: 1.3rem; color: #00FF9D; font-family: monospace; font-weight: bold; margin-bottom: 10px; text-shadow: 0 0 10px #00FF9D; }
+.drawn-bio { font-size: 0.95rem; color: #FFF; line-height: 1.6; background: rgba(0,255,157,0.08); padding: 12px; border-radius: 5px; pointer-events: none; text-shadow: 0 1px 2px #000; }
+</style>
 </head>
 <body>
 
-    <div class="ai-assistant" id="eve-popup">
-        <div class="ai-text">
-            <strong>EVE</strong>
-            <span id="eve-message"></span>
+<div class="ai-assistant" id="eve-popup"><div class="ai-text"><strong>EVE</strong><span id="eve-message"></span></div></div>
+
+<div id="login-screen" class="screen active">
+    <div class="login-container">
+        <h1 class="login-title">BOUNTY HUNTER</h1>
+        <div class="login-subtitle">[ 터미널 보안 인증 시스템 ]</div>
+        <input type="text" id="username-input" class="login-input" placeholder="헌터명(ID)을 입력하세요" autocomplete="off" autofocus>
+        <button class="login-btn" onclick="processLogin()">ACCESS</button>
+    </div>
+</div>
+
+<div id="main-screen" class="screen">
+    <h1 class="main-title">BOUNTY HUNTER TERMINAL</h1>
+    <div id="btn-location" class="scattered-btn" onclick="openScreen('location-screen')">
+        <div class="btn-icon"><div class="css-icon icon-planet"></div></div>
+        <div class="btn-text">장소 데이터베이스</div>
+    </div>
+    <div id="btn-world" class="scattered-btn" onclick="openScreen('world-screen')">
+        <div class="btn-icon"><div class="css-icon icon-book"></div></div>
+        <div class="btn-text">역사</div>
+    </div>
+    <div id="btn-character" class="scattered-btn" onclick="openScreen('character-screen')">
+        <div class="btn-icon"><div class="css-icon icon-target"></div></div>
+        <div class="btn-text">수배자 명부</div>
+    </div>
+    <div id="btn-rules" class="scattered-btn" onclick="openScreen('rules-screen')">
+        <div class="btn-icon"><div class="css-icon icon-rules"></div></div>
+        <div class="btn-text">길드 규약</div>
+    </div>
+</div>
+
+<div id="character-screen" class="screen">
+    <div class="board-header"><h2>📜 초은하 현상수배지 데이터베이스</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
+    <div class="drawn-card-area" id="drawn-card">
+        <div class="drawn-header">WANTED</div><div class="drawn-status">DEAD OR ALIVE</div>
+        <div class="drawn-img-frame"><img id="drawn-img" src="" alt="Detail"></div>
+        <div class="drawn-info"><div class="drawn-name" id="drawn-name"></div><div class="drawn-reward">REWARD: <span id="drawn-reward" style="color:white;"></span></div><div class="drawn-bio" id="drawn-bio"></div></div>
+    </div>
+    <div class="card-hand" id="card-hand"></div>
+</div>
+
+<div id="world-screen" class="screen" onclick="if(event.target===this) openScreen('main-screen')">
+    <div class="content-panel">
+        <div class="content-header"><h2>📖 초은하 연대기</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
+        <div class="vertical-drag-container" id="history-timeline">
+            <div class="timeline-item"><div class="timeline-year">SC 2045</div><div class="timeline-event">제1차 은하 개척 시대 도래. 웜홀 기술의 상용화로 인류의 활동 영역이 태양계를 넘어섬.</div></div>
+            <div class="timeline-item"><div class="timeline-year">SC 2077</div><div class="timeline-event">네온 콜로니 폭동 사태 발생. 최초의 대규모 범죄 조직 '블랙 네뷸라' 등장.</div></div>
+            <div class="timeline-item"><div class="timeline-year">SC 2084</div><div class="timeline-event">은하 연방 한계 돌파. 민간 무력 단체 합법화, 초은하 현상금 사냥꾼 길드 창설.</div></div>
+            <div class="timeline-item"><div class="timeline-year">SC 2102</div><div class="timeline-event">'스타 이터' 최초 관측. 행성을 집어삼키는 미지의 괴생명체 등장으로 길드 최고액 현상금 등록.</div></div>
+            <div class="timeline-item"><div class="timeline-year">SC 2115</div><div class="timeline-event">AI 시스템 'EVE' 도입. 길드의 모든 데이터베이스 통합 터미널화.</div></div>
+            <div class="timeline-item"><div class="timeline-year">SC 2126 (현재)</div><div class="timeline-event">차원 이동 기술 무단 유출 사태 발생. 전례 없는 위협을 가진 1급 수배자들이 흩어짐.</div></div>
         </div>
     </div>
+</div>
 
-    <div id="login-screen" class="screen active">
-        <div class="login-container">
-            <h1 class="login-title">BOUNTY HUNTER</h1>
-            <div class="login-subtitle">[ 터미널 보안 인증 시스템 ]</div>
-            <input type="text" id="username-input" class="login-input" placeholder="헌터명(ID)을 입력하세요" autocomplete="off" autofocus>
-            <button class="login-btn" onclick="processLogin()">ACCESS</button>
-        </div>
+<div id="location-screen" class="screen" onclick="if(event.target===this) openScreen('main-screen')">
+    <div class="content-panel"><div class="content-header"><h2>🪐 장소 소개</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div><p style="padding:40px;">항성 좌표 데이터 수신 중...</p></div>
+</div>
+
+<div id="rules-screen" class="screen" onclick="if(event.target===this) openScreen('main-screen')">
+    <div class="content-panel"><div class="content-header"><h2>⚖️ 길드 규약</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
+        <p style="padding:40px; color:#E0FFF2; line-height: 1.8; font-size:1.1rem;">
+            <strong style="color:#00FF9D; font-size:1.3rem;">[ 현상금 사냥꾼 기본 행동 강령 ]</strong><br><br>
+            제1조: 길드의 의뢰는 절대적이며, 타겟 생포 시 보상금은 100% 지급된다.<br>
+            제2조: 헌터 간의 불필요한 교전 및 전리품 탈취는 엄격히 금지된다.<br>
+            제3조: 미등록 불법 무기 사용은 즉결 처벌 대상이다.
+        </p>
     </div>
+</div>
 
-    <div id="main-screen" class="screen">
-        <h1 class="main-title">BOUNTY HUNTER TERMINAL</h1>
-        
-        <div id="btn-location" class="scattered-btn" onclick="openScreen('location-screen')">
-            <div class="btn-icon"><div class="css-icon icon-planet"></div></div>
-            <div class="btn-text">장소 데이터베이스</div>
-        </div>
-        
-        <div id="btn-world" class="scattered-btn" onclick="openScreen('world-screen')">
-            <div class="btn-icon"><div class="css-icon icon-history"></div></div>
-            <div class="btn-text">역사</div>
-        </div>
-        
-        <div id="btn-character" class="scattered-btn" onclick="openScreen('character-screen')">
-            <div class="btn-icon"><div class="css-icon icon-target"></div></div>
-            <div class="btn-text">수배자 명부</div>
-        </div>
+<script>
+let currentHunterName = '익명의 헌터';
+const loginInput = document.getElementById('username-input');
+const basePlaceholder = "헌터명(ID)을 입력하세요";
+let blinkToggle = false, isFocused = false;
 
-        <div id="btn-rules" class="scattered-btn" onclick="openScreen('rules-screen')">
-            <div class="btn-icon"><div class="css-icon icon-rules"></div></div>
-            <div class="btn-text">길드 규약</div>
-        </div>
-    </div>
+loginInput.addEventListener('focus', () => isFocused = true);
+loginInput.addEventListener('blur', () => { isFocused = false; loginInput.setAttribute('placeholder', basePlaceholder); });
+setInterval(() => { if (isFocused && loginInput.value === '') { loginInput.setAttribute('placeholder', blinkToggle ? '_' : ''); blinkToggle = !blinkToggle; } }, 500);
 
-    <div id="character-screen" class="screen">
-        <div class="board-header">
-            <h2>📜 초은하 현상수배지 데이터베이스</h2>
-            <div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div>
-        </div>
+function processLogin() {
+    if (loginInput.value.trim() !== '') currentHunterName = loginInput.value.trim();
+    openScreen('main-screen');
+    setTimeout(() => { document.getElementById('eve-popup').classList.add('show'); updateEveMessage('login'); }, 500);
+}
+loginInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') processLogin(); });
 
-        <div class="drawn-card-area" id="drawn-card">
-            <div class="drawn-header">WANTED</div>
-            <div class="drawn-status">DEAD OR ALIVE</div>
-            <div class="drawn-img-frame"><img id="drawn-img" src="" alt="Target Detail"></div>
-            <div class="drawn-info">
-                <div class="drawn-name" id="drawn-name"></div>
-                <div class="drawn-reward">REWARD: <span id="drawn-reward" style="color:white;"></span></div>
-                <div class="drawn-bio" id="drawn-bio"></div>
-            </div>
-        </div>
-        <div class="card-hand" id="card-hand"></div>
-    </div>
+function updateEveMessage(screenId) {
+    const eveMsg = document.getElementById('eve-message');
+    if (!eveMsg) return;
+    let text = "";
+    switch(screenId) {
+        case 'login': text = `"${currentHunterName}님, 어서오세요.<br>당신의 AI 비서 이브입니다. 무엇을 도와드릴까요?"`; break;
+        case 'main-screen': text = `"메인 터미널로 복귀했습니다.<br>다음 명령을 대기합니다."`; break;
+        case 'location-screen': text = `"장소 데이터베이스에 접속합니다.<br>목표의 은신 확률이 높은 구역을 분석 중입니다."`; break;
+        case 'world-screen': text = `"초은하 연대기 기록을 열람합니다.<br>과거의 발자취에서 단서를 찾으시길 바랍니다."`; break;
+        case 'character-screen': text = `"알고리즘 추천 수배자 목록을 불러옵니다.<br>오늘의 사냥감은 정하셨나요?"`; break;
+        case 'rules-screen': text = `"길드 규약 및 행동 강령을 출력합니다.<br>항상 규약을 숙지하고 행동하여 주십시오."`; break;
+        default: text = `"시스템 대기 중..."`;
+    }
+    eveMsg.style.opacity = 0; setTimeout(() => { eveMsg.innerHTML = text; eveMsg.style.opacity = 1; }, 200);
+}
 
-    <div id="world-screen" class="screen" onclick="if(event.target===this) openScreen('main-screen')">
-        <div class="content-panel">
-            <div class="content-header">
-                <h2>📖 초은하 연대기</h2>
-                <div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div>
-            </div>
-            
-            <div class="vertical-drag-container" id="history-timeline">
-                
-                <div class="timeline-item">
-                    <div class="timeline-year">SC 2045</div>
-                    <div class="timeline-event">제1차 은하 개척 시대 도래. 웜홀 기술의 상용화로 인류의 활동 영역이 태양계를 넘어섬. 이 시기에 무법 지대가 대거 형성되기 시작함.</div>
-                </div>
+function openScreen(targetId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(targetId).classList.add('active');
+    const drawn = document.getElementById('drawn-card');
+    if(drawn) drawn.classList.remove('active');
+    if (document.getElementById('eve-popup').classList.contains('show')) updateEveMessage(targetId);
+}
 
-                <div class="timeline-item">
-                    <div class="timeline-year">SC 2077</div>
-                    <div class="timeline-event">네온 콜로니 폭동 사태 발생. 다국적 기업들의 통제력이 상실되고, 최초의 대규모 범죄 조직 '블랙 네뷸라'가 은하계의 어둠을 지배하기 시작.</div>
-                </div>
+/* 세로 드래그 로직 (역사 탭 타임라인) */
+const historySlider = document.getElementById('history-timeline');
+let isDownY = false, startY, scrollTop;
+historySlider.addEventListener('mousedown', (e) => { isDownY = true; historySlider.classList.add('active-drag'); startY = e.pageY - historySlider.offsetTop; scrollTop = historySlider.scrollTop; });
+historySlider.addEventListener('mouseleave', () => { isDownY = false; historySlider.classList.remove('active-drag'); });
+historySlider.addEventListener('mouseup', () => { isDownY = false; historySlider.classList.remove('active-drag'); });
+historySlider.addEventListener('mousemove', (e) => { if (!isDownY) return; e.preventDefault(); const y = e.pageY - historySlider.offsetTop; historySlider.scrollTop = scrollTop - (y - startY) * 1.5; });
 
-                <div class="timeline-item">
-                    <div class="timeline-year">SC 2084</div>
-                    <div class="timeline-event">은하 연방의 한계 돌파. 정규군만으로는 치안 유지가 불가능해지자, 민간 무력 단체 합법화 법안 통과. **초은하 현상금 사냥꾼 길드 창설.**</div>
-                </div>
+/* 수배자 명부 카드 생성 */
+const bountyData = [
+    { id: 1, name: '실버 팽', reward: '50,000,000 ₵', img: 'char1.png', bio: '은하 연방 은행 강탈 주범. 속도가 매우 빠름.' },
+    { id: 2, name: '네온 쉐도우', reward: '120,000,000 ₵', img: 'char2.png', bio: '네온 콜로니 암살 사건 용의자.' },
+    { id: 3, name: '크림슨 해커', reward: '85,000,000 ₵', img: 'char3.png', bio: '기간 시설 양자 서버 불법 침입.' },
+    { id: 4, name: '보이드 워커', reward: '200,000,000 ₵', img: 'char4.png', bio: '블랙홀 코어 불법 밀매.' },
+    { id: 5, name: '네뷸라 팬텀', reward: '75,000,000 ₵', img: 'char5.png', bio: '성운 구역 불법 도박장 운영 및 마약 밀반입.' },
+    { id: 6, name: '스타 이터', reward: '500,000,000 ₵', img: 'char6.png', bio: '멸망한 행성의 코어를 삼키는 미지의 거대 괴생명체.' },
+    { id: 7, name: '크로노스 씨프', reward: '150,000,000 ₵', img: 'char7.png', bio: '차원 이동 기술 무단 유출.' },
+    { id: 8, name: '글리치 위버', reward: '90,000,000 ₵', img: 'char8.png', bio: '현실 조작 시스템 글리치 유발.' }
+];
 
-                <div class="timeline-item">
-                    <div class="timeline-year">SC 2102</div>
-                    <div class="timeline-event">'스타 이터' 최초 관측. 행성을 집어삼키는 미지의 괴생명체 등장으로 길드 역사상 최고액의 현상금(500,000,000 ₵)이 걸림. 현재까지 미해결.</div>
-                </div>
+const hand = document.getElementById('card-hand');
+if (hand) {
+    const totalCards = bountyData.length;
+    bountyData.forEach((data, index) => {
+        const card = document.createElement('div');
+        card.className = 'mini-card';
+        const offset = index - (totalCards - 1) / 2; 
+        card.style.setProperty('--tx', `${offset * 55}px`);
+        card.style.setProperty('--ty', `${Math.abs(offset) * Math.abs(offset) * 3}px`);
+        card.style.setProperty('--rot', `${offset * 6}deg`);
+        card.style.zIndex = index;
+        card.innerHTML = `<img src="${data.img}" alt="${data.name}">`;
+        card.onclick = () => drawCard(data.id);
+        hand.appendChild(card);
+    });
+}
 
-                <div class="timeline-item">
-                    <div class="timeline-year">SC 2115</div>
-                    <div class="timeline-event">AI 시스템 'EVE' 도입. 길드의 모든 데이터베이스가 하나로 통합되어 터미널화 됨. 헌터들의 생존율이 비약적으로 상승함.</div>
-                </div>
+function drawCard(id) {
+    const data = bountyData.find(item => item.id === id);
+    if (!data) return;
+    document.getElementById('drawn-img').src = data.img;
+    document.getElementById('drawn-name').textContent = data.name;
+    document.getElementById('drawn-bio').textContent = data.bio;
+    document.getElementById('drawn-reward').textContent = data.reward;
+    const drawn = document.getElementById('drawn-card');
+    drawn.classList.remove('active'); setTimeout(() => drawn.classList.add('active'), 50);
+}
 
-                <div class="timeline-item">
-                    <div class="timeline-year">SC 2126 (현재)</div>
-                    <div class="timeline-event">차원 이동 기술 무단 유출 사태 발생. 시공간의 경계가 무너지며, 전례 없는 위협을 가진 1급 수배자들이 은하계 전역으로 흩어짐.</div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    
-    <div id="location-screen" class="screen" onclick="if(event.target===this) openScreen('main-screen')">
-        <div class="content-panel">
-            <div class="content-header"><h2>🪐 장소 소개</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
-            <p style="padding:40px;">항성 좌표 데이터 수신 중... 시스템이 은하계의 주요 장소 데이터를 검색하고 있습니다.</p>
-        </div>
-    </div>
-
-    <div id="rules-screen" class="screen" onclick="if(event.target===this) openScreen('main-screen')">
-        <div class="content-panel">
-            <div class="content-header"><h2>⚖️ 길드 규약</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
-            <p style="padding:40px; color:#E0FFF2; line-height: 1.8; font-size:1.1rem;">
-                <strong style="color:#00FF9D; font-size:1.3rem;">[ 현상금 사냥꾼 기본 행동 강령 ]</strong><br><br>
-                제1조: 길드의 의뢰는 절대적이며, 타겟 생포 시 보상금은 100% 지급된다. (사망 시 50% 차감)<br>
-                제2조: 헌터 간의 불필요한 교전 및 전리품 탈취는 엄격히 금지되며, 적발 시 길드에서 영구 제명된다.<br>
-                제3조: 민간인 피해 발생 시, 해당 피해액은 사냥꾼의 현상금 수익에서 최우선으로 압류된다.<br>
-                제4조: 미등록 불법 무기 및 블랙홀 코어 사용은 즉결 처형 대상이다.
-            </p>
-        </div>
-    </div>
-
-    <script>
-        let currentHunterName = '익명의 헌터';
-
-        const loginInput = document.getElementById('username-input');
-        const basePlaceholder = "헌터명(ID)을 입력하세요";
-        let blinkToggle = false;
-        let isFocused = false;
-
-        loginInput.addEventListener('focus', () => { isFocused = true; });
-        loginInput.addEventListener('blur', () => { isFocused = false; loginInput.setAttribute('placeholder', basePlaceholder); });
-        setInterval(() => {
-            if (isFocused && loginInput.value === '') {
-                loginInput.setAttribute('placeholder', blinkToggle ? '_' : '');
-                blinkToggle = !blinkToggle;
-            }
-        }, 500);
-
-        function processLogin() {
-            let inputName = loginInput.value.trim();
-            if (inputName !== '') currentHunterName = inputName;
-            openScreen('main-screen');
-            setTimeout(() => { document.getElementById('eve-popup').classList.add('show'); updateEveMessage('login'); }, 500);
-        }
-
-        loginInput.addEventListener('keypress', function (e) { if (e.key === 'Enter') processLogin(); });
-
-        function updateEveMessage(screenId) {
-            const eveMessage = document.getElementById('eve-message');
-            if (!eveMessage) return;
-            let text = "";
-            switch(screenId) {
-                case 'login': text = `"${currentHunterName}님, 어서오세요.<br>당신의 AI 비서 이브입니다. 무엇을 도와드릴까요?"`; break;
-                case 'main-screen': text = `"메인 터미널로 복귀했습니다.<br>다음 명령을 대기합니다."`; break;
-                case 'location-screen': text = `"장소 데이터베이스에 접속합니다.<br>목표의 도주 및 은신 확률이 높은 구역을 분석 중입니다."`; break;
-                case 'world-screen': text = `"초은하 연대기 기록을 열람합니다.<br>과거의 발자취에서 사건의 단서를 찾으시길 바랍니다."`; break;
-                case 'character-screen': text = `"알고리즘에 따른 추천 수배자 목록을 불러옵니다.<br>오늘의 사냥감은 정하셨나요?"`; break;
-                case 'rules-screen': text = `"길드 규약 및 행동 강령을 출력합니다.<br>항상 규약을 숙지하고 행동하여 주십시오."`; break;
-                default: text = `"시스템 대기 중..."`;
-            }
-            eveMessage.style.opacity = 0;
-            setTimeout(() => { eveMessage.innerHTML = text; eveMessage.style.opacity = 1; }, 200);
-        }
-
-        function openScreen(targetId) {
-            let screens = document.querySelectorAll('.screen');
-            screens.forEach(function(screen) { screen.classList.remove('active'); });
-            document.getElementById(targetId).classList.add('active');
-            
-            const drawnCardView = document.getElementById('drawn-card');
-            if(drawnCardView) drawnCardView.classList.remove('active');
-
-            const evePopup = document.getElementById('eve-popup');
-            if (evePopup.classList.contains('show')) updateEveMessage(targetId);
-        }
-
-        /* --- [신규] 세로 타임라인 마우스 드래그 로직 --- */
-        const historySlider = document.getElementById('history-timeline');
-        let isDownY = false;
-        let startY;
-        let scrollTop;
-
-        historySlider.addEventListener('mousedown', (e) => {
-            isDownY = true;
-            historySlider.classList.add('active-drag');
-            startY = e.pageY - historySlider.offsetTop;
-            scrollTop = historySlider.scrollTop;
-        });
-
-        historySlider.addEventListener('mouseleave', () => { isDownY = false; historySlider.classList.remove('active-drag'); });
-        historySlider.addEventListener('mouseup', () => { isDownY = false; historySlider.classList.remove('active-drag'); });
-        
-        historySlider.addEventListener('mousemove', (e) => {
-            if (!isDownY) return;
-            e.preventDefault();
-            const y = e.pageY - historySlider.offsetTop;
-            const walk = (y - startY) * 1.5; // 끌어당기는 속도
-            historySlider.scrollTop = scrollTop - walk;
-        });
-
-
-        // --- 수배자 명부 카드 로직 ---
-        const bountyData = [
-            { id: 1, name: '실버 팽', reward: '50,000,000 ₵', img: 'char1.png', bio: '은하 연방 은행 강탈 주범. 교활하고 속도가 매우 빠름. (1024x1024 지원)' },
-            { id: 2, name: '네온 쉐도우', reward: '120,000,000 ₵', img: 'char2.png', bio: '네온 콜로니 암살 사건 용의자. 소리 없이 그림자 속을 이동함. (832x1216 지원)' },
-            { id: 3, name: '크림슨 해커', reward: '85,000,000 ₵', img: 'char3.png', bio: '기간 시설 양자 서버 불법 침입. 전산망 폭주를 유도함.' },
-            { id: 4, name: '보이드 워커', reward: '200,000,000 ₵', img: 'char4.png', bio: '블랙홀 코어 불법 밀매. 은하계 전체를 위협하는 무법자.' },
-            { id: 5, name: '네뷸라 팬텀', reward: '75,000,000 ₵', img: 'char5.png', bio: '성운 구역 불법 도박장 운영 및 마약 밀반입. 신원 미상.' },
-            { id: 6, name: '스타 이터', reward: '500,000,000 ₵', img: 'char6.png', bio: '멸망한 행성의 코어를 삼키는 미지의 거대 괴생명체.' },
-            { id: 7, name: '크로노스 씨프', reward: '150,000,000 ₵', img: 'char7.png', bio: '차원 이동 기술 무단 유출. 길드의 시간을 훔치는 범죄자.' },
-            { id: 8, name: '글리치 위버', reward: '90,000,000 ₵', img: 'char8.png', bio: '현실 조작 시스템 글리치 유발. 대상의 인지 능력을 폭파함.' }
-        ];
-
-        const hand = document.getElementById('card-hand');
-        if (hand) {
-            const totalCards = bountyData.length;
-            bountyData.forEach((data, index) => {
-                const card = document.createElement('div');
-                card.className = 'mini-card';
-                const offset = index - (totalCards - 1) / 2; 
-                const rotate = offset * 6; 
-                const y = Math.abs(offset) * Math.abs(offset) * 3; 
-                const x = offset * 55; 
-                card.style.setProperty('--tx', `${x}px`);
-                card.style.setProperty('--ty', `${y}px`);
-                card.style.setProperty('--rot', `${rotate}deg`);
-                card.style.zIndex = index;
-                card.innerHTML = `<img src="${data.img}" alt="${data.name}">`;
-                card.onclick = () => drawCard(data.id);
-                hand.appendChild(card);
-            });
-        }
-
-        function drawCard(targetId) {
-            const data = bountyData.find(item => item.id === targetId);
-            if (!data) return;
-            const drawnCardView = document.getElementById('drawn-card');
-            if(!drawnCardView) return;
-            document.getElementById('drawn-img').src = data.img;
-            document.getElementById('drawn-name').textContent = data.name;
-            document.getElementById('drawn-bio').textContent = data.bio;
-            document.getElementById('drawn-reward').textContent = data.reward;
-            drawnCardView.classList.remove('active');
-            setTimeout(() => { drawnCardView.classList.add('active'); }, 50);
-        }
-
-        const charScreen = document.getElementById('character-screen');
-        if (charScreen) {
-            charScreen.addEventListener('click', function(e) {
-                if (!e.target.closest('.mini-card') && !e.target.closest('.drawn-card-area')) {
-                    openScreen('main-screen');
-                }
-            });
-        }
-    </script>
+const charScreen = document.getElementById('character-screen');
+if (charScreen) {
+    charScreen.addEventListener('click', (e) => {
+        if (!e.target.closest('.mini-card') && !e.target.closest('.drawn-card-area')) openScreen('main-screen');
+    });
+}
+</script>
 </body>
 </html>
