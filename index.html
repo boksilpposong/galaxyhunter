@@ -241,24 +241,30 @@
 
     <script>
         // ==========================================
-        // [업데이트] 로그인 언더바 깜빡임 개선
+        // [수정됨] 로그인 언더바 깜빡임 개선 (터미널 감성)
         // ==========================================
         const loginInput = document.getElementById('username-input');
         const basePlaceholder = "헌터명(ID)을 입력하세요";
         let blinkToggle = false;
         let isFocused = false;
 
-        // 클릭(포커스) 했을 때만 깜빡이도록 상태 감지
-        loginInput.addEventListener('focus', () => { isFocused = true; });
+        // 클릭(포커스) 했을 때: 원래 글씨를 싹 지움
+        loginInput.addEventListener('focus', () => { 
+            isFocused = true; 
+        });
+        
+        // 포커스가 나갔을 때: 원래 글씨 복구 (아무것도 안 적었을 때만)
         loginInput.addEventListener('blur', () => { 
             isFocused = false; 
-            loginInput.setAttribute('placeholder', basePlaceholder); // 포커스 나가면 원래대로 복구
+            loginInput.setAttribute('placeholder', basePlaceholder); 
         });
 
-        // 타이머: 클릭(포커스) 되어있고 입력칸이 비어있을 때만 깜빡임
+        // 0.5초마다 실행되는 타이머
         setInterval(() => {
+            // 클릭된 상태이고, 입력창에 아무것도 안 적혀있다면
             if (isFocused && loginInput.value === '') {
-                loginInput.setAttribute('placeholder', basePlaceholder + (blinkToggle ? '_' : ''));
+                // 글씨 없이 언더바만 깜빡거리게 함
+                loginInput.setAttribute('placeholder', blinkToggle ? '_' : '');
                 blinkToggle = !blinkToggle;
             }
         }, 500);
@@ -269,7 +275,6 @@
                 username = '익명의 헌터';
             }
 
-            // 이브 인사말 쉼표 유지
             const eveMessage = document.getElementById('eve-message');
             eveMessage.innerHTML = `"${username}님, 어서오세요.<br>당신의 AI 비서 이브입니다. 무엇을 도와드릴까요?"`;
 
