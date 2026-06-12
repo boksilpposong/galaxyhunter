@@ -22,7 +22,7 @@
         .screen.active { opacity: 1; pointer-events: auto; }
 
         /* =========================================
-           로그인 화면 UI (완전 블랙 배경)
+           로그인 화면 UI
         ========================================= */
         #login-screen {
             background-color: #000000;
@@ -47,13 +47,20 @@
             padding: 15px 20px; font-size: 1.2rem; border-radius: 5px; outline: none;
             width: 300px; text-align: center; margin-bottom: 30px; font-family: 'Malgun Gothic', sans-serif;
             box-shadow: inset 0 0 10px rgba(0,255,157,0.1); transition: all 0.3s;
-            caret-color: #00FF9D;
+            
+            /* [핵심 수정] 얄팍한 기본 | 커서를 완전히 투명하게 지워버림 */
+            caret-color: transparent; 
+            font-weight: bold; /* 내가 입력하는 글씨도 헌터답게 약간 두껍게 */
         }
         .login-input:focus {
             background: rgba(0, 255, 157, 0.1); box-shadow: inset 0 0 15px rgba(0,255,157,0.4), 0 0 15px rgba(0,255,157,0.4);
             border-color: #FFFFFF;
         }
-        .login-input::placeholder { color: rgba(0, 255, 157, 0.6); }
+        /* [핵심 수정] 언더바를 가장 굵고 쨍하게 만듦 */
+        .login-input::placeholder { 
+            color: rgba(0, 255, 157, 0.8); 
+            font-weight: 900; 
+        }
 
         .login-btn {
             background: transparent; color: #00FF9D; border: 2px solid #00FF9D;
@@ -98,7 +105,7 @@
         }
         .close-btn:hover { background: #00FF9D; color: #000; box-shadow: 0 0 15px #00FF9D; }
 
-        /* 4. 서브 패널 (장소, 세계관용) */
+        /* 4. 서브 패널 */
         .content-panel {
             background: rgba(0, 20, 10, 0.7); backdrop-filter: blur(15px);
             border: 1px solid #00FF9D; box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
@@ -240,30 +247,22 @@
     </div>
 
     <script>
-        // ==========================================
-        // [수정됨] 로그인 언더바 깜빡임 개선 (터미널 감성)
-        // ==========================================
         const loginInput = document.getElementById('username-input');
         const basePlaceholder = "헌터명(ID)을 입력하세요";
         let blinkToggle = false;
         let isFocused = false;
 
-        // 클릭(포커스) 했을 때: 원래 글씨를 싹 지움
         loginInput.addEventListener('focus', () => { 
             isFocused = true; 
         });
         
-        // 포커스가 나갔을 때: 원래 글씨 복구 (아무것도 안 적었을 때만)
         loginInput.addEventListener('blur', () => { 
             isFocused = false; 
             loginInput.setAttribute('placeholder', basePlaceholder); 
         });
 
-        // 0.5초마다 실행되는 타이머
         setInterval(() => {
-            // 클릭된 상태이고, 입력창에 아무것도 안 적혀있다면
             if (isFocused && loginInput.value === '') {
-                // 글씨 없이 언더바만 깜빡거리게 함
                 loginInput.setAttribute('placeholder', blinkToggle ? '_' : '');
                 blinkToggle = !blinkToggle;
             }
@@ -289,10 +288,6 @@
             if (e.key === 'Enter') processLogin();
         });
 
-
-        // ==========================================
-        // 기존 카드 게임 및 화면 전환 로직 유지
-        // ==========================================
         const bountyData = [
             { id: 1, name: '실버 팽', reward: '50,000,000 ₵', img: 'char1.png', bio: '은하 연방 은행 강탈 주범. 교활하고 속도가 매우 빠름. (1024x1024 지원)' },
             { id: 2, name: '네온 쉐도우', reward: '120,000,000 ₵', img: 'char2.png', bio: '네온 콜로니 암살 사건 용의자. 소리 없이 그림자 속을 이동함. (832x1216 지원)' },
