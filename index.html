@@ -59,12 +59,8 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
 .ai-text strong { color: #00FF9D; font-size: 0.75rem; display: block; }
 #eve-message { color: #E0FFF2; font-size: 0.95rem; line-height: 1.4; display: block; transition: opacity 0.2s; }
 
-/* [업데이트] 공통 세로 드래그 & 스무스 스크롤 영역 */
-.vertical-drag-container { 
-    flex-grow: 1; overflow-y: auto; padding: 20px 60px 60px; 
-    cursor: grab; scrollbar-width: none; -ms-overflow-style: none;
-    box-shadow: inset 0 20px 20px -20px rgba(0,255,157,0.2), inset 0 -20px 20px -20px rgba(0,255,157,0.2); 
-}
+/* 세로 드래그 & 스무스 스크롤 영역 */
+.vertical-drag-container { flex-grow: 1; overflow-y: auto; padding: 20px 60px 60px; cursor: grab; scrollbar-width: none; -ms-overflow-style: none; box-shadow: inset 0 20px 20px -20px rgba(0,255,157,0.2), inset 0 -20px 20px -20px rgba(0,255,157,0.2); }
 .vertical-drag-container::-webkit-scrollbar { display: none; }
 .vertical-drag-container.active-drag { cursor: grabbing; scroll-behavior: auto; }
 
@@ -76,15 +72,9 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
 .timeline-year { font-size: 1.8rem; color: #00FF9D; font-weight: bold; text-shadow: 0 0 10px rgba(0,255,157,0.5); margin-bottom: 10px; }
 .timeline-event { color: #E0FFF2; font-size: 1.1rem; line-height: 1.6; background: rgba(0,255,157,0.05); padding: 20px; border-radius: 0 10px 10px 10px; border: 1px solid rgba(0,255,157,0.1); pointer-events: none; }
 
-/* [신규] 규약 박스 (교정 규약) */
-.rule-item {
-    position: relative; background: rgba(0, 255, 157, 0.05); border: 1px solid rgba(0, 255, 157, 0.2);
-    border-radius: 10px; padding: 25px; margin-bottom: 25px; color: #E0FFF2; font-size: 1.1rem; line-height: 1.6;
-    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s; user-select: none;
-}
-.vertical-drag-container:not(.active-drag) .rule-item:hover {
-    transform: translateX(10px); box-shadow: -6px 0 0 #00FF9D; border-color: rgba(0, 255, 157, 0.5);
-}
+/* 규약 박스 (교정 규약) */
+.rule-item { position: relative; background: rgba(0, 255, 157, 0.05); border: 1px solid rgba(0, 255, 157, 0.2); border-radius: 10px; padding: 25px; margin-bottom: 25px; color: #E0FFF2; font-size: 1.1rem; line-height: 1.6; transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s; user-select: none; }
+.vertical-drag-container:not(.active-drag) .rule-item:hover { transform: translateX(10px); box-shadow: -6px 0 0 #00FF9D; border-color: rgba(0, 255, 157, 0.5); }
 .rule-title { color: #00FF9D; font-weight: bold; font-size: 1.3rem; margin-bottom: 10px; text-shadow: 0 0 10px rgba(0,255,157,0.5); letter-spacing: 1px; }
 
 /* 5. Cards UI (명부) */
@@ -155,12 +145,12 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
         <div class="content-header"><h2>📖 초은하 연대기</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
         <div class="vertical-drag-container" id="history-timeline">
             <div class="timeline-item"><div class="timeline-year">AD 2045</div><div class="timeline-event">워프 항법의 상용화. 인류, 태양계의 요람을 벗어나 심우주 개척 시대에 진입하다.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2078</div><div class="timeline-event">제4차 세계 대전 발발. 궤도 폭격과 걷잡을 수 없는 핵전쟁으로 푸른 별 '지구' 완전 붕괴 및 소멸.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2078</div><div class="timeline-event">제4차 세계 대전 발발. 궤도 폭격과 무차별적인 핵전쟁으로 푸른 별 '지구' 완전 붕괴 및 소멸.</div></div>
             <div class="timeline-item"><div class="timeline-year">AD 2080</div><div class="timeline-event">살아남은 극소수의 인류, 정처 없는 우주 난민으로 전락. 인류의 마지막 보루였던 화성 테라포밍 프로젝트마저 대실패로 종결되다.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2102</div><div class="timeline-event">초공간 워프 네트워크(Hyper-space Warp Network) 구축 성공. 수많은 외계 지성체들과 조우하며 바야흐로 '대우주 교류 시대'의 막이 오르다.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2247</div><div class="timeline-event">항성 간 무법자 및 우주 해적의 걷잡을 수 없는 급증. 전 우주권의 치안 유지와 척결을 위해 통합 권력 기관인 <strong>'초은하 교정청(Super-Galactic Correctional Agency)'</strong> 공식 출범.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2556</div><div class="timeline-event">초행성급 범죄자들의 폭증으로 우주 수용 시설 포화 상태 도달. 죄수들을 극저온 수면 상태에서 형기를 치르게 하는 <strong>'동결형(Cryo-Sentence)'</strong> 시스템 전격 도입.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 3155 (현재)</div><div class="timeline-event">긴 피의 세월 끝에 표면적인 은하 정세는 안정화되었다. 그러나 짙은 그림자 속에 숨어든 고위험 범죄자들을 사냥하기 위해 '현상금 사냥꾼'들의 수요는 그 어느 때보다 치솟고 있다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2102</div><div class="timeline-event">초공간 워프 네트워크 구축 성공. 수많은 외계 지성체들과 조우하며 바야흐로 '대우주 교류 시대'의 막이 오르다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2247</div><div class="timeline-event">항성 간 무법자 및 우주 해적의 걷잡을 수 없는 급증. 전 우주권의 치안 유지와 척결을 위해 통합 권력 기관인 <strong>'초은하 교정청'</strong> 공식 출범.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2556</div><div class="timeline-event">초행성급 범죄자들의 폭증으로 우주 수용 시설 포화 상태 도달. 죄수들을 극저온 수면 상태에서 형기를 치르게 하는 <strong>'동결형'</strong> 시스템 전격 도입.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 3155 (현재)</div><div class="timeline-event">긴 피의 세월 끝에 표면적인 은하 정세는 안정화되었다. 그러나 짙은 그림자 속에 숨어든 고위험 범죄자들을 사냥하기 위해 사냥꾼들의 수요는 그 어느 때보다 치솟고 있다.</div></div>
         </div>
     </div>
 </div>
@@ -191,7 +181,7 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
 
             <div class="rule-item">
                 <div class="rule-title">제4조 [처우 선택]</div>
-                생포한 수배범을 교정청에 인계할 경우, 사냥꾼은 '범죄자의 동결형 집행에 따른 현상금 전액 수령' 또는 '해당 범죄자의 신변 및 소유권 위임' 중 하나를 선택할 수 있다.
+                생포한 수배범을 교정청에 인계할 경우, 사냥꾼은 '범죄자의 동결형 집행에 따른 현상금 전액 수령' 또는 '해당 범죄자의 신변 인도' 중 하나를 선택할 수 있다.
             </div>
 
             <div class="rule-item">
@@ -201,12 +191,17 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
 
             <div class="rule-item">
                 <div class="rule-title">제6조 [신변 위임의 책임]</div>
-                제4조에 의거하여 범죄자의 신변 위임을 선택할 경우, 대상의 생사 여부를 포함한 모든 권리와 관리 책임은 해당 사냥꾼에게 전면 양도된다.
+                제4조에 의거하여 범죄자의 신변 인도를 선택할 경우, 대상에 대한 전권 및 관리 책임은 해당 사냥꾼에게 전면 양도된다.
             </div>
 
             <div class="rule-item">
-                <div class="rule-title">제7조 [인도적 한계선]</div>
-                신변을 위임받은 범죄자라 할지라도 제3자에게 암거래를 하거나 불법 노예 시장에 유통하는 행위는 엄격히 금지되며, 위반 시 사냥꾼 본인이 구속되어 즉각 동결형에 처해진다.
+                <div class="rule-title">제7조 [거래 제한]</div>
+                신변을 위임받은 범죄자를 교정청의 승인 없이 불법적인 루트로 밀거래하거나, 암시장에 유통하는 일체의 불법 거래 행위는 엄격히 금지된다. 위반 시 사냥꾼 본인의 자격이 즉각 박탈된다.
+            </div>
+
+            <div class="rule-item">
+                <div class="rule-title">제8조 [위탁 노역 계약]</div>
+                사냥꾼은 인도받은 범죄자의 신변을 기반으로, 교정청의 정식 승인을 받은 민간 기업 및 외부 기관과 위탁 계약을 체결할 수 있다. 계약을 통한 '대여 형식'으로 범죄자를 특정 공정 및 인프라 노역에 종사시키는 행위는 합법으로 인정된다.
             </div>
 
         </div>
@@ -254,9 +249,7 @@ function openScreen(targetId) {
     if (document.getElementById('eve-popup').classList.contains('show')) updateEveMessage(targetId);
 }
 
-/* =====================================
-   [업데이트] 스무스 관성(Momentum) 드래그 스크롤 로직
-====================================== */
+/* 스무스 관성 드래그 스크롤 로직 */
 function makeDraggableSmooth(ele) {
     if(!ele) return;
     let isDown = false;
@@ -270,7 +263,7 @@ function makeDraggableSmooth(ele) {
         ele.classList.add('active-drag');
         startY = e.pageY - ele.offsetTop;
         scrollTop = ele.scrollTop;
-        cancelAnimationFrame(momentID); // 클릭하면 멈춤
+        cancelAnimationFrame(momentID);
     });
     
     ele.addEventListener('mouseleave', () => {
@@ -294,11 +287,11 @@ function makeDraggableSmooth(ele) {
         const walk = (y - startY) * 1.5;
         let prevScroll = ele.scrollTop;
         ele.scrollTop = scrollTop - walk;
-        velY = ele.scrollTop - prevScroll; // 드래그 속도 측정
+        velY = ele.scrollTop - prevScroll;
     });
 
     function startMomentum() {
-        velY *= 0.95; // 마찰력(감속) 조절. 숫자가 클수록 오래 미끄러짐.
+        velY *= 0.95;
         if (Math.abs(velY) > 0.5) {
             ele.scrollTop += velY;
             momentID = requestAnimationFrame(startMomentum);
@@ -306,10 +299,8 @@ function makeDraggableSmooth(ele) {
     }
 }
 
-// 역사 탭과 규약 탭 모두에 관성 스크롤 적용!
 makeDraggableSmooth(document.getElementById('history-timeline'));
 makeDraggableSmooth(document.getElementById('rules-timeline'));
-
 
 /* 수배자 명부 카드 생성 */
 const bountyData = [
