@@ -89,9 +89,7 @@ body::after {
 .vertical-drag-container:not(.active-drag) .rule-item:hover { transform: translateX(10px); box-shadow: -6px 0 0 #00FF9D; border-color: rgba(0, 255, 157, 0.5); }
 .rule-title { color: #00FF9D; font-weight: bold; font-size: 1.3rem; margin-bottom: 10px; text-shadow: 0 0 10px rgba(0,255,157,0.5); letter-spacing: 1px; }
 
-/* =========================================
-   [NEW] 장소 데이터베이스 스타일
-========================================= */
+/* 장소 데이터베이스 */
 .location-item { 
     display: flex; gap: 30px; background: rgba(0, 255, 157, 0.03); 
     border: 1px solid rgba(0, 255, 157, 0.15); border-radius: 12px; 
@@ -104,7 +102,6 @@ body::after {
     width: 280px; height: 180px; flex-shrink: 0; border: 1px solid rgba(0, 255, 157, 0.3); 
     border-radius: 8px; overflow: hidden; position: relative; background: #000;
 }
-/* 홀로그램 스캔라인 효과 (장소 이미지용) */
 .location-img-box::after {
     content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     background: repeating-linear-gradient(transparent, transparent 2px, rgba(0, 255, 157, 0.1) 3px, rgba(0, 255, 157, 0.1) 4px);
@@ -115,16 +112,9 @@ body::after {
     z-index: 1; position: relative;
 }
 .location-info { flex-grow: 1; }
-.location-name { color: #00FF9D; font-size: 1.6rem; font-weight: bold; margin-bottom: 8px; text-shadow: 0 0 10px rgba(0,255,157,0.5); }
+.location-name { color: #00FF9D; font-size: 1.6rem; font-weight: bold; margin-bottom: 8px; text-shadow: 0 0 10px rgba(0,255,157,0.5); display: inline-block; }
 .location-coords { color: #8A9BB4; font-family: monospace; font-size: 0.9rem; margin-bottom: 15px; display: block; border-bottom: 1px solid rgba(0, 255, 157, 0.2); padding-bottom: 8px; }
 .location-desc { color: #E0FFF2; font-size: 1.05rem; line-height: 1.6; }
-
-/* 특수 노역소 박스 (넥서스 전용) */
-.sub-facility { 
-    margin-top: 15px; padding: 15px; background: rgba(255, 59, 59, 0.05); 
-    border-left: 3px solid #FF3B3B; border-radius: 4px; font-size: 0.95rem;
-}
-.sub-facility strong { color: #FF3B3B; display: block; margin-bottom: 5px; }
 
 /* 5. Cards UI (명부) */
 .board-header { position: absolute; top: 30px; left: 50px; right: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
@@ -138,7 +128,7 @@ body::after {
 .mini-card:hover { transform: translateX(var(--tx)) translateY(calc(var(--ty) - 50px)) rotate(0deg) scale(1.2); z-index: 100 !important; box-shadow: 0 0 30px #00FF9D; border-color: #00FF9D; }
 .mini-card:hover img { filter: brightness(1.0) contrast(1.05); } 
 
-.drawn-card-area { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) scale(0.5); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 450px; background: rgba(0,10,5,0.2); backdrop-filter: blur(20px) brightness(1.2); border: 2px solid rgba(0,255,157,0.7); border-radius: 15px; box-shadow: 0 0 50px rgba(0,255,157,0.3); padding: 20px; display: flex; flex-direction: column; z-index: 11; }
+.drawn-card-area { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) scale(0.5); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 450px; background: rgba(0,10,5,0.2); backdrop-filter: blur(20px) brightness(1.2); -webkit-backdrop-filter: blur(20px) brightness(1.2); border: 2px solid rgba(0,255,157,0.7); border-radius: 15px; box-shadow: 0 0 50px rgba(0,255,157,0.3); padding: 20px; display: flex; flex-direction: column; z-index: 11; }
 .drawn-card-area.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
 .drawn-header { text-align: center; font-weight: 900; font-size: 2rem; color: #00FF9D; letter-spacing: 3px; border-bottom: 2px double #00FF9D; margin-bottom: 10px; text-shadow: 0 0 10px #00FF9D; }
 .drawn-status { text-align: center; font-size: 0.9rem; color: #FF3B3B; font-weight: bold; margin-bottom: 10px; letter-spacing: 2px; }
@@ -234,9 +224,9 @@ body::after {
             <div class="location-item">
                 <div class="location-img-box"><img src="loc3.png" alt="Correction Agency"></div>
                 <div class="location-info">
-                    <span class="location-name">초은하 교정청 본국 함선</span>
+                    <span class="location-name">초은하 교정본청</span>
                     <span class="location-coords">COORDS: MOBILE-HQ AG-01</span>
-                    <div class="location-desc">전 우주의 법과 질서를 집행하는 거대 거점 우주선. 사장 '바네사'에게 체포한 수배범을 공식 인계하고 정당한 현상금을 수령하는 유일한 기관이다.</div>
+                    <div class="location-desc">전 우주의 법과 질서를 집행하는 거대 거점 우주선. 청장 '바네사'에게 체포한 수배범을 공식 인계하고 정당한 현상금을 수령하는 유일한 기관이다.</div>
                 </div>
             </div>
 
@@ -263,26 +253,30 @@ body::after {
                 <div class="location-info">
                     <span class="location-name">넥서스</span>
                     <span class="location-coords">COORDS: G4-SEC7-NX04</span>
-                    <div class="location-desc">화려한 네온사인 아래 어둠이 깔린 사이버펑크 디스토피아 행성. '글리치'를 필두로 한 해킹 테러가 빈번하며, 우주에서 가장 진보된 과학 기술의 정점을 보여준다.
-                        <div class="sub-facility">
-                            <strong>[특수 시설] 아바리스 노역소</strong>
-                            구매된 범죄자들이 배치되는 노역 시설. 넥서스의 유일한 인간 노동력을 공급하는 핵심 인프라로, 개개인의 성장치와 노역 기여도에 따라 차등 보상을 지급한다.
-                        </div>
-                    </div>
+                    <div class="location-desc">화려한 네온사인 아래 어둠이 깔린 사이버펑크 디스토피아 행성. '글리치'를 필두로 한 해킹 테러가 빈번하며, 우주에서 가장 진보된 과학 기술의 정점을 보여준다.</div>
                 </div>
             </div>
 
             <div class="location-item">
-                <div class="location-img-box"><img src="loc7.png" alt="Moon"></div>
+                <div class="location-img-box"><img src="loc7.png" alt="Avaris Labor Camp"></div>
+                <div class="location-info">
+                    <span class="location-name" style="color: #FF3B3B; text-shadow: 0 0 10px rgba(255,59,59,0.5);">아바리스 노역소</span>
+                    <span class="location-coords" style="color: #FF3B3B;">COORDS: G4-SEC7-AV01</span>
+                    <div class="location-desc">초은하 교정청에서 공식적으로 인정한 합법 위탁 노역소. 넥서스의 유일한 인간 노동력을 공급하는 핵심 인프라로, 헌터로부터 대여받은 범죄자들의 성장치와 노역 기여도에 따라 차등 보상을 지급한다.</div>
+                </div>
+            </div>
+
+            <div class="location-item">
+                <div class="location-img-box"><img src="loc8.png" alt="Moon"></div>
                 <div class="location-info">
                     <span class="location-name">달</span>
                     <span class="location-coords">COORDS: G5-SEC3-EA03-1</span>
-                    <div class="location-desc">멸망한 지구의 유일한 위성. 산소가 존재하지 않는 극한의 환경이지만, 적응력이 뛰어난 '월묘' 종족들이 군락을 이루어 거주하고 있다.</div>
+                    <div class="location-desc">멸망한 지구의 유일한 위성. 산소가 존재하지 않는 극한의 환경이지만, 적응력이 뛰어난 '달토끼족'이 군락을 이루어 거주하고 있다.</div>
                 </div>
             </div>
 
             <div class="location-item">
-                <div class="location-img-box"><img src="loc8.png" alt="Arcadia"></div>
+                <div class="location-img-box"><img src="loc9.png" alt="Arcadia"></div>
                 <div class="location-info">
                     <span class="location-name">아르카디아</span>
                     <span class="location-coords">COORDS: G5-SEC4-AC01</span>
@@ -291,7 +285,7 @@ body::after {
             </div>
 
             <div class="location-item">
-                <div class="location-img-box"><img src="loc9.png" alt="Cheongmyeong"></div>
+                <div class="location-img-box"><img src="loc10.png" alt="Cheongmyeong"></div>
                 <div class="location-info">
                     <span class="location-name">청명</span>
                     <span class="location-coords">COORDS: G6-SEC3-CH07</span>
