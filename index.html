@@ -48,7 +48,7 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
 
 /* 4. Common Sub Panels */
 .content-panel { background: rgba(0,20,10,0.7); backdrop-filter: blur(15px); border: 1px solid #00FF9D; box-shadow: 0 0 30px rgba(0,255,157,0.2); width: 95%; max-width: 1200px; height: 85vh; margin: 6vh auto 0; border-radius: 15px; position: relative; display: flex; flex-direction: column; }
-.content-header { padding: 30px 40px 10px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.content-header { padding: 30px 40px 10px 40px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
 .content-header h2 { color: #00FF9D; margin: 0; padding-bottom: 10px; border-bottom: 2px solid #00FF9D; }
 .click-to-return-hint { color: rgba(0,255,157,0.5); font-size: 0.9rem; letter-spacing: 1px; animation: pulse 2s infinite; pointer-events: none; }
 @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
@@ -59,16 +59,33 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
 .ai-text strong { color: #00FF9D; font-size: 0.75rem; display: block; }
 #eve-message { color: #E0FFF2; font-size: 0.95rem; line-height: 1.4; display: block; transition: opacity 0.2s; }
 
-/* 역사 탭 - 세로 연혁 타임라인 드래그 */
-.vertical-drag-container { flex-grow: 1; overflow-y: auto; padding: 20px 60px 60px; cursor: grab; scrollbar-width: none; box-shadow: inset 0 20px 20px -20px rgba(0,255,157,0.2), inset 0 -20px 20px -20px rgba(0,255,157,0.2); }
+/* [업데이트] 공통 세로 드래그 & 스무스 스크롤 영역 */
+.vertical-drag-container { 
+    flex-grow: 1; overflow-y: auto; padding: 20px 60px 60px; 
+    cursor: grab; scrollbar-width: none; -ms-overflow-style: none;
+    box-shadow: inset 0 20px 20px -20px rgba(0,255,157,0.2), inset 0 -20px 20px -20px rgba(0,255,157,0.2); 
+}
 .vertical-drag-container::-webkit-scrollbar { display: none; }
 .vertical-drag-container.active-drag { cursor: grabbing; scroll-behavior: auto; }
+
+/* 타임라인 박스 (역사) */
 .timeline-item { position: relative; padding-left: 40px; margin-bottom: 40px; border-left: 2px solid rgba(0,255,157,0.3); user-select: none; transition: 0.3s; padding-bottom: 10px; }
 .vertical-drag-container:not(.active-drag) .timeline-item:hover { transform: translateX(10px); border-left-color: #00FF9D; }
 .timeline-item::before { content: ''; position: absolute; left: -8px; top: 0; width: 14px; height: 14px; border-radius: 50%; background: #05120E; border: 2px solid #00FF9D; box-shadow: 0 0 10px #00FF9D; transition: 0.3s; }
 .vertical-drag-container:not(.active-drag) .timeline-item:hover::before { background: #00FF9D; }
 .timeline-year { font-size: 1.8rem; color: #00FF9D; font-weight: bold; text-shadow: 0 0 10px rgba(0,255,157,0.5); margin-bottom: 10px; }
 .timeline-event { color: #E0FFF2; font-size: 1.1rem; line-height: 1.6; background: rgba(0,255,157,0.05); padding: 20px; border-radius: 0 10px 10px 10px; border: 1px solid rgba(0,255,157,0.1); pointer-events: none; }
+
+/* [신규] 규약 박스 (교정 규약) */
+.rule-item {
+    position: relative; background: rgba(0, 255, 157, 0.05); border: 1px solid rgba(0, 255, 157, 0.2);
+    border-radius: 10px; padding: 25px; margin-bottom: 25px; color: #E0FFF2; font-size: 1.1rem; line-height: 1.6;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s; user-select: none;
+}
+.vertical-drag-container:not(.active-drag) .rule-item:hover {
+    transform: translateX(10px); box-shadow: -6px 0 0 #00FF9D; border-color: rgba(0, 255, 157, 0.5);
+}
+.rule-title { color: #00FF9D; font-weight: bold; font-size: 1.3rem; margin-bottom: 10px; text-shadow: 0 0 10px rgba(0,255,157,0.5); letter-spacing: 1px; }
 
 /* 5. Cards UI (명부) */
 .board-header { position: absolute; top: 30px; left: 50px; right: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
@@ -78,7 +95,7 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
 .mini-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6) sepia(0.5) hue-rotate(100deg); pointer-events: none; transition: 0.3s; }
 .mini-card:hover { transform: translateX(var(--tx)) translateY(calc(var(--ty) - 50px)) rotate(0deg) scale(1.2); z-index: 100 !important; box-shadow: 0 0 30px #00FF9D; }
 .mini-card:hover img { filter: brightness(1.2) sepia(0.2) hue-rotate(100deg); }
-.drawn-card-area { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%) scale(0.5); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 450px; background: rgba(0,10,5,0.2); backdrop-filter: blur(20px) brightness(1.2); border: 2px solid rgba(0,255,157,0.7); border-radius: 15px; box-shadow: 0 0 50px rgba(0,255,157,0.3); padding: 20px; display: flex; flex-direction: column; z-index: 10; }
+.drawn-card-area { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%) scale(0.5); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 450px; background: rgba(0,10,5,0.2); backdrop-filter: blur(20px) brightness(1.2); -webkit-backdrop-filter: blur(20px) brightness(1.2); border: 2px solid rgba(0,255,157,0.7); border-radius: 15px; box-shadow: 0 0 50px rgba(0,255,157,0.3); padding: 20px; display: flex; flex-direction: column; z-index: 10; }
 .drawn-card-area.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
 .drawn-header { text-align: center; font-weight: 900; font-size: 2rem; color: #00FF9D; letter-spacing: 3px; border-bottom: 2px double #00FF9D; margin-bottom: 10px; text-shadow: 0 0 10px #00FF9D; }
 .drawn-status { text-align: center; font-size: 0.9rem; color: #FF3B3B; font-weight: bold; margin-bottom: 15px; letter-spacing: 2px; }
@@ -119,7 +136,7 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
     </div>
     <div id="btn-rules" class="scattered-btn" onclick="openScreen('rules-screen')">
         <div class="btn-icon"><div class="css-icon icon-rules"></div></div>
-        <div class="btn-text">길드 규약</div>
+        <div class="btn-text">교정 규약</div>
     </div>
 </div>
 
@@ -153,16 +170,45 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
 </div>
 
 <div id="rules-screen" class="screen" onclick="if(event.target===this) openScreen('main-screen')">
-    <div class="content-panel"><div class="content-header"><h2>⚖️ 교정 규약</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
-        <div style="padding:40px; color:#E0FFF2; line-height: 1.9; font-size:1.05rem; overflow-y:auto; height: 100%;">
-            <strong style="color:#00FF9D; font-size:1.4rem; letter-spacing: 2px;">[ 초은하 교정청 소속 사냥꾼 강령 ]</strong><br><br>
-            <span style="color:#00FF9D; font-weight:bold;">제1조 [자격 증명]</span> 모든 현상금 사냥꾼은 교정청이 발급한 공식 라이선스를 소지해야 하며, 무면허 사냥은 1급 중범죄로 간주한다.<br><br>
-            <span style="color:#00FF9D; font-weight:bold;">제2조 [사적 제재 금지]</span> 타겟 확보 과정에서 헌터 간의 무력 충돌 및 전리품(현상범) 강탈 행위는 엄격히 금지되며, 적발 시 라이선스가 영구 박탈된다.<br><br>
-            <span style="color:#00FF9D; font-weight:bold;">제3조 [무장 통제]</span> 승인되지 않은 미등록 불법 무기 및 대량 살상 병기의 사용은 즉결 처분 대상이다.<br><br>
-            <span style="color:#00FF9D; font-weight:bold;">제4조 [처우 선택]</span> 생포한 수배범을 교정청에 인계할 경우, 사냥꾼은 '범죄자의 동결형 집행에 따른 현상금 전액 수령' 또는 '해당 범죄자의 신변 및 소유권 위임' 중 하나를 선택할 수 있다.<br><br>
-            <span style="color:#00FF9D; font-weight:bold;">제5조 [동결형의 정의]</span> 동결형이란, 죄인을 극저온 영구 동결 캡슐에 구속한 뒤 미약한 뇌파 의식만을 살려둔 채 최소 10년에서 최대 500년까지 영구적인 고통 속에서 형기를 치르게 하는 징역형을 뜻한다.<br><br>
-            <span style="color:#00FF9D; font-weight:bold;">제6조 [신변 위임의 책임]</span> 제4조에 의거하여 범죄자의 신변 위임을 선택할 경우, 대상의 생사 여부를 포함한 모든 권리와 관리 책임은 해당 사냥꾼에게 전면 양도된다.<br><br>
-            <span style="color:#00FF9D; font-weight:bold;">제7조 [인도적 한계선]</span> 신변을 위임받은 범죄자라 할지라도 제3자에게 암거래를 하거나 불법 노예 시장에 유통하는 행위는 엄격히 금지되며, 위반 시 사냥꾼 본인이 구속되어 즉각 동결형에 처해진다.
+    <div class="content-panel">
+        <div class="content-header"><h2>⚖️ 교정 규약</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
+        <div class="vertical-drag-container" id="rules-timeline">
+            
+            <div class="rule-item">
+                <div class="rule-title">제1조 [자격 증명]</div>
+                모든 현상금 사냥꾼은 교정청이 발급한 공식 라이선스를 소지해야 하며, 무면허 사냥은 1급 중범죄로 간주한다.
+            </div>
+            
+            <div class="rule-item">
+                <div class="rule-title">제2조 [사적 제재 금지]</div>
+                타겟 확보 과정에서 헌터 간의 무력 충돌 및 전리품(현상범) 강탈 행위는 엄격히 금지되며, 적발 시 라이선스가 영구 박탈된다.
+            </div>
+
+            <div class="rule-item">
+                <div class="rule-title">제3조 [무장 통제]</div>
+                승인되지 않은 미등록 불법 무기 및 대량 살상 병기의 사용은 즉결 처분 대상이다.
+            </div>
+
+            <div class="rule-item">
+                <div class="rule-title">제4조 [처우 선택]</div>
+                생포한 수배범을 교정청에 인계할 경우, 사냥꾼은 '범죄자의 동결형 집행에 따른 현상금 전액 수령' 또는 '해당 범죄자의 신변 및 소유권 위임' 중 하나를 선택할 수 있다.
+            </div>
+
+            <div class="rule-item">
+                <div class="rule-title">제5조 [동결형의 정의]</div>
+                동결형이란, 죄인을 극저온 영구 동결 캡슐에 구속한 뒤 미약한 뇌파 의식만을 살려둔 채 최소 10년에서 최대 500년까지 영구적인 고통 속에서 형기를 치르게 하는 징역형을 뜻한다.
+            </div>
+
+            <div class="rule-item">
+                <div class="rule-title">제6조 [신변 위임의 책임]</div>
+                제4조에 의거하여 범죄자의 신변 위임을 선택할 경우, 대상의 생사 여부를 포함한 모든 권리와 관리 책임은 해당 사냥꾼에게 전면 양도된다.
+            </div>
+
+            <div class="rule-item">
+                <div class="rule-title">제7조 [인도적 한계선]</div>
+                신변을 위임받은 범죄자라 할지라도 제3자에게 암거래를 하거나 불법 노예 시장에 유통하는 행위는 엄격히 금지되며, 위반 시 사냥꾼 본인이 구속되어 즉각 동결형에 처해진다.
+            </div>
+
         </div>
     </div>
 </div>
@@ -208,13 +254,62 @@ function openScreen(targetId) {
     if (document.getElementById('eve-popup').classList.contains('show')) updateEveMessage(targetId);
 }
 
-/* 세로 드래그 로직 (역사 탭 타임라인) */
-const historySlider = document.getElementById('history-timeline');
-let isDownY = false, startY, scrollTop;
-historySlider.addEventListener('mousedown', (e) => { isDownY = true; historySlider.classList.add('active-drag'); startY = e.pageY - historySlider.offsetTop; scrollTop = historySlider.scrollTop; });
-historySlider.addEventListener('mouseleave', () => { isDownY = false; historySlider.classList.remove('active-drag'); });
-historySlider.addEventListener('mouseup', () => { isDownY = false; historySlider.classList.remove('active-drag'); });
-historySlider.addEventListener('mousemove', (e) => { if (!isDownY) return; e.preventDefault(); const y = e.pageY - historySlider.offsetTop; historySlider.scrollTop = scrollTop - (y - startY) * 1.5; });
+/* =====================================
+   [업데이트] 스무스 관성(Momentum) 드래그 스크롤 로직
+====================================== */
+function makeDraggableSmooth(ele) {
+    if(!ele) return;
+    let isDown = false;
+    let startY;
+    let scrollTop;
+    let velY = 0;
+    let momentID;
+
+    ele.addEventListener('mousedown', (e) => {
+        isDown = true;
+        ele.classList.add('active-drag');
+        startY = e.pageY - ele.offsetTop;
+        scrollTop = ele.scrollTop;
+        cancelAnimationFrame(momentID); // 클릭하면 멈춤
+    });
+    
+    ele.addEventListener('mouseleave', () => {
+        if(!isDown) return;
+        isDown = false;
+        ele.classList.remove('active-drag');
+        startMomentum();
+    });
+    
+    ele.addEventListener('mouseup', () => {
+        if(!isDown) return;
+        isDown = false;
+        ele.classList.remove('active-drag');
+        startMomentum();
+    });
+    
+    ele.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const y = e.pageY - ele.offsetTop;
+        const walk = (y - startY) * 1.5;
+        let prevScroll = ele.scrollTop;
+        ele.scrollTop = scrollTop - walk;
+        velY = ele.scrollTop - prevScroll; // 드래그 속도 측정
+    });
+
+    function startMomentum() {
+        velY *= 0.95; // 마찰력(감속) 조절. 숫자가 클수록 오래 미끄러짐.
+        if (Math.abs(velY) > 0.5) {
+            ele.scrollTop += velY;
+            momentID = requestAnimationFrame(startMomentum);
+        }
+    }
+}
+
+// 역사 탭과 규약 탭 모두에 관성 스크롤 적용!
+makeDraggableSmooth(document.getElementById('history-timeline'));
+makeDraggableSmooth(document.getElementById('rules-timeline'));
+
 
 /* 수배자 명부 카드 생성 */
 const bountyData = [
