@@ -35,6 +35,7 @@ body::after {
 .scattered-btn { position: absolute; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.3s; animation: float 4s infinite ease-in-out; }
 .scattered-btn:hover { transform: scale(1.1); filter: drop-shadow(0 0 20px #00FF9D); }
 .btn-icon { background: rgba(0,40,20,0.4); border: 2px solid #00FF9D; border-radius: 50%; width: 110px; height: 110px; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 15px rgba(0,255,157,0.3); margin-bottom: 15px; position: relative; }
+.btn-icon !IMPORTANT img { width: 75%; height: 75%; object-fit: contain; }
 .btn-text { background: rgba(0,20,10,0.8); padding: 5px 15px; border-radius: 20px; border: 1px dashed #00FF9D; color: #00FF9D; font-weight: bold; font-size: 0.85rem; }
 #btn-location { top: 20%; left: 15%; animation-delay: 0s; }
 #btn-world { top: 40%; right: 18%; animation-delay: 1s; }
@@ -73,6 +74,9 @@ body::after {
 .vertical-drag-container::-webkit-scrollbar { display: none; }
 .vertical-drag-container.active-drag { cursor: grabbing; scroll-behavior: auto; }
 
+/* 고유명사 볼드 처리 (민트 강조색 및 네온 완전히 제거) */
+.timeline-event strong, .location-desc strong, .rule-item strong, .drawn-bio strong { color: inherit; font-weight: bold; text-shadow: none; }
+
 /* 공통 아이템 스타일 */
 .timeline-item, .rule-item, .location-item { position: relative; user-select: none; transition: 0.3s; }
 
@@ -89,7 +93,9 @@ body::after {
 .vertical-drag-container:not(.active-drag) .rule-item:hover { transform: translateX(10px); box-shadow: -6px 0 0 #00FF9D; border-color: rgba(0, 255, 157, 0.5); }
 .rule-title { color: #00FF9D; font-weight: bold; font-size: 1.3rem; margin-bottom: 10px; text-shadow: 0 0 10px rgba(0,255,157,0.5); letter-spacing: 1px; }
 
-/* 장소 데이터베이스 */
+/* =========================================
+   [수정 완료] 오직 장소 데이터베이스만 1216x832 비율 적용
+========================================= */
 .location-item { 
     display: flex; gap: 30px; background: rgba(0, 255, 157, 0.03); 
     border: 1px solid rgba(0, 255, 157, 0.15); border-radius: 12px; 
@@ -98,8 +104,10 @@ body::after {
 .vertical-drag-container:not(.active-drag) .location-item:hover { 
     transform: translateX(10px); border-color: #00FF9D; background: rgba(0, 255, 157, 0.08);
 }
+/* 1216x832 비율 정밀 축소 매칭 (304px : 208px) */
 .location-img-box { 
-    width: 280px; height: 180px; flex-shrink: 0; border: 1px solid rgba(0, 255, 157, 0.3); 
+    width: 304px; height: 208px; 
+    flex-shrink: 0; border: 1px solid rgba(0, 255, 157, 0.3); 
     border-radius: 8px; overflow: hidden; position: relative; background: #000;
 }
 .location-img-box::after {
@@ -116,11 +124,24 @@ body::after {
 .location-coords { color: #8A9BB4; font-family: monospace; font-size: 0.9rem; margin-bottom: 15px; display: block; border-bottom: 1px solid rgba(0, 255, 157, 0.2); padding-bottom: 8px; }
 .location-desc { color: #E0FFF2; font-size: 1.05rem; line-height: 1.6; }
 
-/* 5. Cards UI (명부) */
+.sub-facility { margin-top: 15px; padding: 15px; background: rgba(0, 255, 157, 0.05); border-left: 3px solid #00FF9D; border-radius: 4px; font-size: 0.95rem; }
+.sub-facility strong { color: #00FF9D; display: block; margin-bottom: 5px; }
+
+/* =========================================
+   [원래대로 복구] 수배자 명부 원상 복귀 (세로형 손패 + 자동 맞춤 프레임)
+========================================= */
 .board-header { position: absolute; top: 30px; left: 50px; right: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
 .board-header h2 { color: #00FF9D; margin: 0; text-shadow: 0 0 10px rgba(0,255,157,0.5); border-bottom: 2px solid #00FF9D; padding-bottom: 10px; }
 .card-hand { position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); display: flex; justify-content: center; align-items: flex-end; width: 800px; height: 250px; perspective: 1000px; z-index: 20; pointer-events: none; }
-.mini-card { position: absolute; width: 130px; height: 190px; background: rgba(0,10,5,0.7); backdrop-filter: blur(5px); border: 2px solid rgba(0,255,157,0.5); border-radius: 8px; box-shadow: 0 0 15px rgba(0,255,157,0.2); cursor: pointer; transform-origin: bottom center; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s, border-color 0.3s; bottom: 0; transform: translateX(var(--tx)) translateY(var(--ty)) rotate(var(--rot)); pointer-events: auto; overflow: hidden; }
+
+/* 예쁜 세로 카드 비율(130x190) 복구 */
+.mini-card { 
+    position: absolute; width: 130px; height: 190px; 
+    background: rgba(0,10,5,0.7); backdrop-filter: blur(5px); 
+    border: 2px solid rgba(0,255,157,0.5); border-radius: 8px; box-shadow: 0 0 15px rgba(0,255,157,0.2); 
+    cursor: pointer; transform-origin: bottom center; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s, border-color 0.3s; bottom: 0; 
+    transform: translateX(var(--tx)) translateY(var(--ty)) rotate(var(--rot)); pointer-events: auto; overflow: hidden; 
+}
 .mini-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7) contrast(1.05); pointer-events: none; transition: 0.3s; position: absolute; top: 0; left: 0; z-index: 1; }
 .mini-card::after, .drawn-img-frame::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(transparent, transparent 2px, rgba(0, 255, 157, 0.15) 3px, rgba(0, 255, 157, 0.15) 4px); pointer-events: none; z-index: 2; animation: hologram-flicker 2s infinite alternate; }
 @keyframes hologram-flicker { 0% { opacity: 0.6; } 50% { opacity: 0.9; } 100% { opacity: 0.5; } }
@@ -128,10 +149,13 @@ body::after {
 .mini-card:hover { transform: translateX(var(--tx)) translateY(calc(var(--ty) - 50px)) rotate(0deg) scale(1.2); z-index: 100 !important; box-shadow: 0 0 30px #00FF9D; border-color: #00FF9D; }
 .mini-card:hover img { filter: brightness(1.0) contrast(1.05); } 
 
+/* 대형 수배서 레이아웃 원상 복구 */
 .drawn-card-area { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) scale(0.5); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 450px; background: rgba(0,10,5,0.2); backdrop-filter: blur(20px) brightness(1.2); -webkit-backdrop-filter: blur(20px) brightness(1.2); border: 2px solid rgba(0,255,157,0.7); border-radius: 15px; box-shadow: 0 0 50px rgba(0,255,157,0.3); padding: 20px; display: flex; flex-direction: column; z-index: 11; }
 .drawn-card-area.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
 .drawn-header { text-align: center; font-weight: 900; font-size: 2rem; color: #00FF9D; letter-spacing: 3px; border-bottom: 2px double #00FF9D; margin-bottom: 10px; text-shadow: 0 0 10px #00FF9D; }
 .drawn-status { text-align: center; font-size: 0.9rem; color: #FF3B3B; font-weight: bold; margin-bottom: 10px; letter-spacing: 2px; }
+
+/* 정사각형 이미지가 잘리지 않는 contain 프레임으로 완전 복구 */
 .drawn-img-frame { width: 100%; height: auto; max-height: 480px; background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,157,0.3); margin-bottom: 10px; overflow: hidden; display: flex; justify-content: center; align-items: center; border-radius: 5px; position: relative; }
 .drawn-img-frame img { width: 100%; height: 100%; max-height: 480px; object-fit: contain; filter: brightness(0.85) contrast(1.05); pointer-events: none; position: relative; z-index: 1; }
 .drawn-info { border-top: 1px solid rgba(0,255,157,0.4); padding-top: 10px; text-align: center; }
@@ -161,7 +185,7 @@ body::after {
     </div>
     <div id="btn-world" class="scattered-btn" onclick="openScreen('world-screen')">
         <div class="btn-icon"><div class="css-icon icon-book"></div></div>
-        <div class="btn-text">역사</div>
+        <div class="btn-text">역사 연대기</div>
     </div>
     <div id="btn-character" class="scattered-btn" onclick="openScreen('character-screen')">
         <div class="btn-icon"><div class="css-icon icon-wanted"></div></div>
@@ -187,13 +211,13 @@ body::after {
     <div class="content-panel">
         <div class="content-header"><h2>📖 초은하 연대기</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
         <div class="vertical-drag-container" id="history-timeline">
-            <div class="timeline-item"><div class="timeline-year">AD 2045</div><div class="timeline-event">워프 항법의 상용화. 인류, 태양계의 요람을 벗어나 심우주 개척 시대에 진입하다.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2078</div><div class="timeline-event">제4차 세계 대전 발발. 궤도 폭격과 무차별적인 핵전쟁으로 푸른 별 '지구' 완전 붕괴 및 소멸.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2080</div><div class="timeline-event">살아남은 극소수의 인류, 정처 없는 우주 난민으로 전락. 인류의 마지막 보루였던 화성 테라포밍 프로젝트마저 대실패로 종결되다.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2102</div><div class="timeline-event">초공간 워프 네트워크 구축 성공. 수많은 외계 지성체들과 조우하며 바야흐로 '대우주 교류 시대'의 막이 오르다.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2247</div><div class="timeline-event">항성 간 무법자 및 우주 해적의 걷잡을 수 없는 급증. 전 우주권의 치안 유지와 척결을 위해 통합 권력 기관인 <strong>'초은하 교정청'</strong> 공식 출범.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2556</div><div class="timeline-event">초행성급 범죄자들의 폭증으로 우주 수용 시설 포화 상태 도달. 죄수들을 극저온 수면 상태에서 형기를 치르게 하는 <strong>'동결형'</strong> 시스템 전격 도입.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 3155 (현재)</div><div class="timeline-event">긴 피의 세월 끝에 표면적인 은하 정세는 안정화되었다. 그러나 짙은 그림자 속에 숨어든 고위험 범죄자들을 사냥하기 위해 사냥꾼들의 수요는 그 어느 때보다 치솟고 있다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">2045년</div><div class="timeline-event"><strong>워프 항법</strong>의 상용화. 인류, 태양계의 요람을 벗어나 심우주 개척 시대에 진입하다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">2078년</div><div class="timeline-event">제4차 세계 대전 발발. 궤도 폭격 and 무차별적인 핵전쟁으로 푸른 별 <strong>'지구'</strong> 완전 붕괴 및 소멸.</div></div>
+            <div class="timeline-item"><div class="timeline-year">2080년</div><div class="timeline-event">살아남은 극소수의 인류, 정처 없는 우주 난민으로 전락. 인류의 마지막 보루였던 <strong>화성 테라포밍 프로젝트</strong>마저 대실패로 종결되다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">2102년</div><div class="timeline-event"><strong>초공간 워프 네트워크</strong> 구축 성공. 수많은 외계 지성체들과 조우하며 바야흐로 '대우주 교류 시대'의 막이 오르다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">2247년</div><div class="timeline-event">항성 간 무법자 및 우주 해적의 걷잡을 수 없는 급증. 전 우주권의 치안 유지와 척결을 위해 통합 권력 기관인 <strong>'초은하 교정청'</strong> 공식 출범.</div></div>
+            <div class="timeline-item"><div class="timeline-year">2556년</div><div class="timeline-event">초행성급 범죄자들의 폭증으로 우주 수용 시설 포화 상태 도달. 죄수들을 극저온 수면 상태에서 형기를 치르게 하는 <strong>'동결형'</strong> 시스템 전격 도입.</div></div>
+            <div class="timeline-item"><div class="timeline-year">3155년 (현재)</div><div class="timeline-event">긴 피의 세월 끝에 표면적인 은하 정세는 안정화되었다. 그러나 짙은 그림자 속에 숨어든 고위험 범죄자들을 사냥하기 위해 거대 현상금이 걸린 사냥감들의 수요는 그 어느 때보다 치솟고 있다.</div></div>
         </div>
     </div>
 </div>
@@ -202,7 +226,6 @@ body::after {
     <div class="content-panel">
         <div class="content-header"><h2>🪐 장소 데이터베이스</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
         <div class="vertical-drag-container" id="location-timeline">
-            
             <div class="location-item">
                 <div class="location-img-box"><img src="loc1.png" alt="Blue Marble"></div>
                 <div class="location-info">
@@ -211,88 +234,83 @@ body::after {
                     <div class="location-desc">사냥꾼의 개인 자산이자 안식처. 미니멀리즘 철학이 반영된 쾌적한 생활 공간을 제공하며, 모든 사냥 업무의 중심 기지로 활용된다.</div>
                 </div>
             </div>
-
             <div class="location-item">
                 <div class="location-img-box"><img src="loc2.png" alt="Private Rest Station"></div>
                 <div class="location-info">
                     <span class="location-name">제5은하 제4구역 사립 휴게 정거장</span>
                     <span class="location-coords">COORDS: G5-SEC4-ST09</span>
-                    <div class="location-desc">'헤이즈'가 운영하는 중립 구역. 은하계 전역의 부랑자와 헌터들이 모여드는 곳으로, 고위험 수배범들에 대한 고급 정보가 암암리에 거래된다.</div>
+                    <div class="location-desc"><strong>'헤이즈'</strong>가 운영하는 중립 구역. 은하계 전역의 부랑자와 헌터들이 모여드는 곳으로, 고위험 수배범들에 대한 고급 정보가 암암리에 거래된다.</div>
                 </div>
             </div>
-
             <div class="location-item">
-                <div class="location-img-box"><img src="loc3.png" alt="Correction Agency"></div>
+                <div class="location-img-box"><img src="loc3.png" alt="Correction HQ"></div>
                 <div class="location-info">
                     <span class="location-name">초은하 교정본청</span>
                     <span class="location-coords">COORDS: MOBILE-HQ AG-01</span>
-                    <div class="location-desc">전 우주의 법과 질서를 집행하는 거대 거점 우주선. 청장 '바네사'에게 체포한 수배범을 공식 인계하고 정당한 현상금을 수령하는 유일한 기관이다.</div>
+                    <div class="location-desc">전 우주의 법과 질서를 집행하는 거대 거점 우주선. 청장 <strong>'바네사'</strong>에게 체포한 수배범을 공식 인계하고 정당한 현상금을 수령하는 유일한 기관이다.</div>
                 </div>
             </div>
-
             <div class="location-item">
-                <div class="location-img-box"><img src="loc4.png" alt="Albero Ship"></div>
+                <div class="location-img-box"><img src="loc4.png" alt="Albero Vessel"></div>
                 <div class="location-info">
                     <span class="location-name">알베로 호</span>
                     <span class="location-coords">VESSEL TYPE: PIRATE DREADNOUGHT</span>
-                    <div class="location-desc">'에드나'가 지휘하는 해적단의 이동 거점이자 거대 전함. 강력한 화력과 기동성을 갖추고 있으며 주로 타 행성 침공 및 물자 습격에 특화되어 있다.</div>
+                    <div class="location-desc"><strong>'에드나'</strong>가 지휘하는 해적단의 이동 거점이자 거대 전함. 강력한 화력과 기동성을 갖추고 있으며 주로 타 행성 침공 및 물자 습격에 특화되어 있다.</div>
                 </div>
             </div>
-
             <div class="location-item">
                 <div class="location-img-box"><img src="loc5.png" alt="Valhalla"></div>
                 <div class="location-info">
                     <span class="location-name">발할라</span>
                     <span class="location-coords">COORDS: G3-SEC7-VH12</span>
-                    <div class="location-desc">끊임없는 화염이 타오르는 전쟁 행성. 고대 신화를 숭상하는 발키리 군단과 영토를 지키려는 원주민 간의 치열한 분쟁이 이어지고 있으며, 파괴적인 고도 과학 기술이 발달해 있다.</div>
+                    <div class="location-desc">끊임없는 화염이 타오르는 전쟁 행성. 고대 신화를 숭상하는 <strong>발키리 군단</strong>과 영토를 지키려는 원주민 간의 치열한 분쟁이 이어지고 있으며, 파괴적인 고도 과학 기술이 발달해 있다.</div>
                 </div>
             </div>
-
             <div class="location-item">
                 <div class="location-img-box"><img src="loc6.png" alt="Nexus"></div>
                 <div class="location-info">
                     <span class="location-name">넥서스</span>
                     <span class="location-coords">COORDS: G4-SEC7-NX04</span>
-                    <div class="location-desc">화려한 네온사인 아래 어둠이 깔린 사이버펑크 디스토피아 행성. '글리치'를 필두로 한 해킹 테러가 빈번하며, 우주에서 가장 진보된 과학 기술의 정점을 보여준다.</div>
+                    <div class="location-desc">화려한 네온사인 아래 어둠이 깔린 사이버펑크 디스토피아 행성. <strong>'글리치'</strong>를 필두로 한 해킹 테러가 빈번하며, 우주에서 가장 진보된 과학 기술의 정점을 보여준다.</div>
                 </div>
             </div>
-
             <div class="location-item">
                 <div class="location-img-box"><img src="loc7.png" alt="Avaris Labor Camp"></div>
                 <div class="location-info">
-                    <span class="location-name" style="color: #FF3B3B; text-shadow: 0 0 10px rgba(255,59,59,0.5);">아바리스 노역소</span>
-                    <span class="location-coords" style="color: #FF3B3B;">COORDS: G4-SEC7-AV01</span>
-                    <div class="location-desc">초은하 교정청에서 공식적으로 인정한 합법 위탁 노역소. 넥서스의 유일한 인간 노동력을 공급하는 핵심 인프라로, 헌터로부터 대여받은 범죄자들의 성장치와 노역 기여도에 따라 차등 보상을 지급한다.</div>
+                    <span class="location-name">아바리스 노역소</span>
+                    <span class="location-coords">COORDS: G4-SEC7-AV01</span>
+                    <div class="location-desc">
+                        <div class="sub-facility">
+                            <strong>[초은하 교정청 공식 인가 시설]</strong>
+                            <strong>넥서스</strong>의 유일한 인간 노동력을 공급하는 핵심 인프라. 헌터로부터 합법적으로 위탁 및 대여받은 범죄자들의 성장치와 노역 기여도에 따라 차등 보상을 지급한다.
+                        </div>
+                    </div>
                 </div>
             </div>
-
             <div class="location-item">
                 <div class="location-img-box"><img src="loc8.png" alt="Moon"></div>
                 <div class="location-info">
                     <span class="location-name">달</span>
                     <span class="location-coords">COORDS: G5-SEC3-EA03-1</span>
-                    <div class="location-desc">멸망한 지구의 유일한 위성. 산소가 존재하지 않는 극한의 환경이지만, 적응력이 뛰어난 '달토끼족'이 군락을 이루어 거주하고 있다.</div>
+                    <div class="location-desc">멸망한 지구의 유일한 위성. 산소가 존재하지 않는 극한의 환경이지만, 적응력이 뛰어난 <strong>'달토끼족'</strong>이 군락을 이루어 거주하고 있다.</div>
                 </div>
             </div>
-
             <div class="location-item">
                 <div class="location-img-box"><img src="loc9.png" alt="Arcadia"></div>
                 <div class="location-info">
                     <span class="location-name">아르카디아</span>
                     <span class="location-coords">COORDS: G5-SEC4-AC01</span>
-                    <div class="location-desc">표면의 90% 이상이 끝없는 바다로 덮인 해양 행성. 고대의 신수들을 신성시하며 보호하고, 절대적인 신앙을 가진 사제들을 중심으로 사회가 운영된다.</div>
+                    <div class="location-desc">표면의 90% 이상이 끝없는 바다로 덮인 해양 행성. 고대의 <strong>신수</strong>들을 신성시하며 보호하고, 절대적인 신앙을 가진 사제들을 중심으로 사회가 운영된다.</div>
                 </div>
             </div>
-
             <div class="location-item">
                 <div class="location-img-box"><img src="loc10.png" alt="Cheongmyeong"></div>
                 <div class="location-info">
                     <span class="location-name">청명</span>
                     <span class="location-coords">COORDS: G6-SEC3-CH07</span>
-                    <div class="location-desc">행성 전체가 분홍빛 벚나무 식생으로 덮인 아름다운 동양풍 행성. 현재 '연화'가 이끄는 반군 세력과 중앙 조정 간의 피비린내 나는 내전이 진행 중이다.</div>
+                    <div class="location-desc">행성 전체가 분홍빛 벚나무 식생으로 덮인 아름다운 동양풍 행성. 현재 <strong>'연화'</strong>가 이끄는 반군 세력과 중앙 조정 간의 피비린내 나는 내전이 진행 중이다.</div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -301,14 +319,14 @@ body::after {
     <div class="content-panel">
         <div class="content-header"><h2>⚖️ 교정 규약</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
         <div class="vertical-drag-container" id="rules-timeline">
-            <div class="rule-item"><div class="rule-title">제1조 [자격 증명]</div>모든 현상금 사냥꾼은 교정청이 발급한 공식 라이선스를 소지해야 하며, 무면허 사냥은 1급 중범죄로 간주한다.</div>
+            <div class="rule-item"><div class="rule-title">제1조 [자격 증명]</div>모든 현상금 사냥꾼은 <strong>초은하 교정청</strong>이 발급한 공식 라이선스를 소지해야 하며, 무면허 사냥은 1급 중범죄로 간주한다.</div>
             <div class="rule-item"><div class="rule-title">제2조 [사적 제재 금지]</div>타겟 확보 과정에서 헌터 간의 무력 충돌 및 전리품(현상범) 강탈 행위는 엄격히 금지되며, 적발 시 라이선스가 영구 박탈된다.</div>
             <div class="rule-item"><div class="rule-title">제3조 [무장 통제]</div>승인되지 않은 미등록 불법 무기 및 대량 살상 병기의 사용은 즉결 처분 대상이다.</div>
-            <div class="rule-item"><div class="rule-title">제4조 [처우 선택]</div>생포한 수배범을 교정청에 인계할 경우, 사냥꾼은 '범죄자의 동결형 집행에 따른 현상금 전액 수령' 또는 '해당 범죄자의 신변 인도' 중 하나를 선택할 수 있다.</div>
-            <div class="rule-item"><div class="rule-title">제5조 [동결형의 정의]</div>동결형이란, 죄인을 극저온 영구 동결 캡슐에 구속한 뒤 미약한 뇌파 의식만을 살려둔 채 최소 10년에서 최대 500년까지 영구적인 고통 속에서 형기를 치르게 하는 징역형을 뜻한다.</div>
+            <div class="rule-item"><div class="rule-title">제4조 [처우 선택]</div>생포한 수배범을 <strong>교정청</strong>에 인계할 경우, 사냥꾼은 '범죄자의 <strong>동결형</strong> 집행에 따른 현상금 전액 수령' 또는 '해당 범죄자의 신변 인도' 중 하나를 선택할 수 있다.</div>
+            <div class="rule-item"><div class="rule-title">제5조 [동결형의 정의]</div><strong>동결형</strong>이란, 죄인을 극저온 영구 동결 캡슐에 구속한 뒤 미약한 뇌파 의식만을 살려둔 채 최소 10년에서 최대 500년까지 영구적인 고통 속에서 형기를 치르게 하는 징역형을 뜻한다.</div>
             <div class="rule-item"><div class="rule-title">제6조 [신변 위임의 책임]</div>제4조에 의거하여 범죄자의 신변 인도를 선택할 경우, 대상에 대한 전권 및 관리 책임은 해당 사냥꾼에게 전면 양도된다.</div>
-            <div class="rule-item"><div class="rule-title">제7조 [거래 제한]</div>신변을 위임받은 범죄자를 교정청의 승인 없이 불법적인 루트로 밀거래하거나, 암시장에 유통하는 일체의 불법 거래 행위는 엄격히 금지된다. 위반 시 사냥꾼 본인의 자격이 즉각 박탈된다.</div>
-            <div class="rule-item"><div class="rule-title">제8조 [위탁 노역 계약]</div>사냥꾼은 인도받은 범죄자의 신변을 기반으로, 교정청의 정식 승인을 받은 민간 기업 및 외부 기관과 위탁 계약을 체결할 수 있다. 계약을 통한 '대여 형식'으로 범죄자를 특정 공정 및 인프라 노역에 종사시키는 행위는 합법으로 인정된다.</div>
+            <div class="rule-item"><div class="rule-title">제7조 [거래 제한]</div>신변을 위임받은 범죄자를 <strong>교정청</strong>의 승인 없이 불법적인 루트로 밀거래하거나, 암시장에 유통하는 일체의 불법 거래 행위는 엄격히 금지된다. 위반 시 사냥꾼 본인의 자격이 즉각 박탈된다.</div>
+            <div class="rule-item"><div class="rule-title">제8조 [위탁 노역 계약]</div>사냥꾼은 인도받은 범죄자의 신변을 기반으로, <strong>교정청</strong>의 정식 승인을 받은 민간 기업 및 외부 기관과 위탁 계약을 체결할 수 . 계약을 통한 '대여 형식'으로 범죄자를 특정 공정 및 인프라 노역에 종사시키는 행위는 합법으로 인정된다.</div>
         </div>
     </div>
 </div>
@@ -383,12 +401,12 @@ makeDraggableSmooth(document.getElementById('rules-timeline'));
 makeDraggableSmooth(document.getElementById('location-timeline'));
 
 const bountyData = [
-    { id: 1, name: '연화', reward: '50,000,000,000 ₵', img: 'char1.png', bio: '[종족: 용족]<br>정부 전복 음모 및 주동죄. 교정청 최우선 확보 대상.' },
+    { id: 1, name: '연화', reward: '50,000,000,000 ₵', img: 'char1.png', bio: '[종족: 용족]<br>정부 전복 음모 및 주동죄. <strong>교정청</strong> 최우선 확보 대상.' },
     { id: 2, name: '리리아', reward: '800,000,000 ₵', img: 'char2.png', bio: '[종족: 여우 수인]<br>특수 절도 및 강도 상해 미수. 날렵한 기동성에 주의할 것.' },
     { id: 3, name: '아자젤', reward: '1,500,000,000 ₵', img: 'char3.png', bio: '[종족: 천사족]<br>무장 탈영죄. 군용 무기를 소지하여 각별한 주의 요망.' },
     { id: 4, name: '글리치', reward: '30,000,000,000 ₵', img: 'char4.png', bio: '[종족: 인간 아종]<br>정보통신망법 위반 및 행성 내란죄. 시스템 해킹에 능함.' },
     { id: 5, name: '월묘', reward: '15,000,000 ₵', img: 'char5.png', bio: '[종족: 달토끼족]<br>식품위생법 상습 위반. 치명적인 불량 식품 유통 전과.' },
-    { id: 6, name: '셀레', reward: '25,000,000,000 ₵', img: 'char6.png', bio: '[종족: 엘로힘 아종]<br>신수 독살 미수 및 행성 내란 미수. 고위험 생화학 물질 취급.' },
+    { id: 6, name: '셀레', reward: '25,000,000,000 ₵', img: 'char6.png', bio: '[종족: 엘로힘 아종]<br><strong>신수</strong> 독살 미수 및 행성 내란 미수. 고위험 생화학 물질 취급.' },
     { id: 7, name: '에드나', reward: '5,000,000,000 ₵', img: 'char7.png', bio: '[종족: 인간 아종]<br>공상 강도 및 전략 자원 탈취. 군수 물자 밀거래 혐의.' },
     { id: 8, name: '비비안', reward: '300,000,000 ₵', img: 'char8.png', bio: '[종족: 인간 아종]<br>사기죄 및 사문서 위조. 다수의 위조 신분증을 소지 중임.' }
 ];
@@ -400,7 +418,7 @@ if (hand) {
         const card = document.createElement('div');
         card.className = 'mini-card';
         const offset = index - (totalCards - 1) / 2; 
-        card.style.setProperty('--tx', `${offset * 55}px`);
+        card.style.setProperty('--tx', `${offset * 55}px`); /* 세로 카드 본연의 수려한 각도 간격 복구 */
         card.style.setProperty('--ty', `${Math.abs(offset) * Math.abs(offset) * 3}px`);
         card.style.setProperty('--rot', `${offset * 6}deg`);
         card.style.zIndex = index;
