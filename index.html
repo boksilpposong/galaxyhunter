@@ -12,23 +12,14 @@ body {
     position: relative;
 }
 
-/* =========================================
-   [업데이트] 미묘한 모니터 청록색 틴트 및 화면 왜곡
-========================================= */
+/* 전체 모니터 바탕 오버레이 (은은하게) */
 body::after {
-    content: "";
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
+    content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: 
-        /* [수정] 색상반전 제외, 아주 미묘한 청록색 틴트 overlay */
-        rgba(0, 255, 200, 0.03),
-        /* 미세한 스캔라인 (가로줄) */
+        rgba(0, 255, 200, 0.02),
         repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05) 1px, transparent 1px, transparent 2px),
-        /* 화면 비네팅 (가장자리 어둡게) */
         radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.4) 100%);
-    pointer-events: none; /* 클릭 방해 금지 */
-    z-index: 9999; /* 최상단 레이어 */
-    /* 미세한 화면 깜빡임 및 스케일 왜곡 애니메이션 */
+    pointer-events: none; z-index: 9999;
     animation: screen-static 0.2s infinite; 
 }
 
@@ -64,7 +55,7 @@ body::after {
 #btn-rules { bottom: 12%; right: 33%; animation-delay: 3s; }
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-/* 순수 CSS 홀로그램 아이콘 */
+/* CSS 아이콘 */
 .css-icon { width: 50px; height: 50px; position: relative; pointer-events: none; }
 .icon-planet { background: rgba(0,255,157,0.3); border-radius: 50%; box-shadow: 0 0 15px rgba(0,255,157,0.5); }
 .icon-planet::after { content: ''; position: absolute; top: 50%; left: -10px; right: -10px; height: 8px; background: rgba(0,255,157,0.4); border-radius: 50%; transform: translateY(-50%) rotate(25deg); box-shadow: 0 0 10px rgba(0,255,157,0.5); }
@@ -90,20 +81,16 @@ body::after {
 .ai-text strong { color: #00FF9D; font-size: 0.75rem; display: block; }
 #eve-message { color: #E0FFF2; font-size: 0.95rem; line-height: 1.4; display: block; transition: opacity 0.2s; }
 
-/* 세로 드래그 & 스무스 스크롤 영역 */
+/* 스무스 스크롤 영역 */
 .vertical-drag-container { flex-grow: 1; overflow-y: auto; padding: 20px 60px 60px; cursor: grab; scrollbar-width: none; -ms-overflow-style: none; box-shadow: inset 0 20px 20px -20px rgba(0,255,157,0.2), inset 0 -20px 20px -20px rgba(0,255,157,0.2); }
 .vertical-drag-container::-webkit-scrollbar { display: none; }
 .vertical-drag-container.active-drag { cursor: grabbing; scroll-behavior: auto; }
-
-/* 타임라인 박스 (역사) */
 .timeline-item { position: relative; padding-left: 40px; margin-bottom: 40px; border-left: 2px solid rgba(0,255,157,0.3); user-select: none; transition: 0.3s; padding-bottom: 10px; }
 .vertical-drag-container:not(.active-drag) .timeline-item:hover { transform: translateX(10px); border-left-color: #00FF9D; }
 .timeline-item::before { content: ''; position: absolute; left: -8px; top: 0; width: 14px; height: 14px; border-radius: 50%; background: #05120E; border: 2px solid #00FF9D; box-shadow: 0 0 10px #00FF9D; transition: 0.3s; }
 .vertical-drag-container:not(.active-drag) .timeline-item:hover::before { background: #00FF9D; }
 .timeline-year { font-size: 1.8rem; color: #00FF9D; font-weight: bold; text-shadow: 0 0 10px rgba(0,255,157,0.5); margin-bottom: 10px; }
 .timeline-event { color: #E0FFF2; font-size: 1.1rem; line-height: 1.6; background: rgba(0,255,157,0.05); padding: 20px; border-radius: 0 10px 10px 10px; border: 1px solid rgba(0,255,157,0.1); pointer-events: none; }
-
-/* 규약 박스 (교정 규약) */
 .rule-item { position: relative; background: rgba(0, 255, 157, 0.05); border: 1px solid rgba(0, 255, 157, 0.2); border-radius: 10px; padding: 25px; margin-bottom: 25px; color: #E0FFF2; font-size: 1.1rem; line-height: 1.6; transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s; user-select: none; }
 .vertical-drag-container:not(.active-drag) .rule-item:hover { transform: translateX(10px); box-shadow: -6px 0 0 #00FF9D; border-color: rgba(0, 255, 157, 0.5); }
 .rule-title { color: #00FF9D; font-weight: bold; font-size: 1.3rem; margin-bottom: 10px; text-shadow: 0 0 10px rgba(0,255,157,0.5); letter-spacing: 1px; }
@@ -122,102 +109,64 @@ body::after {
     overflow: hidden; 
 }
 
-/* =========================================
-   [신규] 이미지에만 적용되는 파동(Wave) 노이즈 공통 스타일
-========================================= */
+/* [업데이트] 블루아카이브 스타일 홀로그램 스캔라인 */
 .mini-card::after, .drawn-img-frame::after {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    /* 수평 파동 라인 (심장박동/전파 느낌) */
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    /* 얇고 촘촘한 가로줄 */
     background: repeating-linear-gradient(
-        transparent,
-        transparent 5px,
-        rgba(0, 255, 157, 0.15) 6px, /* 파동 선 색상 및 굵기 */
-        transparent 7px,
-        transparent 15px /* 파동 간격 */
+        transparent, transparent 2px, rgba(0, 255, 157, 0.15) 3px, rgba(0, 255, 157, 0.15) 4px
     );
-    pointer-events: none; /* 클릭 방해 금지 */
-    animation: image-wave-scan 6s linear infinite; /* 천천히 스캔하는 애니메이션 */
+    pointer-events: none; z-index: 2;
+    animation: hologram-flicker 2s infinite alternate; /* 은은한 깜빡임 */
 }
 
-/* 이미지 파동 애니메이션 정의 (위에서 아래로 스캔) */
-@keyframes image-wave-scan {
-    0% { background-position-y: 0px; }
-    100% { background-position-y: 450px; /* 프레임 크기에 따라 조정 */ }
+@keyframes hologram-flicker {
+    0% { opacity: 0.6; }
+    50% { opacity: 0.9; }
+    100% { opacity: 0.5; }
 }
 
-/* 작은 카드 이미지 전용 틴트 */
+/* [업데이트] 이미지 색상반전(hue-rotate) 완전히 제거, 원본 색감 유지 + 살짝 톤다운 */
 .mini-card img { 
     width: 100%; height: 100%; object-fit: cover; 
-    /* 미묘하게 청록색 색조 부여, 색상 반전 제외 */
-    filter: brightness(0.7) contrast(1.1) hue-rotate(100deg); 
-    pointer-events: none; transition: 0.3s; 
-    position: absolute; top: 0; left: 0; z-index: 1; 
+    filter: brightness(0.7) contrast(1.05); 
+    pointer-events: none; transition: 0.3s; position: absolute; top: 0; left: 0; z-index: 1; 
 }
-
-/* [신규] 작은 카드 노이즈 효과 레이어 위치 조정 */
-.mini-card::after { z-index: 2; /* 이미지 위, 이름표 아래 */ }
-
-/* 손패 카드 전용 이름 오버레이 */
-.mini-card-name {
-    position: absolute;
-    top: 10px; left: 10px;
-    background: rgba(0, 20, 10, 0.9); /* 네온 글씨가 잘 보이도록 배경 깔기 */
-    border: 1px solid rgba(0, 255, 157, 0.4);
-    border-radius: 4px;
-    color: #00FF9D;
-    font-weight: bold;
-    font-size: 0.8rem;
-    padding: 2px 6px;
-    text-shadow: 0 0 5px rgba(0, 255, 157, 0.8);
-    z-index: 3; /* 이미지 및 노이즈보다 위에 */
-    pointer-events: none; /* 클릭하면 카드가 선택되도록 */
-}
-
 .mini-card:hover { transform: translateX(var(--tx)) translateY(calc(var(--ty) - 50px)) rotate(0deg) scale(1.2); z-index: 100 !important; box-shadow: 0 0 30px #00FF9D; border-color: #00FF9D; }
-.mini-card:hover img { filter: brightness(1.1) contrast(1.1) hue-rotate(100deg); } /* 호버 시 밝게 */
+.mini-card:hover img { filter: brightness(1.0) contrast(1.05); } 
 
-/* 대형 현상수배지 프레임 */
+.mini-card-name {
+    position: absolute; top: 10px; left: 10px; background: rgba(0, 20, 10, 0.9); border: 1px solid rgba(0, 255, 157, 0.4);
+    border-radius: 4px; color: #00FF9D; font-weight: bold; font-size: 0.8rem; padding: 2px 6px;
+    text-shadow: 0 0 5px rgba(0, 255, 157, 0.8); z-index: 3; pointer-events: none; 
+}
+
+/* [업데이트] 텍스트 안 가려지게 대형 수배지 전체를 위로 조금 끌어올림 (top 45% -> 40%) */
 .drawn-card-area { 
-    position: absolute; top: 45%; left: 50%; 
-    transform: translate(-50%, -50%) scale(0.5); opacity: 0; 
-    pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-    width: 450px; background: rgba(0,10,5,0.2); 
-    backdrop-filter: blur(20px) brightness(1.2); -webkit-backdrop-filter: blur(20px) brightness(1.2); 
-    border: 2px solid rgba(0,255,157,0.7); border-radius: 15px; 
-    box-shadow: 0 0 50px rgba(0,255,157,0.3); padding: 20px; display: flex; flex-direction: column; 
-    z-index: 11; 
+    position: absolute; top: 40%; left: 50%; 
+    transform: translate(-50%, -50%) scale(0.5); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    width: 450px; background: rgba(0,10,5,0.2); backdrop-filter: blur(20px) brightness(1.2); -webkit-backdrop-filter: blur(20px) brightness(1.2); 
+    border: 2px solid rgba(0,255,157,0.7); border-radius: 15px; box-shadow: 0 0 50px rgba(0,255,157,0.3); padding: 20px; display: flex; flex-direction: column; z-index: 11; 
 }
 .drawn-card-area.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
 .drawn-header { text-align: center; font-weight: 900; font-size: 2rem; color: #00FF9D; letter-spacing: 3px; border-bottom: 2px double #00FF9D; margin-bottom: 10px; text-shadow: 0 0 10px #00FF9D; }
-.drawn-status { text-align: center; font-size: 0.9rem; color: #FF3B3B; font-weight: bold; margin-bottom: 15px; letter-spacing: 2px; }
+.drawn-status { text-align: center; font-size: 0.9rem; color: #FF3B3B; font-weight: bold; margin-bottom: 10px; letter-spacing: 2px; }
 
-/* 대형 이미지 프레임 */
+/* [업데이트] 정사각형 이미지가 가로에 꽉 차도록 max-height 제한을 480px로 여유롭게 확장 */
 .drawn-img-frame { 
-    width: 100%; height: auto; max-height: 400px; 
-    background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,157,0.3); 
-    margin-bottom: 15px; 
-    overflow: hidden; /* 노이즈 효과가 프레임 밖으로 나가지 않게 */
-    display: flex; justify-content: center; align-items: center; border-radius: 5px; 
-    position: relative; /* 노이즈 레이어 배치 기준 */
+    width: 100%; height: auto; max-height: 480px; 
+    background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,157,0.3); margin-bottom: 10px; overflow: hidden; display: flex; justify-content: center; align-items: center; border-radius: 5px; position: relative; 
 }
-
-/* 대형 이미지 프레임 노이즈 효과 애니메이션 속도 조정 */
-.drawn-img-frame::after { animation-duration: 4s; /* 좀 더 빠르게 스캔 */ }
-
-/* 대형 이미지 전용 틴트 */
 .drawn-img-frame img { 
-    max-width: 100%; max-height: 400px; object-fit: contain; 
-    /* 미묘하게 청록색 색조 부여, 색상 반전 제외 */
-    filter: brightness(0.9) contrast(1.1) hue-rotate(100deg); 
-    pointer-events: none; 
-    position: relative; z-index: 1; /* 노이즈 아래 */
+    width: 100%; /* 정사각형일 때 양옆이 꽉 차게 설정 */
+    height: 100%; max-height: 480px; object-fit: contain; 
+    filter: brightness(0.85) contrast(1.05); /* 원본 색상 유지, 살짝만 톤다운 */
+    pointer-events: none; position: relative; z-index: 1; 
 }
-.drawn-info { border-top: 1px solid rgba(0,255,157,0.4); padding-top: 15px; text-align: center; }
+.drawn-info { border-top: 1px solid rgba(0,255,157,0.4); padding-top: 10px; text-align: center; }
 .drawn-name { font-size: 1.6rem; font-weight: bold; color: #FFF; margin-bottom: 5px; text-shadow: 0 0 10px #FFF; }
-.drawn-reward { font-size: 1.3rem; color: #00FF9D; font-family: monospace; font-weight: bold; margin-bottom: 10px; text-shadow: 0 0 10px #00FF9D; }
-.drawn-bio { font-size: 0.95rem; color: #FFF; line-height: 1.6; background: rgba(0,255,157,0.08); padding: 12px; border-radius: 5px; pointer-events: none; text-shadow: 0 1px 2px #000; }
+.drawn-reward { font-size: 1.3rem; color: #00FF9D; font-family: monospace; font-weight: bold; margin-bottom: 5px; text-shadow: 0 0 10px #00FF9D; }
+.drawn-bio { font-size: 0.9rem; color: #FFF; line-height: 1.5; background: rgba(0,255,157,0.08); padding: 10px; border-radius: 5px; pointer-events: none; text-shadow: 0 1px 2px #000; }
 </style>
 </head>
 <body>
@@ -267,13 +216,13 @@ body::after {
     <div class="content-panel">
         <div class="content-header"><h2>📖 초은하 연대기</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
         <div class="vertical-drag-container" id="history-timeline">
-            <div class="timeline-item"><div class="timeline-year">AD 2045</div><div class="timeline-event">워프 항법의 상용화. 인류, 태양계의 요람을 벗어나 심우주 개척 시대에 진입하다.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2078</div><div class="timeline-event">제4차 세계 대전 발발. 궤도 폭격과 무차별적인 핵전쟁으로 푸른 별 '지구' 완전 붕괴 및 소멸.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2080</div><div class="timeline-event">살아남은 극소수의 인류, 정처 없는 우주 난민으로 전락. 인류의 마지막 보루였던 화성 테라포밍 프로젝트마저 대실패로 종결되다.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2102</div><div class="timeline-event">초공간 워프 네트워크 구축 성공. 수많은 외계 지성체들과 조우하며 바야흐로 '대우주 교류 시대'의 막이 오르다.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2247</div><div class="timeline-event">항성 간 무법자 및 우주 해적의 걷잡을 수 없는 급증. 전 우주권의 치안 유지와 척결을 위해 통합 권력 기관인 <strong>'초은하 교정청'</strong> 공식 출범.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2556</div><div class="timeline-event">초행성급 범죄자들의 폭증으로 우주 수용 시설 포화 상태 도달. 죄수들을 극저온 수면 상태에서 형기를 치르게 하는 <strong>'동결형'</strong> 시스템 전격 도입.</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 3155 (현재)</div><div class="timeline-event">긴 피의 세월 끝에 표면적인 은하 정세는 안정화되었다. 그러나 짙은 그림자 속에 숨어든 고위험 범죄자들을 사냥하기 위해 사냥꾼들의 수요는 그 어느 때보다 치솟고 있다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">2045년</div><div class="timeline-event">워프 항법의 상용화. 인류, 태양계의 요람을 벗어나 심우주 개척 시대에 진입하다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">2078년</div><div class="timeline-event">제4차 세계 대전 발발. 궤도 폭격과 무차별적인 핵전쟁으로 푸른 별 '지구' 완전 붕괴 및 소멸.</div></div>
+            <div class="timeline-item"><div class="timeline-year">2080년</div><div class="timeline-event">살아남은 극소수의 인류, 정처 없는 우주 난민으로 전락. 인류의 마지막 보루였던 화성 테라포밍 프로젝트마저 대실패로 종결되다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">2102년</div><div class="timeline-event">초공간 워프 네트워크 구축 성공. 수많은 외계 지성체들과 조우하며 바야흐로 '대우주 교류 시대'의 막이 오르다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">2247년</div><div class="timeline-event">항성 간 무법자 및 우주 해적의 걷잡을 수 없는 급증. 전 우주권의 치안 유지와 척결을 위해 통합 권력 기관인 <strong>'초은하 교정청'</strong> 공식 출범.</div></div>
+            <div class="timeline-item"><div class="timeline-year">2556년</div><div class="timeline-event">초행성급 범죄자들의 폭증으로 우주 수용 시설 포화 상태 도달. 죄수들을 극저온 수면 상태에서 형기를 치르게 하는 <strong>'동결형'</strong> 시스템 전격 도입.</div></div>
+            <div class="timeline-item"><div class="timeline-year">3155년 (현재)</div><div class="timeline-event">긴 피의 세월 끝에 표면적인 은하 정세는 안정화되었다. 그러나 짙은 그림자 속에 숨어든 고위험 범죄자들을 사냥하기 위해 사냥꾼들의 수요는 그 어느 때보다 치솟고 있다.</div></div>
         </div>
     </div>
 </div>
@@ -395,7 +344,6 @@ makeDraggableSmooth(document.getElementById('rules-timeline'));
 const bountyData = [
     { id: 1, name: '연화', reward: '50,000,000,000 ₵', img: 'char1.png', bio: '[종족: 용족]<br>정부 전복 음모 및 주동죄. 교정청 최우선 확보 대상.' },
     { id: 2, name: '리리아', reward: '800,000,000 ₵', img: 'char2.png', bio: '[종족: 여우 수인]<br>특수 절도 및 강도 상해 미수. 날렵한 기동성에 주의할 것.' },
-    // 아자젤 죄목 한 줄로 줄임
     { id: 3, name: '아자젤', reward: '1,500,000,000 ₵', img: 'char3.png', bio: '[종족: 천사족]<br>무장 탈영죄. 군용 무기를 소지하여 각별한 주의 요망.' },
     { id: 4, name: '글리치', reward: '30,000,000,000 ₵', img: 'char4.png', bio: '[종족: 인간 아종]<br>정보통신망법 위반 및 행성 내란죄. 시스템 해킹에 능함.' },
     { id: 5, name: '월묘', reward: '15,000,000 ₵', img: 'char5.png', bio: '[종족: 달토끼족]<br>식품위생법 상습 위반. 치명적인 불량 식품 유통 전과.' },
