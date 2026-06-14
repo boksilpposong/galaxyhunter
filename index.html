@@ -13,44 +13,29 @@ body {
 }
 
 /* =========================================
-   [업데이트] 거친 CRT 노이즈 및 글리치 효과
-   (정적 노이즈와 미세한 화면 왜곡 추가)
+   [업데이트] 미묘한 모니터 청록색 틴트 및 화면 왜곡
 ========================================= */
 body::after {
     content: "";
     position: fixed;
     top: 0; left: 0; width: 100vw; height: 100vh;
     background: 
-        /* 거친 스캔라인 (가로줄) */
-        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1) 2px, transparent 2px, transparent 3px),
+        /* [수정] 색상반전 제외, 아주 미묘한 청록색 틴트 overlay */
+        rgba(0, 255, 200, 0.03),
+        /* 미세한 스캔라인 (가로줄) */
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05) 1px, transparent 1px, transparent 2px),
         /* 화면 비네팅 (가장자리 어둡게) */
-        radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+        radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.4) 100%);
     pointer-events: none; /* 클릭 방해 금지 */
     z-index: 9999; /* 최상단 레이어 */
-    opacity: 0.6; /* 강도 조절 */
-    animation: glitch 0.3s infinite; /* 미세 글리치/깜빡임 */
+    /* 미세한 화면 깜빡임 및 스케일 왜곡 애니메이션 */
+    animation: screen-static 0.2s infinite; 
 }
 
-/* 플리커 애니메이션에 미세한 화면 왜곡(Skew) 추가 */
-@keyframes flicker {
-    0% { opacity: 0.55; transform: skewX(0deg) scaleY(1); }
-    50% { opacity: 0.60; transform: skewX(0.5deg) scaleY(1); }
-    100% { opacity: 0.58; transform: skewX(0deg) scaleY(1.005); }
-}
-
-/* 더 무작위적인 글리치/노이즈 애니메이션 정의 */
-@keyframes glitch {
-    0% { opacity: 0.55; transform: skewX(0deg) scaleY(1); }
-    10% { opacity: 0.60; transform: skewX(0.5deg) scaleY(1); }
-    20% { opacity: 0.58; transform: skewX(0deg) scaleY(1.005); }
-    30% { opacity: 0.62; transform: skewX(-0.5deg) scaleY(1); }
-    40% { opacity: 0.55; transform: skewX(0deg) scaleY(1); }
-    50% { opacity: 0.60; transform: skewX(0.5deg) scaleY(1); }
-    60% { opacity: 0.58; transform: skewX(0deg) scaleY(1.005); }
-    70% { opacity: 0.62; transform: skewX(-0.5deg) scaleY(1); }
-    80% { opacity: 0.55; transform: skewX(0deg) scaleY(1); }
-    90% { opacity: 0.60; transform: skewX(0.5deg) scaleY(1); }
-    100% { opacity: 0.58; transform: skewX(0deg) scaleY(1); }
+@keyframes screen-static {
+    0% { opacity: 0.8; transform: scaleY(1) skewX(0deg); }
+    50% { opacity: 0.85; transform: scaleY(1.002) skewX(0.1deg); }
+    100% { opacity: 0.82; transform: scaleY(1) skewX(0deg); }
 }
 
 .screen { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
@@ -93,7 +78,7 @@ body::after {
 .icon-rules::before { content: ''; position: absolute; top: 15px; left: 10px; right: 10px; height: 4px; background: rgba(0,255,157,0.6); box-shadow: 0 10px 0 rgba(0,255,157,0.6), 0 20px 0 rgba(0,255,157,0.6); }
 
 /* 4. Common Sub Panels */
-.content-panel { background: rgba(0,20,10,0.7); backdrop-filter: blur(15px); border: 1px solid #00FF9D; box-shadow: 0 0 30px rgba(0,255,157,0.2); width: 95%; max-width: 1200px; height: 85vh; margin: 6vh auto 0; border-radius: 15px; position: relative; display: flex; flex-direction: column; z-index: 10; /* 스크린 오버레이보다 아래 */ }
+.content-panel { background: rgba(0,20,10,0.7); backdrop-filter: blur(15px); border: 1px solid #00FF9D; box-shadow: 0 0 30px rgba(0,255,157,0.2); width: 95%; max-width: 1200px; height: 85vh; margin: 6vh auto 0; border-radius: 15px; position: relative; display: flex; flex-direction: column; z-index: 10; }
 .content-header { padding: 30px 40px 10px 40px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
 .content-header h2 { color: #00FF9D; margin: 0; padding-bottom: 10px; border-bottom: 2px solid #00FF9D; }
 .click-to-return-hint { color: rgba(0,255,157,0.5); font-size: 0.9rem; letter-spacing: 1px; animation: pulse 2s infinite; pointer-events: none; }
@@ -127,21 +112,58 @@ body::after {
 .board-header { position: absolute; top: 30px; left: 50px; right: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
 .board-header h2 { color: #00FF9D; margin: 0; text-shadow: 0 0 10px rgba(0,255,157,0.5); border-bottom: 2px solid #00FF9D; padding-bottom: 10px; }
 .card-hand { position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); display: flex; justify-content: center; align-items: flex-end; width: 800px; height: 250px; perspective: 1000px; z-index: 20; pointer-events: none; }
+
 .mini-card { 
     position: absolute; width: 130px; height: 190px; 
     background: rgba(0,10,5,0.7); backdrop-filter: blur(5px); 
     border: 2px solid rgba(0,255,157,0.5); border-radius: 8px; box-shadow: 0 0 15px rgba(0,255,157,0.2); 
     cursor: pointer; transform-origin: bottom center; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s, border-color 0.3s; bottom: 0; 
     transform: translateX(var(--tx)) translateY(var(--ty)) rotate(var(--rot)); pointer-events: auto; 
-    overflow: hidden; /* 이름표가 카드 밖으로 나가지 않게 */
+    overflow: hidden; 
 }
-.mini-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6) sepia(0.5) hue-rotate(100deg); pointer-events: none; transition: 0.3s; position: absolute; top: 0; left: 0; z-index: 1; }
+
+/* =========================================
+   [신규] 이미지에만 적용되는 파동(Wave) 노이즈 공통 스타일
+========================================= */
+.mini-card::after, .drawn-img-frame::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    /* 수평 파동 라인 (심장박동/전파 느낌) */
+    background: repeating-linear-gradient(
+        transparent,
+        transparent 5px,
+        rgba(0, 255, 157, 0.15) 6px, /* 파동 선 색상 및 굵기 */
+        transparent 7px,
+        transparent 15px /* 파동 간격 */
+    );
+    pointer-events: none; /* 클릭 방해 금지 */
+    animation: image-wave-scan 6s linear infinite; /* 천천히 스캔하는 애니메이션 */
+}
+
+/* 이미지 파동 애니메이션 정의 (위에서 아래로 스캔) */
+@keyframes image-wave-scan {
+    0% { background-position-y: 0px; }
+    100% { background-position-y: 450px; /* 프레임 크기에 따라 조정 */ }
+}
+
+/* 작은 카드 이미지 전용 틴트 */
+.mini-card img { 
+    width: 100%; height: 100%; object-fit: cover; 
+    /* 미묘하게 청록색 색조 부여, 색상 반전 제외 */
+    filter: brightness(0.7) contrast(1.1) hue-rotate(100deg); 
+    pointer-events: none; transition: 0.3s; 
+    position: absolute; top: 0; left: 0; z-index: 1; 
+}
+
+/* [신규] 작은 카드 노이즈 효과 레이어 위치 조정 */
+.mini-card::after { z-index: 2; /* 이미지 위, 이름표 아래 */ }
 
 /* 손패 카드 전용 이름 오버레이 */
 .mini-card-name {
     position: absolute;
     top: 10px; left: 10px;
-    background: rgba(0, 20, 10, 0.8); /* 네온 글씨가 잘 보이도록 배경 깔기 */
+    background: rgba(0, 20, 10, 0.9); /* 네온 글씨가 잘 보이도록 배경 깔기 */
     border: 1px solid rgba(0, 255, 157, 0.4);
     border-radius: 4px;
     color: #00FF9D;
@@ -149,19 +171,49 @@ body::after {
     font-size: 0.8rem;
     padding: 2px 6px;
     text-shadow: 0 0 5px rgba(0, 255, 157, 0.8);
-    z-index: 2; /* 이미지보다 위에 */
+    z-index: 3; /* 이미지 및 노이즈보다 위에 */
     pointer-events: none; /* 클릭하면 카드가 선택되도록 */
 }
 
 .mini-card:hover { transform: translateX(var(--tx)) translateY(calc(var(--ty) - 50px)) rotate(0deg) scale(1.2); z-index: 100 !important; box-shadow: 0 0 30px #00FF9D; border-color: #00FF9D; }
-.mini-card:hover img { filter: brightness(1.2) sepia(0.2) hue-rotate(100deg); }
+.mini-card:hover img { filter: brightness(1.1) contrast(1.1) hue-rotate(100deg); } /* 호버 시 밝게 */
 
-.drawn-card-area { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%) scale(0.5); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 450px; background: rgba(0,10,5,0.2); backdrop-filter: blur(20px) brightness(1.2); -webkit-backdrop-filter: blur(20px) brightness(1.2); border: 2px solid rgba(0,255,157,0.7); border-radius: 15px; box-shadow: 0 0 50px rgba(0,255,157,0.3); padding: 20px; display: flex; flex-direction: column; z-index: 11; /* 서브 패널보다 위 */ }
+/* 대형 현상수배지 프레임 */
+.drawn-card-area { 
+    position: absolute; top: 45%; left: 50%; 
+    transform: translate(-50%, -50%) scale(0.5); opacity: 0; 
+    pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    width: 450px; background: rgba(0,10,5,0.2); 
+    backdrop-filter: blur(20px) brightness(1.2); -webkit-backdrop-filter: blur(20px) brightness(1.2); 
+    border: 2px solid rgba(0,255,157,0.7); border-radius: 15px; 
+    box-shadow: 0 0 50px rgba(0,255,157,0.3); padding: 20px; display: flex; flex-direction: column; 
+    z-index: 11; 
+}
 .drawn-card-area.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
 .drawn-header { text-align: center; font-weight: 900; font-size: 2rem; color: #00FF9D; letter-spacing: 3px; border-bottom: 2px double #00FF9D; margin-bottom: 10px; text-shadow: 0 0 10px #00FF9D; }
 .drawn-status { text-align: center; font-size: 0.9rem; color: #FF3B3B; font-weight: bold; margin-bottom: 15px; letter-spacing: 2px; }
-.drawn-img-frame { width: 100%; height: auto; max-height: 400px; background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,157,0.3); margin-bottom: 15px; overflow: hidden; display: flex; justify-content: center; align-items: center; border-radius: 5px; }
-.drawn-img-frame img { max-width: 100%; max-height: 400px; object-fit: contain; filter: sepia(0.3) hue-rotate(100deg) contrast(1.1); pointer-events: none; }
+
+/* 대형 이미지 프레임 */
+.drawn-img-frame { 
+    width: 100%; height: auto; max-height: 400px; 
+    background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,157,0.3); 
+    margin-bottom: 15px; 
+    overflow: hidden; /* 노이즈 효과가 프레임 밖으로 나가지 않게 */
+    display: flex; justify-content: center; align-items: center; border-radius: 5px; 
+    position: relative; /* 노이즈 레이어 배치 기준 */
+}
+
+/* 대형 이미지 프레임 노이즈 효과 애니메이션 속도 조정 */
+.drawn-img-frame::after { animation-duration: 4s; /* 좀 더 빠르게 스캔 */ }
+
+/* 대형 이미지 전용 틴트 */
+.drawn-img-frame img { 
+    max-width: 100%; max-height: 400px; object-fit: contain; 
+    /* 미묘하게 청록색 색조 부여, 색상 반전 제외 */
+    filter: brightness(0.9) contrast(1.1) hue-rotate(100deg); 
+    pointer-events: none; 
+    position: relative; z-index: 1; /* 노이즈 아래 */
+}
 .drawn-info { border-top: 1px solid rgba(0,255,157,0.4); padding-top: 15px; text-align: center; }
 .drawn-name { font-size: 1.6rem; font-weight: bold; color: #FFF; margin-bottom: 5px; text-shadow: 0 0 10px #FFF; }
 .drawn-reward { font-size: 1.3rem; color: #00FF9D; font-family: monospace; font-weight: bold; margin-bottom: 10px; text-shadow: 0 0 10px #00FF9D; }
@@ -287,7 +339,6 @@ function openScreen(targetId) {
     if (document.getElementById('eve-popup').classList.contains('show')) updateEveMessage(targetId);
 }
 
-/* 스무스 관성 드래그 스크롤 로직 */
 function makeDraggableSmooth(ele) {
     if(!ele) return;
     let isDown = false;
@@ -340,12 +391,12 @@ function makeDraggableSmooth(ele) {
 makeDraggableSmooth(document.getElementById('history-timeline'));
 makeDraggableSmooth(document.getElementById('rules-timeline'));
 
-/* [업데이트] 수배자 명부 진짜 타겟 데이터 연동 */
+/* 수배자 명부 데이터 */
 const bountyData = [
     { id: 1, name: '연화', reward: '50,000,000,000 ₵', img: 'char1.png', bio: '[종족: 용족]<br>정부 전복 음모 및 주동죄. 교정청 최우선 확보 대상.' },
     { id: 2, name: '리리아', reward: '800,000,000 ₵', img: 'char2.png', bio: '[종족: 여우 수인]<br>특수 절도 및 강도 상해 미수. 날렵한 기동성에 주의할 것.' },
-    // [수정됨] 아자젤 죄목을 "소지하고 있어" -> "소지하여"로 변경하여 두 자를 줄임
-    { id: 3, name: '아자젤', reward: '1,500,000,000 ₵', img: 'char3.png', bio: '[종족: 천사족]<br>무장 탈영죄. 군용 무기를 소지하여 교전 시 각별한 주의 요망.' },
+    // 아자젤 죄목 한 줄로 줄임
+    { id: 3, name: '아자젤', reward: '1,500,000,000 ₵', img: 'char3.png', bio: '[종족: 천사족]<br>무장 탈영죄. 군용 무기를 소지하여 각별한 주의 요망.' },
     { id: 4, name: '글리치', reward: '30,000,000,000 ₵', img: 'char4.png', bio: '[종족: 인간 아종]<br>정보통신망법 위반 및 행성 내란죄. 시스템 해킹에 능함.' },
     { id: 5, name: '월묘', reward: '15,000,000 ₵', img: 'char5.png', bio: '[종족: 달토끼족]<br>식품위생법 상습 위반. 치명적인 불량 식품 유통 전과.' },
     { id: 6, name: '셀레', reward: '25,000,000,000 ₵', img: 'char6.png', bio: '[종족: 엘로힘 아종]<br>신수 독살 미수 및 행성 내란 미수. 고위험 생화학 물질 취급.' },
@@ -379,7 +430,7 @@ function drawCard(id) {
     if (!data) return;
     document.getElementById('drawn-img').src = data.img;
     document.getElementById('drawn-name').textContent = data.name;
-    document.getElementById('drawn-bio').innerHTML = data.bio; // innerHTML로 변경해 줄바꿈(<br>) 적용
+    document.getElementById('drawn-bio').innerHTML = data.bio; 
     document.getElementById('drawn-reward').textContent = data.reward;
     const drawn = document.getElementById('drawn-card');
     drawn.classList.remove('active'); setTimeout(() => drawn.classList.add('active'), 50);
