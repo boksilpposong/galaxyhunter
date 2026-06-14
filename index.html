@@ -10,7 +10,7 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
 .screen { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
 .screen.active { opacity: 1; pointer-events: auto; }
 
-/* 2. Login Screen (블랙 배경 & 깜빡이는 언더바) */
+/* 2. Login Screen */
 #login-screen { background: #000; z-index: 2000; }
 .login-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,15,10,0.8); backdrop-filter: blur(20px); border: 2px solid rgba(0,255,157,0.5); box-shadow: 0 0 50px rgba(0,255,157,0.2); padding: 60px 80px; border-radius: 15px; text-align: center; display: flex; flex-direction: column; align-items: center; }
 .login-title { font-size: 2.5rem; color: #00FF9D; text-shadow: 0 0 15px rgba(0,255,157,0.8); letter-spacing: 5px; margin: 0 0 10px; }
@@ -33,24 +33,16 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
 #btn-rules { bottom: 12%; right: 33%; animation-delay: 3s; }
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-/* =========================================
-   순수 CSS로 그린 홀로그램 아이콘 
-========================================= */
+/* 순수 CSS 홀로그램 아이콘 */
 .css-icon { width: 50px; height: 50px; position: relative; pointer-events: none; }
-/* 1. 장소 (행성) */
 .icon-planet { background: rgba(0,255,157,0.3); border-radius: 50%; box-shadow: 0 0 15px rgba(0,255,157,0.5); }
 .icon-planet::after { content: ''; position: absolute; top: 50%; left: -10px; right: -10px; height: 8px; background: rgba(0,255,157,0.4); border-radius: 50%; transform: translateY(-50%) rotate(25deg); box-shadow: 0 0 10px rgba(0,255,157,0.5); }
-/* 2. 역사 (입체적인 책 형태) - 중심 위치 완벽 보정 */
-.icon-book { background: rgba(0,255,157,0.2); width: 40px; height: 55px; border-radius: 2px 8px 8px 2px; box-shadow: -4px 0 0 rgba(0,255,157,0.6), inset 5px 0 10px rgba(0,255,157,0.3); position: relative; margin-left: 4px; /* 왼쪽 책기둥 공간 확보로 정중앙 정렬 */ }
+.icon-book { background: rgba(0,255,157,0.2); width: 40px; height: 55px; border-radius: 2px 8px 8px 2px; box-shadow: -4px 0 0 rgba(0,255,157,0.6), inset 5px 0 10px rgba(0,255,157,0.3); position: relative; margin-left: 4px; }
 .icon-book::before { content: ''; position: absolute; right: 5px; top: 5px; bottom: 5px; width: 25px; border-left: 2px solid rgba(0,255,157,0.5); }
 .icon-book::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 25px; background: rgba(0,255,157,0.8); border-radius: 5px; box-shadow: 0 0 10px #00FF9D; }
-/* 3. 명부 (요청하신 미니 현상수배서 WANTED 디자인) */
-.icon-wanted { width: 35px; height: 50px; background: rgba(0,255,157,0.1); border: 2px solid rgba(0,255,157,0.6); border-radius: 2px; box-shadow: 0 0 10px rgba(0,255,157,0.3); margin-top: -2px; /* 시각적 중심 조정 */ }
-/* 얼굴 들어가는 네모칸 */
+.icon-wanted { width: 35px; height: 50px; background: rgba(0,255,157,0.1); border: 2px solid rgba(0,255,157,0.6); border-radius: 2px; box-shadow: 0 0 10px rgba(0,255,157,0.3); margin-top: -2px; }
 .icon-wanted::before { content: ''; position: absolute; top: 6px; left: 5px; width: 25px; height: 25px; background: rgba(0,255,157,0.4); }
-/* 하단 WANTED 굵은 글씨 표현 및 세부 정보 줄 */
 .icon-wanted::after { content: ''; position: absolute; bottom: 7px; left: 5px; width: 25px; height: 3px; background: rgba(0,255,157,0.7); box-shadow: 0 4px 0 rgba(0,255,157,0.4), 0 8px 0 rgba(0,255,157,0.4); }
-/* 4. 규약 (방패) */
 .icon-rules { background: rgba(0,255,157,0.3); border-radius: 5px 5px 25px 25px; box-shadow: 0 0 15px rgba(0,255,157,0.5); }
 .icon-rules::before { content: ''; position: absolute; top: 15px; left: 10px; right: 10px; height: 4px; background: rgba(0,255,157,0.6); box-shadow: 0 10px 0 rgba(0,255,157,0.6), 0 20px 0 rgba(0,255,157,0.6); }
 
@@ -145,13 +137,13 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
     <div class="content-panel">
         <div class="content-header"><h2>📖 초은하 연대기</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
         <div class="vertical-drag-container" id="history-timeline">
-            <div class="timeline-item"><div class="timeline-year">AD 2045</div><div class="timeline-event">기술의 상용화로 인류의 활동 영역이 태양계를 넘어섬</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2078</div><div class="timeline-event">세계 4차 대전 발발, 핵전쟁으로 인해 지구 반파 및 소멸</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2080</div><div class="timeline-event">소수의 인간만이 살아남아 우주 난민으로 연명, 화성 테라포밍 프로젝트 실패</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2102</div><div class="timeline-event">우주 워프 기술 개발, 외계 생명체와의 교류 활발</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2247</div><div class="timeline-event">무분별한 행성 간 범죄 척결을 위한 초은하 교정기구 출범</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 2556</div><div class="timeline-event">초행성 범죄의 증가로 감옥의 공간 부족 문제 발생, 동결형 도입</div></div>
-            <div class="timeline-item"><div class="timeline-year">AD 3155 (현재)</div><div class="timeline-event">오랜 시간이 흐르며 은하 정세 안정화</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2045</div><div class="timeline-event">워프 항법의 상용화. 인류, 태양계의 요람을 벗어나 심우주 개척 시대에 진입하다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2078</div><div class="timeline-event">제4차 세계 대전 발발. 궤도 폭격과 걷잡을 수 없는 핵전쟁으로 푸른 별 '지구' 완전 붕괴 및 소멸.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2080</div><div class="timeline-event">살아남은 극소수의 인류, 정처 없는 우주 난민으로 전락. 인류의 마지막 보루였던 화성 테라포밍 프로젝트마저 대실패로 종결되다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2102</div><div class="timeline-event">초공간 워프 네트워크(Hyper-space Warp Network) 구축 성공. 수많은 외계 지성체들과 조우하며 바야흐로 '대우주 교류 시대'의 막이 오르다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2247</div><div class="timeline-event">항성 간 무법자 및 우주 해적의 걷잡을 수 없는 급증. 전 우주권의 치안 유지와 척결을 위해 통합 권력 기관인 <strong>'초은하 교정청(Super-Galactic Correctional Agency)'</strong> 공식 출범.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2556</div><div class="timeline-event">초행성급 범죄자들의 폭증으로 우주 수용 시설 포화 상태 도달. 죄수들을 극저온 수면 상태에서 형기를 치르게 하는 <strong>'동결형(Cryo-Sentence)'</strong> 시스템 전격 도입.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 3155 (현재)</div><div class="timeline-event">긴 피의 세월 끝에 표면적인 은하 정세는 안정화되었다. 그러나 짙은 그림자 속에 숨어든 고위험 범죄자들을 사냥하기 위해 '현상금 사냥꾼'들의 수요는 그 어느 때보다 치솟고 있다.</div></div>
         </div>
     </div>
 </div>
@@ -162,16 +154,16 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
 
 <div id="rules-screen" class="screen" onclick="if(event.target===this) openScreen('main-screen')">
     <div class="content-panel"><div class="content-header"><h2>⚖️ 교정 규약</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
-        <p style="padding:40px; color:#E0FFF2; line-height: 1.8; font-size:1.1rem;">
-            <strong style="color:#00FF9D; font-size:1.3rem;">[ 현상금 사냥꾼 기본 행동 강령 ]</strong><br><br>
-            제1조. 현상금 사냥꾼은 자격증을 요한다. <br>
-            제2조. 헌터 간의 불필요한 교전 및 전리품 탈취는 엄격히 금지된다.<br>
-            제3조. 미등록 불법 무기 사용은 즉결 처벌 대상이다.<br>
-            제4조. 수배범 체포 후 교정청에 인계 시 범죄자를 동결형에 처하고 현상금을 수령하거나, 범죄자의 신변을 해당 사냥꾼에게 위임한다.
-            제5조. 동결형이란, 범죄자를 동결 캡슐에 넣어 미약한 의식을 가진 채 10년 이상 500년 이하의 징역에 처하는 것을 의미한다.
-            제6조. 범죄자 신변 위임 시, 모든 권리와 책임은 해당 사냥꾼에게 함께 위임된다.
-            제7조. 신변을 위임받은 범죄자의 불법 노예거래를 엄격히 금한다.
-        </p>
+        <div style="padding:40px; color:#E0FFF2; line-height: 1.9; font-size:1.05rem; overflow-y:auto; height: 100%;">
+            <strong style="color:#00FF9D; font-size:1.4rem; letter-spacing: 2px;">[ 초은하 교정청 소속 사냥꾼 강령 ]</strong><br><br>
+            <span style="color:#00FF9D; font-weight:bold;">제1조 [자격 증명]</span> 모든 현상금 사냥꾼은 교정청이 발급한 공식 라이선스를 소지해야 하며, 무면허 사냥은 1급 중범죄로 간주한다.<br><br>
+            <span style="color:#00FF9D; font-weight:bold;">제2조 [사적 제재 금지]</span> 타겟 확보 과정에서 헌터 간의 무력 충돌 및 전리품(현상범) 강탈 행위는 엄격히 금지되며, 적발 시 라이선스가 영구 박탈된다.<br><br>
+            <span style="color:#00FF9D; font-weight:bold;">제3조 [무장 통제]</span> 승인되지 않은 미등록 불법 무기 및 대량 살상 병기의 사용은 즉결 처분 대상이다.<br><br>
+            <span style="color:#00FF9D; font-weight:bold;">제4조 [처우 선택]</span> 생포한 수배범을 교정청에 인계할 경우, 사냥꾼은 '범죄자의 동결형 집행에 따른 현상금 전액 수령' 또는 '해당 범죄자의 신변 및 소유권 위임' 중 하나를 선택할 수 있다.<br><br>
+            <span style="color:#00FF9D; font-weight:bold;">제5조 [동결형의 정의]</span> 동결형이란, 죄인을 극저온 영구 동결 캡슐에 구속한 뒤 미약한 뇌파 의식만을 살려둔 채 최소 10년에서 최대 500년까지 영구적인 고통 속에서 형기를 치르게 하는 징역형을 뜻한다.<br><br>
+            <span style="color:#00FF9D; font-weight:bold;">제6조 [신변 위임의 책임]</span> 제4조에 의거하여 범죄자의 신변 위임을 선택할 경우, 대상의 생사 여부를 포함한 모든 권리와 관리 책임은 해당 사냥꾼에게 전면 양도된다.<br><br>
+            <span style="color:#00FF9D; font-weight:bold;">제7조 [인도적 한계선]</span> 신변을 위임받은 범죄자라 할지라도 제3자에게 암거래를 하거나 불법 노예 시장에 유통하는 행위는 엄격히 금지되며, 위반 시 사냥꾼 본인이 구속되어 즉각 동결형에 처해진다.
+        </div>
     </div>
 </div>
 
@@ -202,7 +194,7 @@ function updateEveMessage(screenId) {
         case 'location-screen': text = `"장소 데이터베이스에 접속합니다.<br>목표의 은신 확률이 높은 구역을 분석 중입니다."`; break;
         case 'world-screen': text = `"초은하 연대기 기록을 열람합니다.<br>과거의 발자취에서 단서를 찾으시길 바랍니다."`; break;
         case 'character-screen': text = `"알고리즘 추천 수배자 목록을 불러옵니다.<br>오늘의 사냥감은 정하셨나요?"`; break;
-        case 'rules-screen': text = `"교정 규약 및 행동 강령을 출력합니다.<br>항상 규약을 숙지하고 행동하여 주십시오."`; break;
+        case 'rules-screen': text = `"교정청 규약 및 행동 강령을 출력합니다.<br>항상 규약을 숙지하고 행동하여 주십시오."`; break;
         default: text = `"시스템 대기 중..."`;
     }
     eveMsg.style.opacity = 0; setTimeout(() => { eveMsg.innerHTML = text; eveMsg.style.opacity = 1; }, 200);
