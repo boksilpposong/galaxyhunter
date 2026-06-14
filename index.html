@@ -120,9 +120,8 @@ body::after {
 .location-name { color: #00FF9D; font-size: 1.6rem; font-weight: bold; margin-bottom: 8px; text-shadow: 0 0 10px rgba(0,255,157,0.5); display: inline-block; }
 .location-coords { color: #8A9BB4; font-family: monospace; font-size: 0.9rem; margin-bottom: 15px; display: block; border-bottom: 1px solid rgba(0, 255, 157, 0.2); padding-bottom: 8px; }
 .location-desc { color: #E0FFF2; font-size: 1.05rem; line-height: 1.6; }
-
-/* 위탁 시설 내부 레이아웃 */
-.sub-facility { background: rgba(0, 255, 157, 0.04); border-left: 3px solid #00FF9D; border-radius: 4px; padding: 15px; font-size: 1.05rem; line-height: 1.6; }
+.sub-facility { margin-top: 15px; padding: 15px; background: rgba(0, 255, 157, 0.04); border-left: 3px solid #00FF9D; border-radius: 4px; font-size: 1.05rem; line-height: 1.6; }
+.sub-facility strong { color: #00FF9D; display: block; margin-bottom: 5px; }
 
 /* 5. Cards UI (명부) */
 .board-header { position: absolute; top: 30px; left: 50px; right: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
@@ -321,7 +320,7 @@ body::after {
             <div class="rule-item"><div class="rule-title">제5조 [동결형의 정의]</div><strong>동결형</strong>이란, 죄인을 극저온 영구 동결 캡슐에 구속한 뒤 미약한 뇌파 의식만을 살려둔 채 최소 10년에서 최대 500년까지 영구적인 고통 속에서 형기를 치르게 하는 징역형을 뜻한다.</div>
             <div class="rule-item"><div class="rule-title">제6조 [신변 위임의 책임]</div>제4조에 의거하여 범죄자의 신변 인도를 선택할 경우, 대상에 대한 전권 및 관리 책임은 해당 사냥꾼에게 전면 양도된다.</div>
             <div class="rule-item"><div class="rule-title">제7조 [거래 제한]</div>신변을 위임받은 범죄자를 <strong>교정청</strong>의 승인 없이 불법적인 루트로 밀거래하거나, 암시장에 유통하는 일체의 불법 거래 행위는 엄격히 금지된다. 위반 시 사냥꾼 본인의 자격이 즉각 박탈된다.</div>
-            <div class="rule-item"><div class="rule-title">제8조 [위탁 노역 계약]</div>사냥꾼은 인도받은 범죄자의 신변을 기반으로, <strong>교정청</strong>의 정식 승인을 받은 민간 기업 및 외부 기관과 위탁 계약을 체결할 수 있습니다. 계약을 통한 '대여 형식'으로 범죄자를 특정 공정 및 인프라 노역에 종사시키는 행위는 합법으로 인정된다.</div>
+            <div class="rule-item"><div class="rule-title">제8조 [위탁 노역 계약]</div>사냥꾼은 인도받은 범죄자의 신변을 기반으로, <strong>교정청</strong>의 정식 승인을 받은 민간 기업 및 외부 기관과 위탁 계약을 체결할 수 있다. 계약을 통한 '대여 형식'으로 범죄자를 특정 공정 및 인프라 노역에 종사시키는 행위는 합법으로 인정된다.</div>
         </div>
     </div>
 </div>
@@ -412,7 +411,8 @@ if (hand) {
     bountyData.forEach((data, index) => {
         const card = document.createElement('div');
         card.className = 'mini-card';
-        const offset = index - (totalTotalCards = bountyData.length, index - (totalCards - 1) / 2);
+        // [복구 완료] 정상적인 수배자 명부 카드 오프셋 계산식
+        const offset = index - (totalCards - 1) / 2; 
         card.style.setProperty('--tx', `${offset * 55}px`);
         card.style.setProperty('--ty', `${Math.abs(offset) * Math.abs(offset) * 3}px`);
         card.style.setProperty('--rot', `${offset * 6}deg`);
