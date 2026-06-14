@@ -13,29 +13,44 @@ body {
 }
 
 /* =========================================
-   [신규] CRT 모니터 스크린 오버레이 효과 
-   (전체 화면에 미세한 깜빡임과 스캔라인 적용)
+   [업데이트] 거친 CRT 노이즈 및 글리치 효과
+   (정적 노이즈와 미세한 화면 왜곡 추가)
 ========================================= */
 body::after {
     content: "";
     position: fixed;
     top: 0; left: 0; width: 100vw; height: 100vh;
     background: 
-        /* 스캔라인 (가로줄) */
-        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08) 1px, transparent 1px, transparent 2px),
+        /* 거친 스캔라인 (가로줄) */
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1) 2px, transparent 2px, transparent 3px),
         /* 화면 비네팅 (가장자리 어둡게) */
-        radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+        radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
     pointer-events: none; /* 클릭 방해 금지 */
     z-index: 9999; /* 최상단 레이어 */
     opacity: 0.6; /* 강도 조절 */
-    animation: flicker 0.15s infinite; /* 미세 깜빡임 */
+    animation: glitch 0.3s infinite; /* 미세 글리치/깜빡임 */
 }
 
-/* 플리커 애니메이션 정의 */
+/* 플리커 애니메이션에 미세한 화면 왜곡(Skew) 추가 */
 @keyframes flicker {
-    0% { opacity: 0.55; }
-    50% { opacity: 0.60; }
-    100% { opacity: 0.58; }
+    0% { opacity: 0.55; transform: skewX(0deg) scaleY(1); }
+    50% { opacity: 0.60; transform: skewX(0.5deg) scaleY(1); }
+    100% { opacity: 0.58; transform: skewX(0deg) scaleY(1.005); }
+}
+
+/* 더 무작위적인 글리치/노이즈 애니메이션 정의 */
+@keyframes glitch {
+    0% { opacity: 0.55; transform: skewX(0deg) scaleY(1); }
+    10% { opacity: 0.60; transform: skewX(0.5deg) scaleY(1); }
+    20% { opacity: 0.58; transform: skewX(0deg) scaleY(1.005); }
+    30% { opacity: 0.62; transform: skewX(-0.5deg) scaleY(1); }
+    40% { opacity: 0.55; transform: skewX(0deg) scaleY(1); }
+    50% { opacity: 0.60; transform: skewX(0.5deg) scaleY(1); }
+    60% { opacity: 0.58; transform: skewX(0deg) scaleY(1.005); }
+    70% { opacity: 0.62; transform: skewX(-0.5deg) scaleY(1); }
+    80% { opacity: 0.55; transform: skewX(0deg) scaleY(1); }
+    90% { opacity: 0.60; transform: skewX(0.5deg) scaleY(1); }
+    100% { opacity: 0.58; transform: skewX(0deg) scaleY(1); }
 }
 
 .screen { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
@@ -122,9 +137,7 @@ body::after {
 }
 .mini-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6) sepia(0.5) hue-rotate(100deg); pointer-events: none; transition: 0.3s; position: absolute; top: 0; left: 0; z-index: 1; }
 
-/* =========================================
-   [신규] 작은 카드 패 전용 이름 오버레이 
-========================================= */
+/* 손패 카드 전용 이름 오버레이 */
 .mini-card-name {
     position: absolute;
     top: 10px; left: 10px;
@@ -327,11 +340,12 @@ function makeDraggableSmooth(ele) {
 makeDraggableSmooth(document.getElementById('history-timeline'));
 makeDraggableSmooth(document.getElementById('rules-timeline'));
 
-/* 수배자 명부 데이터 */
+/* [업데이트] 수배자 명부 진짜 타겟 데이터 연동 */
 const bountyData = [
     { id: 1, name: '연화', reward: '50,000,000,000 ₵', img: 'char1.png', bio: '[종족: 용족]<br>정부 전복 음모 및 주동죄. 교정청 최우선 확보 대상.' },
     { id: 2, name: '리리아', reward: '800,000,000 ₵', img: 'char2.png', bio: '[종족: 여우 수인]<br>특수 절도 및 강도 상해 미수. 날렵한 기동성에 주의할 것.' },
-    { id: 3, name: '아자젤', reward: '1,500,000,000 ₵', img: 'char3.png', bio: '[종족: 천사족]<br>무장 탈영죄. 군용 무기를 소지하고 있어 교전 시 각별한 주의 요망.' },
+    // [수정됨] 아자젤 죄목을 "소지하고 있어" -> "소지하여"로 변경하여 두 자를 줄임
+    { id: 3, name: '아자젤', reward: '1,500,000,000 ₵', img: 'char3.png', bio: '[종족: 천사족]<br>무장 탈영죄. 군용 무기를 소지하여 교전 시 각별한 주의 요망.' },
     { id: 4, name: '글리치', reward: '30,000,000,000 ₵', img: 'char4.png', bio: '[종족: 인간 아종]<br>정보통신망법 위반 및 행성 내란죄. 시스템 해킹에 능함.' },
     { id: 5, name: '월묘', reward: '15,000,000 ₵', img: 'char5.png', bio: '[종족: 달토끼족]<br>식품위생법 상습 위반. 치명적인 불량 식품 유통 전과.' },
     { id: 6, name: '셀레', reward: '25,000,000,000 ₵', img: 'char6.png', bio: '[종족: 엘로힘 아종]<br>신수 독살 미수 및 행성 내란 미수. 고위험 생화학 물질 취급.' },
@@ -351,7 +365,6 @@ if (hand) {
         card.style.setProperty('--rot', `${offset * 6}deg`);
         card.style.zIndex = index;
         
-        // [수정됨] 이미지 위에 이름을 오버레이로 덮어씌우는 구조로 변경
         card.innerHTML = `
             <img src="${data.img}" alt="${data.name}">
             <div class="mini-card-name">${data.name}</div>
@@ -366,7 +379,7 @@ function drawCard(id) {
     if (!data) return;
     document.getElementById('drawn-img').src = data.img;
     document.getElementById('drawn-name').textContent = data.name;
-    document.getElementById('drawn-bio').innerHTML = data.bio; 
+    document.getElementById('drawn-bio').innerHTML = data.bio; // innerHTML로 변경해 줄바꿈(<br>) 적용
     document.getElementById('drawn-reward').textContent = data.reward;
     const drawn = document.getElementById('drawn-card');
     drawn.classList.remove('active'); setTimeout(() => drawn.classList.add('active'), 50);
