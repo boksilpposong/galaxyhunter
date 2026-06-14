@@ -145,12 +145,13 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
     <div class="content-panel">
         <div class="content-header"><h2>📖 초은하 연대기</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
         <div class="vertical-drag-container" id="history-timeline">
-            <div class="timeline-item"><div class="timeline-year">SC 2045</div><div class="timeline-event">제1차 은하 개척 시대 도래. 웜홀 기술의 상용화로 인류의 활동 영역이 태양계를 넘어섬.</div></div>
-            <div class="timeline-item"><div class="timeline-year">SC 2077</div><div class="timeline-event">네온 콜로니 폭동 사태 발생. 최초의 대규모 범죄 조직 '블랙 네뷸라' 등장.</div></div>
-            <div class="timeline-item"><div class="timeline-year">SC 2084</div><div class="timeline-event">銀河 연방 한계 돌파. 민간 무력 단체 합법화, 초은하 현상금 사냥꾼 길드 창설.</div></div>
-            <div class="timeline-item"><div class="timeline-year">SC 2102</div><div class="timeline-event">'스타 이터' 최초 관측. 행성을 집어삼키는 미지의 괴생명체 등장으로 길드 최고액 현상금 등록.</div></div>
-            <div class="timeline-item"><div class="timeline-year">SC 2115</div><div class="timeline-event">AI 시스템 'EVE' 도입. 길드의 모든 데이터베이스 통합 터미널화.</div></div>
-            <div class="timeline-item"><div class="timeline-year">SC 2126 (현재)</div><div class="timeline-event">차원 이동 기술 무단 유출 사태 발생. 전례 없는 위협을 가진 1급 수배자들이 흩어짐.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2045</div><div class="timeline-event">기술의 상용화로 인류의 활동 영역이 태양계를 넘어섬</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2078</div><div class="timeline-event">세계 4차 대전 발발, 핵전쟁으로 인해 지구 반파 및 소멸</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2080</div><div class="timeline-event">소수의 인간만이 살아남아 우주 난민으로 연명, 화성 테라포밍 프로젝트 실패</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2102</div><div class="timeline-event">우주 워프 기술 개발, 외계 생명체와의 교류 활발</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2247</div><div class="timeline-event">무분별한 행성 간 범죄 척결을 위한 초은하 교정기구 출범</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2556</div><div class="timeline-event">초행성 범죄의 증가로 감옥의 공간 부족 문제 발생, 동결형 도입</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 3155 (현재)</div><div class="timeline-event">오랜 시간이 흐르며 은하 정세 안정화</div></div>
         </div>
     </div>
 </div>
@@ -160,12 +161,16 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
 </div>
 
 <div id="rules-screen" class="screen" onclick="if(event.target===this) openScreen('main-screen')">
-    <div class="content-panel"><div class="content-header"><h2>⚖️ 길드 규약</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
+    <div class="content-panel"><div class="content-header"><h2>⚖️ 교정 규약</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
         <p style="padding:40px; color:#E0FFF2; line-height: 1.8; font-size:1.1rem;">
             <strong style="color:#00FF9D; font-size:1.3rem;">[ 현상금 사냥꾼 기본 행동 강령 ]</strong><br><br>
-            제1조: 길드의 의뢰는 절대적이며, 타겟 생포 시 보상금은 100% 지급된다.<br>
-            제2조: 헌터 간의 불필요한 교전 및 전리품 탈취는 엄격히 금지된다.<br>
-            제3조: 미등록 불법 무기 사용은 즉결 처벌 대상이다.
+            제1조. 현상금 사냥꾼은 자격증을 요한다. <br>
+            제2조. 헌터 간의 불필요한 교전 및 전리품 탈취는 엄격히 금지된다.<br>
+            제3조. 미등록 불법 무기 사용은 즉결 처벌 대상이다.<br>
+            제4조. 수배범 체포 후 교정청에 인계 시 범죄자를 동결형에 처하고 현상금을 수령하거나, 범죄자의 신변을 해당 사냥꾼에게 위임한다.
+            제5조. 동결형이란, 범죄자를 동결 캡슐에 넣어 미약한 의식을 가진 채 10년 이상 500년 이하의 징역에 처하는 것을 의미한다.
+            제6조. 범죄자 신변 위임 시, 모든 권리와 책임은 해당 사냥꾼에게 함께 위임된다.
+            제7조. 신변을 위임받은 범죄자의 불법 노예거래를 엄격히 금한다.
         </p>
     </div>
 </div>
@@ -197,7 +202,7 @@ function updateEveMessage(screenId) {
         case 'location-screen': text = `"장소 데이터베이스에 접속합니다.<br>목표의 은신 확률이 높은 구역을 분석 중입니다."`; break;
         case 'world-screen': text = `"초은하 연대기 기록을 열람합니다.<br>과거의 발자취에서 단서를 찾으시길 바랍니다."`; break;
         case 'character-screen': text = `"알고리즘 추천 수배자 목록을 불러옵니다.<br>오늘의 사냥감은 정하셨나요?"`; break;
-        case 'rules-screen': text = `"길드 규약 및 행동 강령을 출력합니다.<br>항상 규약을 숙지하고 행동하여 주십시오."`; break;
+        case 'rules-screen': text = `"교정 규약 및 행동 강령을 출력합니다.<br>항상 규약을 숙지하고 행동하여 주십시오."`; break;
         default: text = `"시스템 대기 중..."`;
     }
     eveMsg.style.opacity = 0; setTimeout(() => { eveMsg.innerHTML = text; eveMsg.style.opacity = 1; }, 200);
