@@ -6,7 +6,38 @@
 <title>초은하 현상금 사냥꾼 길드 터미널</title>
 <style>
 /* 1. Reset & Body */
-body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #05120E; color: #E0FFF2; font-family: 'Malgun Gothic', sans-serif; overflow: hidden; user-select: none; width: 100vw; height: 100vh; }
+body { 
+    margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #05120E; color: #E0FFF2; 
+    font-family: 'Malgun Gothic', sans-serif; overflow: hidden; user-select: none; width: 100vw; height: 100vh; 
+    position: relative;
+}
+
+/* =========================================
+   [신규] CRT 모니터 스크린 오버레이 효과 
+   (전체 화면에 미세한 깜빡임과 스캔라인 적용)
+========================================= */
+body::after {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: 
+        /* 스캔라인 (가로줄) */
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08) 1px, transparent 1px, transparent 2px),
+        /* 화면 비네팅 (가장자리 어둡게) */
+        radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+    pointer-events: none; /* 클릭 방해 금지 */
+    z-index: 9999; /* 최상단 레이어 */
+    opacity: 0.6; /* 강도 조절 */
+    animation: flicker 0.15s infinite; /* 미세 깜빡임 */
+}
+
+/* 플리커 애니메이션 정의 */
+@keyframes flicker {
+    0% { opacity: 0.55; }
+    50% { opacity: 0.60; }
+    100% { opacity: 0.58; }
+}
+
 .screen { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
 .screen.active { opacity: 1; pointer-events: auto; }
 
@@ -47,7 +78,7 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
 .icon-rules::before { content: ''; position: absolute; top: 15px; left: 10px; right: 10px; height: 4px; background: rgba(0,255,157,0.6); box-shadow: 0 10px 0 rgba(0,255,157,0.6), 0 20px 0 rgba(0,255,157,0.6); }
 
 /* 4. Common Sub Panels */
-.content-panel { background: rgba(0,20,10,0.7); backdrop-filter: blur(15px); border: 1px solid #00FF9D; box-shadow: 0 0 30px rgba(0,255,157,0.2); width: 95%; max-width: 1200px; height: 85vh; margin: 6vh auto 0; border-radius: 15px; position: relative; display: flex; flex-direction: column; }
+.content-panel { background: rgba(0,20,10,0.7); backdrop-filter: blur(15px); border: 1px solid #00FF9D; box-shadow: 0 0 30px rgba(0,255,157,0.2); width: 95%; max-width: 1200px; height: 85vh; margin: 6vh auto 0; border-radius: 15px; position: relative; display: flex; flex-direction: column; z-index: 10; /* 스크린 오버레이보다 아래 */ }
 .content-header { padding: 30px 40px 10px 40px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
 .content-header h2 { color: #00FF9D; margin: 0; padding-bottom: 10px; border-bottom: 2px solid #00FF9D; }
 .click-to-return-hint { color: rgba(0,255,157,0.5); font-size: 0.9rem; letter-spacing: 1px; animation: pulse 2s infinite; pointer-events: none; }
@@ -81,11 +112,38 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
 .board-header { position: absolute; top: 30px; left: 50px; right: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
 .board-header h2 { color: #00FF9D; margin: 0; text-shadow: 0 0 10px rgba(0,255,157,0.5); border-bottom: 2px solid #00FF9D; padding-bottom: 10px; }
 .card-hand { position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); display: flex; justify-content: center; align-items: flex-end; width: 800px; height: 250px; perspective: 1000px; z-index: 20; pointer-events: none; }
-.mini-card { position: absolute; width: 130px; height: 190px; background: rgba(10,10,10,0.5); backdrop-filter: blur(5px); border: 2px solid #00FF9D; border-radius: 8px; box-shadow: 0 0 15px rgba(0,255,157,0.2); cursor: pointer; transform-origin: bottom center; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s; bottom: 0; transform: translateX(var(--tx)) translateY(var(--ty)) rotate(var(--rot)); pointer-events: auto; }
-.mini-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6) sepia(0.5) hue-rotate(100deg); pointer-events: none; transition: 0.3s; }
-.mini-card:hover { transform: translateX(var(--tx)) translateY(calc(var(--ty) - 50px)) rotate(0deg) scale(1.2); z-index: 100 !important; box-shadow: 0 0 30px #00FF9D; }
+.mini-card { 
+    position: absolute; width: 130px; height: 190px; 
+    background: rgba(0,10,5,0.7); backdrop-filter: blur(5px); 
+    border: 2px solid rgba(0,255,157,0.5); border-radius: 8px; box-shadow: 0 0 15px rgba(0,255,157,0.2); 
+    cursor: pointer; transform-origin: bottom center; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s, border-color 0.3s; bottom: 0; 
+    transform: translateX(var(--tx)) translateY(var(--ty)) rotate(var(--rot)); pointer-events: auto; 
+    overflow: hidden; /* 이름표가 카드 밖으로 나가지 않게 */
+}
+.mini-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6) sepia(0.5) hue-rotate(100deg); pointer-events: none; transition: 0.3s; position: absolute; top: 0; left: 0; z-index: 1; }
+
+/* =========================================
+   [신규] 작은 카드 패 전용 이름 오버레이 
+========================================= */
+.mini-card-name {
+    position: absolute;
+    top: 10px; left: 10px;
+    background: rgba(0, 20, 10, 0.8); /* 네온 글씨가 잘 보이도록 배경 깔기 */
+    border: 1px solid rgba(0, 255, 157, 0.4);
+    border-radius: 4px;
+    color: #00FF9D;
+    font-weight: bold;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    text-shadow: 0 0 5px rgba(0, 255, 157, 0.8);
+    z-index: 2; /* 이미지보다 위에 */
+    pointer-events: none; /* 클릭하면 카드가 선택되도록 */
+}
+
+.mini-card:hover { transform: translateX(var(--tx)) translateY(calc(var(--ty) - 50px)) rotate(0deg) scale(1.2); z-index: 100 !important; box-shadow: 0 0 30px #00FF9D; border-color: #00FF9D; }
 .mini-card:hover img { filter: brightness(1.2) sepia(0.2) hue-rotate(100deg); }
-.drawn-card-area { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%) scale(0.5); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 450px; background: rgba(0,10,5,0.2); backdrop-filter: blur(20px) brightness(1.2); -webkit-backdrop-filter: blur(20px) brightness(1.2); border: 2px solid rgba(0,255,157,0.7); border-radius: 15px; box-shadow: 0 0 50px rgba(0,255,157,0.3); padding: 20px; display: flex; flex-direction: column; z-index: 10; }
+
+.drawn-card-area { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%) scale(0.5); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 450px; background: rgba(0,10,5,0.2); backdrop-filter: blur(20px) brightness(1.2); -webkit-backdrop-filter: blur(20px) brightness(1.2); border: 2px solid rgba(0,255,157,0.7); border-radius: 15px; box-shadow: 0 0 50px rgba(0,255,157,0.3); padding: 20px; display: flex; flex-direction: column; z-index: 11; /* 서브 패널보다 위 */ }
 .drawn-card-area.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
 .drawn-header { text-align: center; font-weight: 900; font-size: 2rem; color: #00FF9D; letter-spacing: 3px; border-bottom: 2px double #00FF9D; margin-bottom: 10px; text-shadow: 0 0 10px #00FF9D; }
 .drawn-status { text-align: center; font-size: 0.9rem; color: #FF3B3B; font-weight: bold; margin-bottom: 15px; letter-spacing: 2px; }
@@ -144,13 +202,13 @@ body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #
     <div class="content-panel">
         <div class="content-header"><h2>📖 초은하 연대기</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
         <div class="vertical-drag-container" id="history-timeline">
-            <div class="timeline-item"><div class="timeline-year">2045년</div><div class="timeline-event">워프 항법의 상용화. 인류, 태양계의 요람을 벗어나 심우주 개척 시대에 진입하다.</div></div>
-            <div class="timeline-item"><div class="timeline-year">2078년</div><div class="timeline-event">제4차 세계 대전 발발. 궤도 폭격과 무차별적인 핵전쟁으로 푸른 별 '지구' 완전 붕괴 및 소멸.</div></div>
-            <div class="timeline-item"><div class="timeline-year">2080년</div><div class="timeline-event">살아남은 극소수의 인류, 정처 없는 우주 난민으로 전락. 인류의 마지막 보루였던 화성 테라포밍 프로젝트마저 대실패로 종결되다.</div></div>
-            <div class="timeline-item"><div class="timeline-year">2102년</div><div class="timeline-event">초공간 워프 네트워크 구축 성공. 수많은 외계 지성체들과 조우하며 바야흐로 '대우주 교류 시대'의 막이 오르다.</div></div>
-            <div class="timeline-item"><div class="timeline-year">2247년</div><div class="timeline-event">항성 간 무법자 및 우주 해적의 걷잡을 수 없는 급증. 전 우주권의 치안 유지와 척결을 위해 통합 권력 기관인 <strong>'초은하 교정청'</strong> 공식 출범.</div></div>
-            <div class="timeline-item"><div class="timeline-year">2556년</div><div class="timeline-event">초행성급 범죄자들의 폭증으로 우주 수용 시설 포화 상태 도달. 죄수들을 극저온 수면 상태에서 형기를 치르게 하는 <strong>'동결형'</strong> 시스템 전격 도입.</div></div>
-            <div class="timeline-item"><div class="timeline-year">3155년 (현재)</div><div class="timeline-event">긴 피의 세월 끝에 표면적인 은하 정세는 안정화되었다. 그러나 짙은 그림자 속에 숨어든 고위험 범죄자들을 사냥하기 위해 사냥꾼들의 수요는 그 어느 때보다 치솟고 있다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2045</div><div class="timeline-event">워프 항법의 상용화. 인류, 태양계의 요람을 벗어나 심우주 개척 시대에 진입하다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2078</div><div class="timeline-event">제4차 세계 대전 발발. 궤도 폭격과 무차별적인 핵전쟁으로 푸른 별 '지구' 완전 붕괴 및 소멸.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2080</div><div class="timeline-event">살아남은 극소수의 인류, 정처 없는 우주 난민으로 전락. 인류의 마지막 보루였던 화성 테라포밍 프로젝트마저 대실패로 종결되다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2102</div><div class="timeline-event">초공간 워프 네트워크 구축 성공. 수많은 외계 지성체들과 조우하며 바야흐로 '대우주 교류 시대'의 막이 오르다.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2247</div><div class="timeline-event">항성 간 무법자 및 우주 해적의 걷잡을 수 없는 급증. 전 우주권의 치안 유지와 척결을 위해 통합 권력 기관인 <strong>'초은하 교정청'</strong> 공식 출범.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 2556</div><div class="timeline-event">초행성급 범죄자들의 폭증으로 우주 수용 시설 포화 상태 도달. 죄수들을 극저온 수면 상태에서 형기를 치르게 하는 <strong>'동결형'</strong> 시스템 전격 도입.</div></div>
+            <div class="timeline-item"><div class="timeline-year">AD 3155 (현재)</div><div class="timeline-event">긴 피의 세월 끝에 표면적인 은하 정세는 안정화되었다. 그러나 짙은 그림자 속에 숨어든 고위험 범죄자들을 사냥하기 위해 사냥꾼들의 수요는 그 어느 때보다 치솟고 있다.</div></div>
         </div>
     </div>
 </div>
@@ -216,6 +274,7 @@ function openScreen(targetId) {
     if (document.getElementById('eve-popup').classList.contains('show')) updateEveMessage(targetId);
 }
 
+/* 스무스 관성 드래그 스크롤 로직 */
 function makeDraggableSmooth(ele) {
     if(!ele) return;
     let isDown = false;
@@ -268,7 +327,7 @@ function makeDraggableSmooth(ele) {
 makeDraggableSmooth(document.getElementById('history-timeline'));
 makeDraggableSmooth(document.getElementById('rules-timeline'));
 
-/* [업데이트] 수배자 명부 진짜 타겟 데이터 연동 */
+/* 수배자 명부 데이터 */
 const bountyData = [
     { id: 1, name: '연화', reward: '50,000,000,000 ₵', img: 'char1.png', bio: '[종족: 용족]<br>정부 전복 음모 및 주동죄. 교정청 최우선 확보 대상.' },
     { id: 2, name: '리리아', reward: '800,000,000 ₵', img: 'char2.png', bio: '[종족: 여우 수인]<br>특수 절도 및 강도 상해 미수. 날렵한 기동성에 주의할 것.' },
@@ -291,7 +350,12 @@ if (hand) {
         card.style.setProperty('--ty', `${Math.abs(offset) * Math.abs(offset) * 3}px`);
         card.style.setProperty('--rot', `${offset * 6}deg`);
         card.style.zIndex = index;
-        card.innerHTML = `<img src="${data.img}" alt="${data.name}">`;
+        
+        // [수정됨] 이미지 위에 이름을 오버레이로 덮어씌우는 구조로 변경
+        card.innerHTML = `
+            <img src="${data.img}" alt="${data.name}">
+            <div class="mini-card-name">${data.name}</div>
+        `;
         card.onclick = () => drawCard(data.id);
         hand.appendChild(card);
     });
@@ -302,7 +366,7 @@ function drawCard(id) {
     if (!data) return;
     document.getElementById('drawn-img').src = data.img;
     document.getElementById('drawn-name').textContent = data.name;
-    document.getElementById('drawn-bio').innerHTML = data.bio; // innerHTML로 변경해 줄바꿈(<br>) 적용
+    document.getElementById('drawn-bio').innerHTML = data.bio; 
     document.getElementById('drawn-reward').textContent = data.reward;
     const drawn = document.getElementById('drawn-card');
     drawn.classList.remove('active'); setTimeout(() => drawn.classList.add('active'), 50);
