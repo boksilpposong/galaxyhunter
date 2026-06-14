@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>초은하 현상금 사냥꾼 길드 터미널</title>
+<title>베나토르</title>
 <style>
 /* 1. Reset & Body */
 body { margin: 0; padding: 0; background: url('bg.png') center/cover no-repeat #05120E; color: #E0FFF2; font-family: 'Malgun Gothic', sans-serif; overflow: hidden; user-select: none; width: 100vw; height: 100vh; position: relative; }
@@ -35,7 +35,6 @@ body::after {
 .scattered-btn { position: absolute; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.3s; animation: float 4s infinite ease-in-out; }
 .scattered-btn:hover { transform: scale(1.1); filter: drop-shadow(0 0 20px #00FF9D); }
 .btn-icon { background: rgba(0,40,20,0.4); border: 2px solid #00FF9D; border-radius: 50%; width: 110px; height: 110px; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 15px rgba(0,255,157,0.3); margin-bottom: 15px; position: relative; }
-.btn-icon !IMPORTANT img { width: 75%; height: 75%; object-fit: contain; }
 .btn-text { background: rgba(0,20,10,0.8); padding: 5px 15px; border-radius: 20px; border: 1px dashed #00FF9D; color: #00FF9D; font-weight: bold; font-size: 0.85rem; }
 #btn-location { top: 20%; left: 15%; animation-delay: 0s; }
 #btn-world { top: 40%; right: 18%; animation-delay: 1s; }
@@ -74,7 +73,7 @@ body::after {
 .vertical-drag-container::-webkit-scrollbar { display: none; }
 .vertical-drag-container.active-drag { cursor: grabbing; scroll-behavior: auto; }
 
-/* 고유명사 볼드 처리 (민트 강조색 및 네온 완전히 제거) */
+/* 고유명사 볼드 처리 (강조색 제외) */
 .timeline-event strong, .location-desc strong, .rule-item strong, .drawn-bio strong { color: inherit; font-weight: bold; text-shadow: none; }
 
 /* 공통 아이템 스타일 */
@@ -93,9 +92,7 @@ body::after {
 .vertical-drag-container:not(.active-drag) .rule-item:hover { transform: translateX(10px); box-shadow: -6px 0 0 #00FF9D; border-color: rgba(0, 255, 157, 0.5); }
 .rule-title { color: #00FF9D; font-weight: bold; font-size: 1.3rem; margin-bottom: 10px; text-shadow: 0 0 10px rgba(0,255,157,0.5); letter-spacing: 1px; }
 
-/* =========================================
-   [수정 완료] 오직 장소 데이터베이스만 1216x832 비율 적용
-========================================= */
+/* 장소 데이터베이스 */
 .location-item { 
     display: flex; gap: 30px; background: rgba(0, 255, 157, 0.03); 
     border: 1px solid rgba(0, 255, 157, 0.15); border-radius: 12px; 
@@ -104,7 +101,7 @@ body::after {
 .vertical-drag-container:not(.active-drag) .location-item:hover { 
     transform: translateX(10px); border-color: #00FF9D; background: rgba(0, 255, 157, 0.08);
 }
-/* 1216x832 비율 정밀 축소 매칭 (304px : 208px) */
+/* 1216x832 비율 세팅 (304px : 208px) */
 .location-img-box { 
     width: 304px; height: 208px; 
     flex-shrink: 0; border: 1px solid rgba(0, 255, 157, 0.3); 
@@ -124,17 +121,15 @@ body::after {
 .location-coords { color: #8A9BB4; font-family: monospace; font-size: 0.9rem; margin-bottom: 15px; display: block; border-bottom: 1px solid rgba(0, 255, 157, 0.2); padding-bottom: 8px; }
 .location-desc { color: #E0FFF2; font-size: 1.05rem; line-height: 1.6; }
 
-.sub-facility { margin-top: 15px; padding: 15px; background: rgba(0, 255, 157, 0.05); border-left: 3px solid #00FF9D; border-radius: 4px; font-size: 0.95rem; }
-.sub-facility strong { color: #00FF9D; display: block; margin-bottom: 5px; }
+/* 위탁 시설 내부 레이아웃 */
+.sub-facility { background: rgba(0, 255, 157, 0.04); border-left: 3px solid #00FF9D; border-radius: 4px; padding: 15px; font-size: 1.05rem; line-height: 1.6; }
 
-/* =========================================
-   [원래대로 복구] 수배자 명부 원상 복귀 (세로형 손패 + 자동 맞춤 프레임)
-========================================= */
+/* 5. Cards UI (명부) */
 .board-header { position: absolute; top: 30px; left: 50px; right: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
 .board-header h2 { color: #00FF9D; margin: 0; text-shadow: 0 0 10px rgba(0,255,157,0.5); border-bottom: 2px solid #00FF9D; padding-bottom: 10px; }
 .card-hand { position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); display: flex; justify-content: center; align-items: flex-end; width: 800px; height: 250px; perspective: 1000px; z-index: 20; pointer-events: none; }
 
-/* 예쁜 세로 카드 비율(130x190) 복구 */
+/* 세로 카드 비율 복구 */
 .mini-card { 
     position: absolute; width: 130px; height: 190px; 
     background: rgba(0,10,5,0.7); backdrop-filter: blur(5px); 
@@ -155,7 +150,7 @@ body::after {
 .drawn-header { text-align: center; font-weight: 900; font-size: 2rem; color: #00FF9D; letter-spacing: 3px; border-bottom: 2px double #00FF9D; margin-bottom: 10px; text-shadow: 0 0 10px #00FF9D; }
 .drawn-status { text-align: center; font-size: 0.9rem; color: #FF3B3B; font-weight: bold; margin-bottom: 10px; letter-spacing: 2px; }
 
-/* 정사각형 이미지가 잘리지 않는 contain 프레임으로 완전 복구 */
+/* 정사각형 이미지가 잘리지 않는 contain 프레임 복구 */
 .drawn-img-frame { width: 100%; height: auto; max-height: 480px; background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,157,0.3); margin-bottom: 10px; overflow: hidden; display: flex; justify-content: center; align-items: center; border-radius: 5px; position: relative; }
 .drawn-img-frame img { width: 100%; height: 100%; max-height: 480px; object-fit: contain; filter: brightness(0.85) contrast(1.05); pointer-events: none; position: relative; z-index: 1; }
 .drawn-info { border-top: 1px solid rgba(0,255,157,0.4); padding-top: 10px; text-align: center; }
@@ -212,7 +207,7 @@ body::after {
         <div class="content-header"><h2>📖 초은하 연대기</h2><div class="click-to-return-hint">바탕화면을 클릭하면 로비로 돌아갑니다</div></div>
         <div class="vertical-drag-container" id="history-timeline">
             <div class="timeline-item"><div class="timeline-year">2045년</div><div class="timeline-event"><strong>워프 항법</strong>의 상용화. 인류, 태양계의 요람을 벗어나 심우주 개척 시대에 진입하다.</div></div>
-            <div class="timeline-item"><div class="timeline-year">2078년</div><div class="timeline-event">제4차 세계 대전 발발. 궤도 폭격 and 무차별적인 핵전쟁으로 푸른 별 <strong>'지구'</strong> 완전 붕괴 및 소멸.</div></div>
+            <div class="timeline-item"><div class="timeline-year">2078년</div><div class="timeline-event">제4차 세계 대전 발발. 궤도 폭격과 무차별적인 핵전쟁으로 푸른 별 <strong>'지구'</strong> 완전 붕괴 및 소멸.</div></div>
             <div class="timeline-item"><div class="timeline-year">2080년</div><div class="timeline-event">살아남은 극소수의 인류, 정처 없는 우주 난민으로 전락. 인류의 마지막 보루였던 <strong>화성 테라포밍 프로젝트</strong>마저 대실패로 종결되다.</div></div>
             <div class="timeline-item"><div class="timeline-year">2102년</div><div class="timeline-event"><strong>초공간 워프 네트워크</strong> 구축 성공. 수많은 외계 지성체들과 조우하며 바야흐로 '대우주 교류 시대'의 막이 오르다.</div></div>
             <div class="timeline-item"><div class="timeline-year">2247년</div><div class="timeline-event">항성 간 무법자 및 우주 해적의 걷잡을 수 없는 급증. 전 우주권의 치안 유지와 척결을 위해 통합 권력 기관인 <strong>'초은하 교정청'</strong> 공식 출범.</div></div>
@@ -278,7 +273,7 @@ body::after {
                 <div class="location-img-box"><img src="loc7.png" alt="Avaris Labor Camp"></div>
                 <div class="location-info">
                     <span class="location-name">아바리스 노역소</span>
-                    <span class="location-coords">COORDS: G4-SEC7-AV01</span>
+                    <span class="location-coords">COORDS: G4-SEC7-NX04</span>
                     <div class="location-desc">
                         <div class="sub-facility">
                             <strong>[초은하 교정청 공식 인가 시설]</strong>
@@ -326,7 +321,7 @@ body::after {
             <div class="rule-item"><div class="rule-title">제5조 [동결형의 정의]</div><strong>동결형</strong>이란, 죄인을 극저온 영구 동결 캡슐에 구속한 뒤 미약한 뇌파 의식만을 살려둔 채 최소 10년에서 최대 500년까지 영구적인 고통 속에서 형기를 치르게 하는 징역형을 뜻한다.</div>
             <div class="rule-item"><div class="rule-title">제6조 [신변 위임의 책임]</div>제4조에 의거하여 범죄자의 신변 인도를 선택할 경우, 대상에 대한 전권 및 관리 책임은 해당 사냥꾼에게 전면 양도된다.</div>
             <div class="rule-item"><div class="rule-title">제7조 [거래 제한]</div>신변을 위임받은 범죄자를 <strong>교정청</strong>의 승인 없이 불법적인 루트로 밀거래하거나, 암시장에 유통하는 일체의 불법 거래 행위는 엄격히 금지된다. 위반 시 사냥꾼 본인의 자격이 즉각 박탈된다.</div>
-            <div class="rule-item"><div class="rule-title">제8조 [위탁 노역 계약]</div>사냥꾼은 인도받은 범죄자의 신변을 기반으로, <strong>교정청</strong>의 정식 승인을 받은 민간 기업 및 외부 기관과 위탁 계약을 체결할 수 . 계약을 통한 '대여 형식'으로 범죄자를 특정 공정 및 인프라 노역에 종사시키는 행위는 합법으로 인정된다.</div>
+            <div class="rule-item"><div class="rule-title">제8조 [위탁 노역 계약]</div>사냥꾼은 인도받은 범죄자의 신변을 기반으로, <strong>교정청</strong>의 정식 승인을 받은 민간 기업 및 외부 기관과 위탁 계약을 체결할 수 있습니다. 계약을 통한 '대여 형식'으로 범죄자를 특정 공정 및 인프라 노역에 종사시키는 행위는 합법으로 인정된다.</div>
         </div>
     </div>
 </div>
@@ -401,12 +396,12 @@ makeDraggableSmooth(document.getElementById('rules-timeline'));
 makeDraggableSmooth(document.getElementById('location-timeline'));
 
 const bountyData = [
-    { id: 1, name: '연화', reward: '50,000,000,000 ₵', img: 'char1.png', bio: '[종족: 용족]<br>정부 전복 음모 및 주동죄. <strong>교정청</strong> 최우선 확보 대상.' },
+    { id: 1, name: '연화', reward: '50,000,000,000 ₵', img: 'char1.png', bio: '[종족: 용족]<br>정부 전복 음모 및 주동죄. 교정청 최우선 확보 대상.' },
     { id: 2, name: '리리아', reward: '800,000,000 ₵', img: 'char2.png', bio: '[종족: 여우 수인]<br>특수 절도 및 강도 상해 미수. 날렵한 기동성에 주의할 것.' },
     { id: 3, name: '아자젤', reward: '1,500,000,000 ₵', img: 'char3.png', bio: '[종족: 천사족]<br>무장 탈영죄. 군용 무기를 소지하여 각별한 주의 요망.' },
     { id: 4, name: '글리치', reward: '30,000,000,000 ₵', img: 'char4.png', bio: '[종족: 인간 아종]<br>정보통신망법 위반 및 행성 내란죄. 시스템 해킹에 능함.' },
     { id: 5, name: '월묘', reward: '15,000,000 ₵', img: 'char5.png', bio: '[종족: 달토끼족]<br>식품위생법 상습 위반. 치명적인 불량 식품 유통 전과.' },
-    { id: 6, name: '셀레', reward: '25,000,000,000 ₵', img: 'char6.png', bio: '[종족: 엘로힘 아종]<br><strong>신수</strong> 독살 미수 및 행성 내란 미수. 고위험 생화학 물질 취급.' },
+    { id: 6, name: '셀레', reward: '25,000,000,000 ₵', img: 'char6.png', bio: '[종족: 엘로힘 아종]<br>신수 독살 미수 및 행성 내란 미수. 고위험 생화학 물질 취급.' },
     { id: 7, name: '에드나', reward: '5,000,000,000 ₵', img: 'char7.png', bio: '[종족: 인간 아종]<br>공상 강도 및 전략 자원 탈취. 군수 물자 밀거래 혐의.' },
     { id: 8, name: '비비안', reward: '300,000,000 ₵', img: 'char8.png', bio: '[종족: 인간 아종]<br>사기죄 및 사문서 위조. 다수의 위조 신분증을 소지 중임.' }
 ];
@@ -417,8 +412,8 @@ if (hand) {
     bountyData.forEach((data, index) => {
         const card = document.createElement('div');
         card.className = 'mini-card';
-        const offset = index - (totalCards - 1) / 2; 
-        card.style.setProperty('--tx', `${offset * 55}px`); /* 세로 카드 본연의 수려한 각도 간격 복구 */
+        const offset = index - (totalTotalCards = bountyData.length, index - (totalCards - 1) / 2);
+        card.style.setProperty('--tx', `${offset * 55}px`);
         card.style.setProperty('--ty', `${Math.abs(offset) * Math.abs(offset) * 3}px`);
         card.style.setProperty('--rot', `${offset * 6}deg`);
         card.style.zIndex = index;
